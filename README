@@ -1,0 +1,6 @@
+5/9
+目前分工：
+周昀 parser (io.cpp)
+瓖芸 data structure (Circuit.h Circuit.cpp)
+宜凡 greedy (Greedy.cpp)
+// 有空的人可以弄一下Makefile和main.cpp
