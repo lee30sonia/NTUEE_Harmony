@@ -16,7 +16,7 @@ class Point;
 
 class CircuitMgr
 {
-   CircuitMgr();
+   CircuitMgr(){}
    
    // io.cpp
    bool readCircuit(char* filename);
@@ -118,6 +118,7 @@ private:
 class Point
 {
 public:
+   Point(){ }
    Point(int x, int y);
 
    int x() { return _x; }

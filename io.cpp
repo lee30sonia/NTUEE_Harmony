@@ -21,9 +21,9 @@ bool CircuitMgr::readCircuit(char* filename)
    fin.ignore(10);   fin >> _viaCost;  fin.ignore();
    fin.ignore(10);   fin >> _spacing;  fin.ignore();
    fin.ignore(12);   fin >> x1;   fin.ignore();  fin >> y1;
-   ccMgr._LL = Point(x1,y1);
+   _LL = Point(x1,y1);
    fin.ignore(3);    fin >> x2;   fin.ignore();  fin >> y2;   fin.ignore(2);
-   cc.Mgr._UR = Point(x2,y2);
+   _UR = Point(x2,y2);
    fin.ignore(15);   fin >> _layernum;    fin.ignore();
    fin.ignore(16);   fin >> routedShapes; fin.ignore();
    fin.ignore(14);   fin >> routedVias;   fin.ignore();
@@ -34,7 +34,7 @@ bool CircuitMgr::readCircuit(char* filename)
       fin.ignore(2);    fin >> x1;  fin.ignore();  fin >> y1;
       fin.ignore(3);    fin >> x2;  fin.ignore();  fin >> y2;
       fin.ignore(2);
-      _shapes.push_back(Shape(x1, y1, x2, y2, layer);
+      addShape(x1, y1, x2, y2, layer);
    }
    if(routedShapes != _shapes.size()) {
       cout << "Error: input RoutedShapes format error!" << endl;
@@ -46,7 +46,7 @@ bool CircuitMgr::readCircuit(char* filename)
       fin.ignore(2);    fin >> x1;
       fin.ignore();     fin >> y1;
       fin.ignore(2);
-      _vias.push_back(Via(x1, y1, layer, true);
+      addVia(x1, y1, layer, true);
    }
    if(routedVias != _vias.size()) {
       cout << "Error: input RoutedVias format error!" << endl;
@@ -58,7 +58,7 @@ bool CircuitMgr::readCircuit(char* filename)
       fin.ignore(2);    fin >> x1;  fin.ignore();  fin >> y1;
       fin.ignore(3);    fin >> x2;  fin.ignore();  fin >> y2;
       fin.ignore(2);
-      _obstacles.push_back(Obstacle(x1, y1, x2, y2, layer);
+      Obstacle(x1, y1, x2, y2, layer);
    }
    if(obstacles != _obstacles.size()) {
       cout << "Error: input RoutedShapes format error!" << endl;
