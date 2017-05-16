@@ -27,7 +27,7 @@ bool CircuitMgr::readCircuit(char* filename)
    fin.ignore(15);   fin >> _layernum;    fin.ignore();
    fin.ignore(16);   fin >> routedShapes; fin.ignore();
    fin.ignore(14);   fin >> routedVias;   fin.ignore();
-   fin.ignore(13);   fin >> obstacless;   fin.ignore();
+   fin.ignore(13);   fin >> obstacles;   fin.ignore();
 
    for(int i=0; i<routedShapes; i++) {
       fin.ignore(13);   fin >> layer;
@@ -71,19 +71,16 @@ bool CircuitMgr::readCircuit(char* filename)
 
 void CircuitMgr::writeOutput(char* filename)
 {
-   fstream fout();
-   fout.open(filename, ios::out)
+   fstream fout;
+   fout.open(filename, ios::out);
    
    for(unsigned i=0; i<_lines.size(); i++) {
-      fout << _lines[i].vertical()? 'V': 'H' << "-line M" << _lines[i].layer << " (" 
-           << _lines[i].x1 << "," << _lines[i].y1 << ") ("
-           << _lines[i].x2 << "," << _lines[i].y2 << ")" << endl;
+      fout << (_lines[i].vertical()? "V": "H") << "-line M" << _lines[i].layer() << " " 
+           << _lines[i].startpoint().str() << " " << _lines[i].endpoint().str() << endl;
    }
    for(unsigned i=0; i<_vias.size(); i++) {
-      if(_vias[i].given)   continue;
-      fout << "Via V" << _vias[i].layer << " ("
-           << _vias[i].x1 << "," << _vias[i].y1 << ") ("
-           << _vias[i].x2 << "," << _vias[i].y2 << ")" << endl;
+      if(_vias[i].given())   continue;
+      fout << "Via V" << _vias[i].layer() << " " << _vias[i].pos().str() << endl;
    }
 
    fout.close();

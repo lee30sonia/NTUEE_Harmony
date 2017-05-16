@@ -6,6 +6,7 @@
 #include "Circuit.h"
 #include <iostream>
 #include <cmath>
+#include <sstream>
 
 using namespace std;
 
@@ -162,6 +163,13 @@ Point::Point(int x, int y)
 {
    _x=x;
    _y=y;
+}
+
+string Point::str()
+{
+   sstream ss;
+   ss << "(" << _x << "," << _y << ")";
+   return ss.str();
 }
 
 bool Point::inside(Point LL, Point UR, int spacing=0)
