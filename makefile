@@ -8,9 +8,9 @@ LIBFLAGS	:= -ltm_usage -Llib
 
 
 # optimised version
-all	: ../bin/circuitGen
+all	: ../bin/net_open_finder
 	@echo -n""
-../bin/circuitGen	: main.o greedy.o circuit.o io.o ../lib
+../bin/net_open_finder	: main.o greedy.o circuit.o io.o ../lib
 	$(CXX) $^ -o $@
 
 main.o		: main.cpp Circuit.h ../lib/tm_usage.h
@@ -27,9 +27,9 @@ io.o		: io.cpp Circuit.h
 
 
 #debug version
-dbg	: ../bin/circuitGen_dbg
+dbg	: ../bin/net_open_finder_dbg
 	@echo -n""
-../bin/circuitGen_dbg	: main_dbg.o greedy_dbg.o circuit_dbg.o io_dbg.o ../lib
+../bin/net_open_finder_dbg	: main_dbg.o greedy_dbg.o circuit_dbg.o io_dbg.o ../lib
 	$(CXX) $^ -o $@ 
 
 main_dbg.o		: main.cpp Circuit.h
