@@ -5,6 +5,8 @@
 
 #include "Circuit.h"
 #include <iostream>
+#include <fstream>
+using namespace std;
 
 bool CircuitMgr::readCircuit(char* filename)
 {
@@ -63,10 +65,26 @@ bool CircuitMgr::readCircuit(char* filename)
       return false;
    }
    
+   fin.close();
    return true; //return true if read in file succeed
 }
 
 void CircuitMgr::writeOutput(char* filename)
 {
+   fstream fout();
+   fout.open(filename, ios::out)
    
+   for(unsigned i=0; i<_lines.size(); i++) {
+      fout << _lines[i].vertical()? 'V': 'H' << "-line M" << _lines[i].layer << " (" 
+           << _lines[i].x1 << "," << _lines[i].y1 << ") ("
+           << _lines[i].x2 << "," << _lines[i].y2 << ")" << endl;
+   }
+   for(unsigned i=0; i<_vias.size(); i++) {
+      if(_vias[i].given)   continue;
+      fout << "Via V" << _vias[i].layer << " ("
+           << _vias[i].x1 << "," << _vias[i].y1 << ") ("
+           << _vias[i].x2 << "," << _vias[i].y2 << ")" << endl;
+   }
+
+   fout.close();
 }
