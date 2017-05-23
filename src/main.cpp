@@ -4,7 +4,7 @@
 ****************************************************************************/
 #include "Circuit.h"
 #include "io.cpp"
-#include "Greedy.cpp"
+#include "greedy.cpp"
 #include "../lib/tm_usage.h"
 
 int main(int argc, char* argv[])

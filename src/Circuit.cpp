@@ -26,10 +26,10 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
    return true;
 }
 
-bool CircuitMgr::addVia(int x, int y, int layer, bool given=false)
+bool CircuitMgr::addVia(int x, int y, int layer, bool given)
 {
    Point p(x,y);
-   if (!valid(p))
+   if (!valid(p, layer))
       return false;
    Via v(x, y, layer, given);
    _vias.push_back(v);
@@ -42,7 +42,7 @@ void CircuitMgr::addObstacle(int x1, int y1, int x2, int y2, int layer)
    _obstacles.push_back(o);
 }
 
-bool CircuitMgr::valid(Point& p)
+bool CircuitMgr::valid(Point& p, int layer)
 {
    if (!p.inside(_LL,_UR,-1*_spacing))
       return false; //not in boundary
@@ -50,7 +50,7 @@ bool CircuitMgr::valid(Point& p)
    {
       if (_obstacles.at(i).layer()!=layer)
          continue;
-      if (p.inside(_obstacles.at(i).getLL, _obstacles.at(i).getUR, _spacing))
+      if (p.inside(_obstacles.at(i).getLL(), _obstacles.at(i).getUR(), _spacing))
          return false;
    }
 }
@@ -61,11 +61,11 @@ bool CircuitMgr::valid(Line& l)
    bool vertical=l.vertical();
    while(p!=l.endpoint())
    {
-      if (!valid(p))
+      if (!valid(p, l.layer()))
          return false;
       p.move(vertical);
    }
-   if (!valid(p)) //check endpoint
+   if (!valid(p, l.layer())) //check endpoint
       return false;
    return true;
 }
@@ -95,7 +95,7 @@ bool Shape::connected(Line l)
 {
    if (l.layer()!=_layer)
       return false;
-   return (connected(l.startpoint()) || connected(l.endpoint));
+   return (connected(l.startpoint()) || connected(l.endpoint()));
 }
 
 bool Shape::connected(Point p)
@@ -110,15 +110,16 @@ Line::Line(int x1, int y1, int x2, int y2, int layer)
       cout<<"error:creating a non-vertical and non-horizontal line."<<endl;
    else
    {
+      Point p1, p2;
       if (x1<x2 || y1<y2)
       {
-         Point p1(x1,y1);
-         Point p2(x2,y2);
+         p1 = Point(x1,y1);
+         p2 = Point(x2,y2);
       }
       else
       {
-         Point p2(x1,y1);
-         Point p1(x2,y2);
+         p2 = Point(x1,y1);
+         p1 = Point(x2,y2);
       }
       _endpoints.push_back(p1);
       _endpoints.push_back(p2);
@@ -143,9 +144,9 @@ int Line::length()
 }
 
 /********************Via*********************/
-Via::Via(int x, int y, int layer, bool given=false)
+Via::Via(int x, int y, int layer, bool given)
 {
-   _point=Point(x,y);
+   _pos=Point(x,y);
    _layer=layer;
    _given=given;
 }
@@ -167,12 +168,12 @@ Point::Point(int x, int y)
 
 string Point::str()
 {
-   sstream ss;
+   stringstream ss;
    ss << "(" << _x << "," << _y << ")";
    return ss.str();
 }
 
-bool Point::inside(Point LL, Point UR, int spacing=0)
+bool Point::inside(Point LL, Point UR, int spacing)
 {
    if (spacing<=0) // for boundary and shape connection checking
    {
@@ -200,7 +201,7 @@ void Point::move(bool vertical)
       ++_x;
 }
 
-bool operator==(const Point p)
+bool Point::operator!=(const Point& p)
 {
    return !(_x==p._x && _y==p._y);
 }
