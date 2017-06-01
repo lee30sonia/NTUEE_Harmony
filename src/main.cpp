@@ -3,9 +3,8 @@
   Synopsis     [ main program ]
 ****************************************************************************/
 #include "Circuit.h"
-#include "io.cpp"
-#include "greedy.cpp"
 #include "../lib/tm_usage.h"
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
