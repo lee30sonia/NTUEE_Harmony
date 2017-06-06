@@ -33,7 +33,7 @@ bool CircuitMgr::addVia(int x, int y, int layer, bool given)
    if (!valid(p, layer))
       return false;
    Via v(x, y, layer, given);
-   _vias.at(layer).push_back(v);
+   _vias.push_back(v);
    return true;
 }
 
