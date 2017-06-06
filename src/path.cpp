@@ -19,7 +19,7 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
          p = _Q[current].front();
          _Q[current].pop();
          dis2t = p.disXY(t);
-         level = level(p, layer);
+         level = getLevel(p, layer);
          reach = check4short(Point(p.x()-1,p.y()), t, layer, 'r', dis2t, level);
          reach = check4short(Point(p.x()+1,p.y()), t, layer, 'l', dis2t, level);
          reach = check4short(Point(p.x(),p.y()-1), t, layer, 'u', dis2t, level);
@@ -32,10 +32,10 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
 
 void CircuitMgr::init4short(int layer) {
    if(!_levelMap[layer])   _levelMap[layer] = new int*[_LL.disX(_UR)];
-   if(!_dirMap[layer])     _dirMap[layer] = new char[_LL.disX(_UR)];
+   if(!_dirMap[layer])     _dirMap[layer] = new char*[_LL.disX(_UR)];
    for(int i=0; i<_LL.disX(_UR); i++) {
       _levelMap[layer][i] = new int[_LL.disY(_UR)];
-      _dirMap[layer][i] = new int[_LL.disY(_UR)];
+      _dirMap[layer][i] = new char[_LL.disY(_UR)];
    }
    for(int i=0; i<_LL.disX(_UR); i++)
       for(int j=0; j<_LL.disY(_UR); j++) {
@@ -46,8 +46,8 @@ void CircuitMgr::init4short(int layer) {
    Obstacle* it;
    for(unsigned n=0; n<_obstacles[layer].size(); n++) {
       it = &_obstacles[layer][0];
-      for(int i=it->getLL.x(); i<=it->getUR.x(); i++)
-         for(int j=it->getLL.y(); j<=it->getUR.y(); j++)
+      for(int i=it->getLL().x(); i<=it->getUR().x(); i++)
+         for(int j=it->getLL().y(); j<=it->getUR().y(); j++)
             _levelMap[layer][i][j] = INT_MAX;
    }
    
@@ -59,14 +59,14 @@ bool CircuitMgr::check4short(Point p, const Point& t, const int& layer, const ch
       const int& dis2t, const int& level) {
    if(p.x()<0 || p.x()>(_LL.disX(_UR))) return false; 
    if(p.y()<0 || p.y()>(_LL.disY(_UR))) return false; 
-   if(level(p, layer) >= 0)   return false;
+   if(getLevel(p, layer) >= 0)   return false;
 
-   if(dir(p,layer) == 0)  dir(p,layer) = dir;
+   if(getDir(p,layer) == 0)  setDir(p,layer,dir);
    if(p.disXY(t) == 0) return true;
    int level2;
    if(p.disXY(t) > dis2t) level2 = level+1;
    else  level2 = level;
-   level(p, layer) = level2;
+   setLevel(p, layer, level2);
    _Q[level2].push(p);
    return false;
 }
