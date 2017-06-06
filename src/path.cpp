@@ -23,7 +23,7 @@ bool shortestPath(Point s, Point t, int layer) {
    Point p;
    vector<queue<Point>> dist;
    dist.push_back(queue<Point>());
-   _map[layer][s.x()][s.y()] = 0;
+   s.level(layer) = 0;
    dis[0].push(s);
 
    while(!reach) {
@@ -33,25 +33,27 @@ bool shortestPath(Point s, Point t, int layer) {
          p = dist(current).front();
          dist(current).pop();
          dis2t = p.dis(t);
-         level = _map[layer][p.x()][p.y()];
-         reach = check4short(Point(p.x()-1,p.y()), t, dis2t, level, dist);
-         reach = check4short(Point(p.x()+1,p.y()), t, dis2t, level, dist);
-         reach = check4short(Point(p.x(),p.y()-1), t, dis2t, level, dist);
-         reach = check4short(Point(p.x(),p.y()+1), t, dis2t, level, dist);
+         level = p.level(layer);
+         reach = check4short(Point(p.x()-1,p.y()), t, layer, dis2t, level, dist);
+         reach = check4short(Point(p.x()+1,p.y()), t, layer, dis2t, level, dist);
+         reach = check4short(Point(p.x(),p.y()-1), t, layer, dis2t, level, dist);
+         reach = check4short(Point(p.x(),p.y()+1), t, layer, dis2t, level, dist);
       }
    }
+   
+
 }
 
-bool check4short(Point p, const Point& t,
+bool check4short(Point p, const Point& t, const int& layer
       const int& dis2t, const int& level, const vector<queue<Point>>& dist) {
    if(p.x()<0 || p.x()>(_LL.disX(_UR))) return false; 
    if(p.y()<0 || p.y()>(_LL.disY(_UR))) return false; 
-   if(_map[layer][p.x()][p.y()] >= 0)   return false;
+   if(p.level(layer) >= 0)   return false;
    if(p.dis(t) == 0) return true;
    int level2;
    if(p.dis(t) > dis2t) level2 = level+1;
    else  level2 = level;
-   _map[layer][p.x()][p.y()] = level2;
+   p.level(layer) = level2;
    dist[level2].push(p);
    return false;
 }
