@@ -31,8 +31,12 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
 }
 
 void CircuitMgr::init4short(int layer) {
-   if(!_levelMap[layer])  _map[layer] = new int[_LL.disX(_UR)][_LL.disY(_UR)];
-   if(!_dirMap[layer])  _dirMap[layer] = new char[_LL.disX(_UR)][_LL.disY(_UR)];
+   if(!_levelMap[layer])   _levelMap[layer] = new int*[_LL.disX(_UR)];
+   if(!_dirMap[layer])     _dirMap[layer] = new char[_LL.disX(_UR)];
+   for(int i=0; i<_LL.disX(_UR)]; i++) {
+      _levelMap[layer][i] = new int[_LL.disY(_UR)];
+      _dirMap[layer][i] = new int[_LL.disY(_UR)];
+   }
    for(int i=0; i<_LL.disX(_UR)]; i++)
       for(int j=0; j<_LL.disY(_UR)]; j++) {
          _levelMap[layer][i][j] = -1;
@@ -41,10 +45,10 @@ void CircuitMgr::init4short(int layer) {
 
    Obstacle* it;
    for(unsigned n=0; n<_obstacles[layer].size(); n++) {
-      it = _obstacles[layer][0];
-      for(int i=it.getLL.x(); i<=it.getUR.x(); i++)
-         for(int j=it.getLL.y(); j<=it.getUR.y(); j++)
-            _map[layer][i][j] = INT_MAX;
+      it = &_obstacles[layer][0];
+      for(int i=it->getLL.x(); i<=it->getUR.x(); i++)
+         for(int j=it->getLL.y(); j<=it->getUR.y(); j++)
+            _levelMap[layer][i][j] = INT_MAX;
    }
    
    _Q.clear();
