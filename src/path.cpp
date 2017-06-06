@@ -17,7 +17,7 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
          p = _Q[current].front();
          _Q[current].pop();
          dis2t = p.disXY(t);
-         level = p.level(layer);
+         level = level(p, layer);
          reach = check4short(Point(p.x()-1,p.y()), t, layer, 'r', dis2t, level);
          reach = check4short(Point(p.x()+1,p.y()), t, layer, 'l', dis2t, level);
          reach = check4short(Point(p.x(),p.y()-1), t, layer, 'u', dis2t, level);
@@ -54,14 +54,14 @@ bool CircuitMgr::check4short(Point p, const Point& t, const int& layer, const ch
       const int& dis2t, const int& level) {
    if(p.x()<0 || p.x()>(_LL.disX(_UR))) return false; 
    if(p.y()<0 || p.y()>(_LL.disY(_UR))) return false; 
-   if(p.level(layer) >= 0)   return false;
+   if(level(p, layer) >= 0)   return false;
 
-   if(p.dir() == 0)  p.dir() = dir;
+   if(dir(p.layer) == 0)  p.dir() = dir;
    if(p.disXY(t) == 0) return true;
    int level2;
    if(p.disXY(t) > dis2t) level2 = level+1;
    else  level2 = level;
-   p.level(layer) = level2;
+   level(p, layer) = level2;
    _Q[level2].push(p);
    return false;
 }

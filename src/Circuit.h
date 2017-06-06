@@ -7,6 +7,7 @@
 #define CIRCUIT_H
 
 #include <vector>
+#include <queue>
 #include <string>
 #include <stdlib.h>
 #include <cmath>
@@ -184,6 +185,8 @@ public:
    void init4short(int layer);
    bool check4short(Point p, const Point& t, const int& layer, const char& dir,
       const int& dis2t, const int& level);
+   int& level(const Point& p, const int& layer) { return _levelMap[layer][p.x()][p.y()]; }
+   char& dir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
 
 private:
    int _viaCost;
@@ -200,7 +203,7 @@ private:
 
    // these are for function shortestPath
    int***                     _levelMap;
-   char***                    _dirMap
-   vecter< queue<Point> >*    _Q;
+   char***                    _dirMap;
+   vector< queue<Point> >*    _Q;
 };
 #endif
