@@ -36,6 +36,7 @@ public:
    int distX(const Point& p) { return abs(_x-p.x()); }
    int distY(const Point& p) { return abs(_y-p.y()); }
    int distXY(const Point& p) { return distX(p)+distY(p); }
+   int& level(const int& layer) { return _map[layer][_x][_y]; }
    
    bool inside(Point LL, Point UR, int spacing=0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
 
