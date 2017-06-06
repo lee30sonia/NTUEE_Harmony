@@ -204,6 +204,6 @@ private:
    // these are for function shortestPath
    int***                     _levelMap;
    char***                    _dirMap;
-   vector< queue<Point> >*    _Q;
+   vector< queue<Point> >    _Q;
 };
 #endif

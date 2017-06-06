@@ -3,12 +3,14 @@
 #include <climits>
 #include "Circuit.h"
 
+using namespace std;
+
 bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
    int current = -1, dis2t, level;
    bool reach = false;
    Point p;
-   s.level(layer) = 0;
-   _Q[0].push(s);
+   level(s,layer) = 0;
+   (_Q[0]).push(s);
 
    while(!reach) {
       current++;
@@ -45,8 +47,7 @@ void CircuitMgr::init4short(int layer) {
             _map[layer][i][j] = INT_MAX;
    }
    
-   if(_Q)   delete _Q;
-   _Q = new vector<queue<Point>>;
+   _Q.clear();
    _Q.push_back(queue<Point>());
 }
 
@@ -56,7 +57,7 @@ bool CircuitMgr::check4short(Point p, const Point& t, const int& layer, const ch
    if(p.y()<0 || p.y()>(_LL.disY(_UR))) return false; 
    if(level(p, layer) >= 0)   return false;
 
-   if(dir(p.layer) == 0)  p.dir() = dir;
+   if(dir(p,layer) == 0)  dir(p,layer) = dir;
    if(p.disXY(t) == 0) return true;
    int level2;
    if(p.disXY(t) > dis2t) level2 = level+1;
