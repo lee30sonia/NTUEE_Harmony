@@ -8,7 +8,8 @@
 
 #include <vector>
 #include <string>
-#include <math>
+#include <math.h>
+#include <stdlib.h>
 
 using namespace std;
 
