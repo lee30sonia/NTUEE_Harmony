@@ -39,9 +39,15 @@ void Graph::addEdge(Obj* o1, Obj* o2, int& weight)
          n2=_nodes.at(i);
    }
    if (!n1)
+   {
       n1=new Node(o1);
+      _nodes.push_back(n1);
+   }
    if (!n2)
+   {
       n2=new Node(o2);
+      _nodes.push_back(n2);
+   }
    addEdge(n1,n2,weight);
 }
 
