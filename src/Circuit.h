@@ -179,6 +179,12 @@ public:
    int dist(Shape& s1, Shape& s2, bool xType); //for buildGraph. return -1 if there is obstacle between them
    void mst(Graph*) { } //solve minimum spanning tree(return type?)
    
+   // path.cpp
+   bool shortestPath(Point s, Point t, int layer);
+   void init4short(int layer);
+   bool check4short(Point p, const Point& t, const int& layer, const char& dir,
+      const int& dis2t, const int& level);
+
 private:
    int _viaCost;
    int _spacing;
@@ -191,5 +197,10 @@ private:
    vector< vector<Line> > _lines;
    vector<Via> _vias;
    vector< vector<Obstacle> > _obstacles;
+
+   // these are for function shortestPath
+   int***                     _levelMap;
+   char***                    _dirMap
+   vecter< queue<Point> >*    _Q;
 };
 #endif
