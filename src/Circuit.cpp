@@ -47,11 +47,10 @@ bool CircuitMgr::valid(Point& p, int layer)
 {
    if (!p.inside(_LL,_UR,-1*_spacing))
       return false; //not in boundary
-   for (int i=0; i<_obstacles.size(); ++i)
+   vector<Obstacle>& obstacles = _obstacles.at(layer);
+   for (int i=0; i<obstacles.size(); ++i)
    {
-      if (_obstacles.at(i).layer()!=layer)
-         continue;
-      if (p.inside(_obstacles.at(i).getLL(), _obstacles.at(i).getUR(), _spacing))
+      if (p.inside(obstacles.at(i).getLL(), obstacles.at(i).getUR(), _spacing))
          return false;
    }
   return true;
@@ -75,14 +74,121 @@ bool CircuitMgr::valid(Line& l)
 int CircuitMgr::cost()
 {
    int c=0;
-   for (int i=0; i<_lines.size(); ++i)
-      c+=_lines.at(i).length();
+   for (int layer=1; layer<_lines.size(); ++layer)
+   {
+      for (int i=0; i<_lines.at(layer).size(); ++i)
+         c+=_lines.at(layer).at(i).length();
+   }
+   
    for (int i=0; i<_vias.size(); ++i)
    {
       if (!_vias.at(i).given())
          c+=_viaCost;
    }
    return c;
+}
+
+
+bool compareByX(Shape& s1, Shape& s2)
+{
+   return s1.getLL().x()<s2.getLL().x();
+}
+
+bool compareByY(Shape& s1, Shape& s2)
+{
+   return s1.getUR().y()>s2.getUR().y();
+}
+
+Graph* CircuitMgr::buildGraph(int layer)
+{
+   Graph* g=new Graph;
+   vector<Shape>& shapes = _shapes.at(layer);
+   sort(shapes.begin(), shapes.end(), compareByX);
+   for (int i=0; i<shapes.size()-1; ++i)
+   {
+      for (int j=i+1; j<shapes.size(); ++j)
+      {
+         if (shapes.at(i).overlapX(shapes.at(j)))
+         {
+            int d=dist(shapes.at(i),shapes.at(j),true);
+            if (d>=0)
+               g->addEdge(&(shapes.at(i)),&(shapes.at(j)),d);
+         }
+         else
+            break;
+      }
+   }
+   sort(shapes.begin(), shapes.end(), compareByY);
+   for (int i=0; i<shapes.size()-1; ++i)
+   {
+      for (int j=i+1; j<shapes.size(); ++j)
+      {
+         if (shapes.at(i).overlapY(shapes.at(j)))
+         {
+            int d=dist(shapes.at(i),shapes.at(j),false);
+            if (d>=0)
+               g->addEdge(&(shapes.at(i)),&(shapes.at(j)),d);
+         }
+         else
+            break;
+      }
+   }
+   return g;
+}
+
+int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
+{
+   vector<Obstacle>& obstacles = _obstacles.at(s1.layer());
+   int x1,x2,y1,y2;
+   int d;
+   if (xType)
+   {
+      x1=s2.getLL().x();
+      x2=s1.getUR().x();
+      if (compareByY(s1,s2))
+      {
+         if (s1.overlapY(s2))
+            return 0;
+         y1=s2.getUR().y();
+         y2=s1.getLL().y();
+      }
+      else
+      {
+         if (s2.overlapY(s1))
+            return 0;
+         y1=s1.getUR().y();
+         y2=s2.getLL().y();
+      }
+      d=y2-y1;
+   }
+   else
+   {
+      y1=s1.getLL().y();
+      y2=s2.getUR().y();
+      if (compareByX(s1,s2))
+      {
+         if (s1.overlapX(s2))
+            return 0;
+         x1=s1.getUR().x();
+         x2=s2.getLL().x();
+      }
+      else
+      {
+         if (s2.overlapX(s1))
+            return 0;
+         x1=s2.getUR().x();
+         x2=s1.getLL().x();
+      }
+      d=x2-x1;
+   }
+   Point ll(x1,y1);
+   Point ur(x2,y2);
+   for (int i=0; i<obstacles.size(); ++i)
+   {
+      if (obstacles.at(i).inside(ll,ur,xType,_spacing))
+         return -1;
+   }
+   return d;
 }
 
 /********************Shape*********************/
@@ -103,16 +209,6 @@ bool Shape::connected(Line l)
 bool Shape::connected(Point p)
 {
    return p.inside(_LL, _UR);
-}
-
-bool Shape::compareByX(const Shape& s1, const Shape& s2)
-{
-   return s1._LL.x()<s2._LL.x();
-}
-
-bool Shape::compareByY(const Shape& s1, const Shape& s2)
-{
-   return s1._UR.y()>s2._UR.y();
 }
 
 bool Shape::overlapX(const Shape& s)
@@ -181,12 +277,12 @@ Obstacle::Obstacle(int x1, int y1, int x2, int y2, int layer)
    _layer=layer;
 }
 
-bool inside(Point& ll, Point& ur, bool xType, int& spacing)
+bool Obstacle::inside(Point& ll, Point& ur, bool xType, int& spacing)
 {
    if (xType)
-      return (_LL.x()<ll.x()+spacing && _UR.x()>ur.x()-spacing && _UR.y()<=ur.y() && _LL.y()>=ll.y())
+      return (_LL.x()<ll.x()+spacing && _UR.x()>ur.x()-spacing && _UR.y()<=ur.y() && _LL.y()>=ll.y());
    else
-      return (_LL.y()<ll.y()+spacing && _UR.y()>ur.y()-spacing && _UR.x()<=ur.x() && _LL.x()>=ll.x())
+      return (_LL.y()<ll.y()+spacing && _UR.y()>ur.y()-spacing && _UR.x()<=ur.x() && _LL.x()>=ll.x());
 }
 
 /********************Point*********************/

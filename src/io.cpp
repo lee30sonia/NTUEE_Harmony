@@ -74,10 +74,13 @@ void CircuitMgr::writeOutput(char* filename)
    fstream fout;
    fout.open(filename, ios::out);
    
-   for(unsigned i=0; i<_lines.size(); i++) {
-      fout << (_lines[i].vertical()? "V": "H") << "-line M" << _lines[i].layer() << " " 
-           << _lines[i].startpoint().str() << " " << _lines[i].endpoint().str() << endl;
+   for(unsigned layer=1; layer<_lines.size(); ++layer){
+      for(unsigned i=0; i<_lines.at(layer).size(); i++) {
+         fout << (_lines[layer][i].vertical()? "V": "H") << "-line M" << layer << " "
+         << _lines[layer][i].startpoint().str() << " " << _lines[layer][i].endpoint().str() << endl;
+      }
    }
+   
    for(unsigned i=0; i<_vias.size(); i++) {
       if(_vias[i].given())   continue;
       fout << "Via V" << _vias[i].layer() << " " << _vias[i].pos().str() << endl;

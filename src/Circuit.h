@@ -10,6 +10,7 @@
 #include <string>
 #include <stdlib.h>
 #include <cmath>
+#include "Graph.h"
 
 using namespace std;
 
@@ -33,10 +34,10 @@ public:
    int x() const { return _x; }
    int y() const { return _y; }
    string str();
-   int distX(const Point& p) { return abs(_x-p.x()); }
-   int distY(const Point& p) { return abs(_y-p.y()); }
-   int distXY(const Point& p) { return distX(p)+distY(p); }
-   int& level(const int& layer) { return _map[layer][_x][_y]; }
+   int disX(const Point& p) { return abs(_x-p.x()); }
+   int disY(const Point& p) { return abs(_y-p.y()); }
+   int disXY(const Point& p) { return disX(p)+disY(p); }
+   //int& level(const int& layer) { return _map[layer][_x][_y]; }
    
    bool inside(Point LL, Point UR, int spacing=0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
 
@@ -69,8 +70,8 @@ public:
    bool connected(Point p); //return true if the point is inside the shape, assume the same layer
    
    //compare methods
-   bool compareByX(const Shape& s1, const Shape& s2); //s1 lefter than s2
-   bool compareByY(const Shape& s1, const Shape& s2); //s1 upper than s2
+   /*bool compareByX(const Shape& s1, const Shape& s2); //s1 lefter than s2
+   bool compareByY(const Shape& s1, const Shape& s2); //s1 upper than s2 */
    bool overlapX(const Shape& s); //known: s is more right than this
    bool overlapY(const Shape& s); //known: s is lower than this
    
@@ -176,7 +177,7 @@ public:
    //Graph.cpp
    Graph* buildGraph(int layer); //build graph for a selected layer
    int dist(Shape& s1, Shape& s2, bool xType); //for buildGraph. return -1 if there is obstacle between them
-   void mst(Graph*); //solve minimum spanning tree(return type?)
+   void mst(Graph*) { } //solve minimum spanning tree(return type?)
    
 private:
    int _viaCost;

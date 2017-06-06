@@ -11,6 +11,7 @@
 using namespace std;
 
 class Node;
+class Obj;
 /*class DSet;
 
 class DSetObj
@@ -54,7 +55,7 @@ class Node
 public:
    Node(Obj* obj): _obj(obj) { }
    void addEdge(Edge *e) { _edges.push_back(e); }
-   bool operator==(const Obj* o) { return _obj==o; }
+   //bool operator==(const Obj* o) { return _obj==o; }
    //void addEdge(Node *n);
    //Edge* getEdgeByNeighbor(Node*);
    
@@ -66,7 +67,7 @@ class Graph
 {
    
 public:
-   Graph();
+   Graph() { }
    ~Graph();
    
    void addEdge(Node* n1, Node* n2, int& weight); //n1 n2 already in graph
