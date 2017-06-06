@@ -29,8 +29,8 @@ public:
    Point(){ }
    Point(int x, int y);
 
-   int const x() { return _x; }
-   int const y() { return _y; }
+   int x() const { return _x; }
+   int y() const { return _y; }
    string str();
    int distX(const Point& p) { return abs(_x-p.x()); }
    int distY(const Point& p) { return abs(_y-p.y()); }
