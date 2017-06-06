@@ -26,8 +26,8 @@ public:
    Point(){ }
    Point(int x, int y);
 
-   int x() { return _x; }
-   int y() { return _y; }
+   int const x() { return _x; }
+   int const y() { return _y; }
    string str();
    
    bool inside(Point LL, Point UR, int spacing=0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
