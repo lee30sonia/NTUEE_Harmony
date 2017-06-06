@@ -10,7 +10,7 @@ LIBFLAGS	:= -ltm_usage -Llib
 # optimised version
 all	: ../bin/net_open_finder
 	@echo -n""
-../bin/net_open_finder	: main.o greedy.o graph.o circuit.o io.o ../lib/libtm_usage.a
+../bin/net_open_finder	: main.o greedy.o graph.o path.o circuit.o io.o ../lib/libtm_usage.a
 	$(CXX) $^ -o $@
 
 main.o		: main.cpp Circuit.h ../lib/tm_usage.h
@@ -19,10 +19,13 @@ main.o		: main.cpp Circuit.h ../lib/tm_usage.h
 greedy.o	: greedy.cpp Circuit.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
-circuit.o	: Circuit.cpp Circuit.h
+circuit.o	: Circuit.cpp Circuit.h Graph.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
-graph.o	: Graph.cpp Graph.h
+graph.o	: Graph.cpp Graph.h Circuit.h
+	$(CXX) $(CPPFLAGS) -c $< -o $@
+
+path.o	: path.cpp Circuit.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 io.o		: io.cpp Circuit.h

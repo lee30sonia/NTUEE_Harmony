@@ -1,6 +1,7 @@
 #include <vector>
 #include <queue>
 #include <climits>
+#include "Circuit.h"
 
 bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
    int current = -1, dis2t, level;
