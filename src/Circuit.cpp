@@ -4,6 +4,7 @@
 ****************************************************************************/
 
 #include "Circuit.h"
+#include "Graph.h"
 #include <iostream>
 #include <cmath>
 #include <sstream>
@@ -101,6 +102,21 @@ bool Shape::connected(Line l)
 bool Shape::connected(Point p)
 {
    return p.inside(_LL, _UR);
+}
+
+bool Shape::compareByX(const Shape& s1, const Shape& s2)
+{
+    return s1._LL.x()<s2._LL.x();
+}
+
+bool Shape::compareByY(const Shape& s1, const Shape& s2)
+{
+    return s1._UR.y()>s2._UR.y();
+}
+
+bool Shape::overlapX(const Shape& s)
+{
+    return s._LL.x()<=_UR.x();
 }
 
 /********************Line*********************/

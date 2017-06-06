@@ -14,6 +14,7 @@ class Shape;
 class Via;
 class Obstacle;
 class Line;
+class Graph;
 
 enum Type{
    empty, shape, via, obstacle, line
@@ -29,7 +30,7 @@ public:
    int y() { return _y; }
    string str();
    
-   bool inside(Point LL, Point UR, int spacing=0); //wheter this point is inside the rectangle given by LL and UR or its margin of width "spacing"
+   bool inside(Point LL, Point UR, int spacing=0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
 
    //for line iteration
    void move(bool vertical); //increase y by 1 if vertical, x otherwise
@@ -56,6 +57,11 @@ public:
 
    bool connected(Line l); //whether the line is connected to the shape
    bool connected(Point p); //return true if the point is inside the shape, assume the same layer
+   
+   //compare methods
+   bool compareByX(const Shape& s1, const Shape& s2);
+   bool compareByY(const Shape& s1, const Shape& s2);
+   bool overlapX(const Shape& s);
    
 private:
    Point _LL; //lower left corner
@@ -152,7 +158,12 @@ public:
    bool valid(Point& p, int layer); //return false if not in boundary or inside an obstacle
    bool valid(Line& l); //return false if (part of the line) not in boundary or inside an obstacle
    ////calculation methods
-   int cost(); //return total cost of lines and vias
+   int  cost(); //return total cost of lines and vias
+   vector<Shape>* getShapesByLayer(int layer); //return all the shapes in a given layer
+   
+   //Graph.cpp
+   Graph* buildGraph(int layer); //build graph for a selected layer
+   void mst(Graph*); //solve minimum spanning tree(return type?)
    
 private:
    int _viaCost;

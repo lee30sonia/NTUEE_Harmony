@@ -3,6 +3,7 @@
   Synopsis     [ main program ]
 ****************************************************************************/
 #include "Circuit.h"
+#include "Graph.h"
 #include "../lib/tm_usage.h"
 #include <iostream>
 
