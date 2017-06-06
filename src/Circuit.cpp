@@ -54,6 +54,7 @@ bool CircuitMgr::valid(Point& p, int layer)
       if (p.inside(_obstacles.at(i).getLL(), _obstacles.at(i).getUR(), _spacing))
          return false;
    }
+  return true;
 }
 
 bool CircuitMgr::valid(Line& l)
