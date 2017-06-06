@@ -54,4 +54,4 @@ tm_usage.o: ../lib/tm_usage.cpp ../lib/tm_usage.h
 
 
 clean	:
-	rm -rf *.o ../lib/*.a ../lib/*.o ../bin/*
+	rm -rf *.o ../lib/*.a ../lib/*.o ../bin/net_open_finder
