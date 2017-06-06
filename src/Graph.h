@@ -54,7 +54,7 @@ class Node
 public:
    Node(Obj* obj): _obj(obj) { }
    void addEdge(Edge *e) { _edges.push_back(e); }
-   bool operator==(const& Obj* o) { return _obj==o; }
+   bool operator==(const Obj* o) { return _obj==o; }
    //void addEdge(Node *n);
    //Edge* getEdgeByNeighbor(Node*);
    
