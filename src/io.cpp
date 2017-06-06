@@ -58,7 +58,7 @@ bool CircuitMgr::readCircuit(char* filename)
       fin.ignore(2);    fin >> x1;  fin.ignore();  fin >> y1;
       fin.ignore(3);    fin >> x2;  fin.ignore();  fin >> y2;
       fin.ignore(2);
-      Obstacle(x1, y1, x2, y2, layer);
+      addObstacle(x1, y1, x2, y2, layer);
    }
    if(obstacles != _obstacles.size()) {
       cout << "Error: input RoutedShapes format error!" << endl;
