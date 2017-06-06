@@ -15,7 +15,7 @@ using namespace std;
 void CircuitMgr::addShape(int x1, int y1, int x2, int y2, int layer)
 {
    Shape s(x1, y1, x2, y2, layer);
-   _shapes.push_back(s);
+   _shapes.at(layer).push_back(s);
 }
 
 bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
@@ -23,7 +23,7 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
    Line l(x1, y1, x2, y2, layer);
    if (!valid(l))
       return false;
-   _lines.push_back(l);
+   _lines.at(layer).push_back(l);
    return true;
 }
 
@@ -33,14 +33,14 @@ bool CircuitMgr::addVia(int x, int y, int layer, bool given)
    if (!valid(p, layer))
       return false;
    Via v(x, y, layer, given);
-   _vias.push_back(v);
+   _vias.at(layer).push_back(v);
    return true;
 }
 
 void CircuitMgr::addObstacle(int x1, int y1, int x2, int y2, int layer)
 {
    Obstacle o(x1, y1, x2, y2, layer);
-   _obstacles.push_back(o);
+   _obstacles.at(layer).push_back(o);
 }
 
 bool CircuitMgr::valid(Point& p, int layer)
