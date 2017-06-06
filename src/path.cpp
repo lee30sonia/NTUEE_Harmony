@@ -9,7 +9,7 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
    int current = -1, dis2t, level;
    bool reach = false;
    Point p;
-   level(s,layer) = 0;
+   setLevel(s,layer,0);
    (_Q[0]).push(s);
 
    while(!reach) {
@@ -33,12 +33,12 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
 void CircuitMgr::init4short(int layer) {
    if(!_levelMap[layer])   _levelMap[layer] = new int*[_LL.disX(_UR)];
    if(!_dirMap[layer])     _dirMap[layer] = new char[_LL.disX(_UR)];
-   for(int i=0; i<_LL.disX(_UR)]; i++) {
+   for(int i=0; i<_LL.disX(_UR); i++) {
       _levelMap[layer][i] = new int[_LL.disY(_UR)];
       _dirMap[layer][i] = new int[_LL.disY(_UR)];
    }
-   for(int i=0; i<_LL.disX(_UR)]; i++)
-      for(int j=0; j<_LL.disY(_UR)]; j++) {
+   for(int i=0; i<_LL.disX(_UR); i++)
+      for(int j=0; j<_LL.disY(_UR); j++) {
          _levelMap[layer][i][j] = -1;
          _dirMap[layer][i][j] = 0;
       }
@@ -70,3 +70,4 @@ bool CircuitMgr::check4short(Point p, const Point& t, const int& layer, const ch
    _Q[level2].push(p);
    return false;
 }
+

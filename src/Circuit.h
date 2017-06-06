@@ -187,6 +187,7 @@ public:
       const int& dis2t, const int& level);
    int& level(const Point& p, const int& layer) { return _levelMap[layer][p.x()][p.y()]; }
    char& dir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
+   void setLevel(const Point& p, const int& layer, int level) { _levelMap[layer][p.x()][p.y()]= level; }
 
 private:
    int _viaCost;
