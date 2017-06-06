@@ -8,6 +8,8 @@
 
 #include <vector>
 #include <string>
+#include <math>
+
 using namespace std;
 
 class Shape;
@@ -15,6 +17,7 @@ class Via;
 class Obstacle;
 class Line;
 class Graph;
+class CircuitMgr;
 
 enum Type{
    empty, shape, via, obstacle, line
@@ -29,6 +32,9 @@ public:
    int const x() { return _x; }
    int const y() { return _y; }
    string str();
+   int distX(const Point& p) { return abs(_x-p.x()); }
+   int distY(const Point& p) { return abs(_y-p.y()); }
+   int distXY(const Point& p) { return distX(p)+distY(p); }
    
    bool inside(Point LL, Point UR, int spacing=0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
 
@@ -53,21 +59,24 @@ public:
    Shape(int x1, int y1, int x2, int y2, int layer);
 
    Type type() { return shape; }
+   Point& getLL() { return _LL; }
+   Point& getUR() { return _UR; }
    int layer() { return _layer; }
 
    bool connected(Line l); //whether the line is connected to the shape
    bool connected(Point p); //return true if the point is inside the shape, assume the same layer
    
    //compare methods
-   bool compareByX(const Shape& s1, const Shape& s2);
-   bool compareByY(const Shape& s1, const Shape& s2);
-   bool overlapX(const Shape& s);
+   bool compareByX(const Shape& s1, const Shape& s2); //s1 lefter than s2
+   bool compareByY(const Shape& s1, const Shape& s2); //s1 upper than s2
+   bool overlapX(const Shape& s); //known: s is more right than this
+   bool overlapY(const Shape& s); //known: s is lower than this
    
 private:
    Point _LL; //lower left corner
    Point _UR; //upper right corner
    int _layer; //at which layer
-   int _set; //belongs to which set
+   //int _set; //belongs to which set
 };
 
 class Via :public Obj
@@ -96,7 +105,9 @@ public:
    Point& getLL() { return _LL; }
    Point& getUR() { return _UR; }
    int layer() { return _layer; }
-
+   
+   bool inside(Point& ll, Point& ur, bool xType, int& spacing); //for buildGraph
+   
 private:
    Point _LL; //lower left corner
    Point _UR; //upper right corner
@@ -159,10 +170,10 @@ public:
    bool valid(Line& l); //return false if (part of the line) not in boundary or inside an obstacle
    ////calculation methods
    int  cost(); //return total cost of lines and vias
-   vector<Shape>* getShapesByLayer(int layer); //return all the shapes in a given layer
    
    //Graph.cpp
    Graph* buildGraph(int layer); //build graph for a selected layer
+   int dist(Shape& s1, Shape& s2, bool xType); //for buildGraph. return -1 if there is obstacle between them
    void mst(Graph*); //solve minimum spanning tree(return type?)
    
 private:
@@ -172,9 +183,10 @@ private:
    Point _UR; //upper right corner
    int _layernum; //how many layers
 
-   vector<Shape> _shapes;
-   vector<Line> _lines;
+   //can get by _xxx.at(layer), .at(0) is empty
+   vector< vector<Shape> > _shapes;
+   vector< vector<Line> > _lines;
    vector<Via> _vias;
-   vector<Obstacle> _obstacles;
+   vector< vector<Obstacle> > _obstacles;
 };
 #endif

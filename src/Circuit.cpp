@@ -107,17 +107,22 @@ bool Shape::connected(Point p)
 
 bool Shape::compareByX(const Shape& s1, const Shape& s2)
 {
-    return s1._LL.x()<s2._LL.x();
+   return s1._LL.x()<s2._LL.x();
 }
 
 bool Shape::compareByY(const Shape& s1, const Shape& s2)
 {
-    return s1._UR.y()>s2._UR.y();
+   return s1._UR.y()>s2._UR.y();
 }
 
 bool Shape::overlapX(const Shape& s)
 {
-    return s._LL.x()<=_UR.x();
+   return (s._LL.x()<=_UR.x());
+}
+
+bool Shape::overlapY(const Shape& s)
+{
+   return s._UR.y()>=_LL.y();
 }
 
 /********************Line*********************/
@@ -174,6 +179,14 @@ Obstacle::Obstacle(int x1, int y1, int x2, int y2, int layer)
    _LL=Point(x1,y1);
    _UR=Point(x2,y2);
    _layer=layer;
+}
+
+bool inside(Point& ll, Point& ur, bool xType, int& spacing)
+{
+   if (xType)
+      return (_LL.x()<ll.x()+spacing && _UR.x()>ur.x()-spacing && _UR.y()<=ur.y() && _LL.y()>=ll.y())
+   else
+      return (_LL.y()<ll.y()+spacing && _UR.y()>ur.y()-spacing && _UR.x()<=ur.x() && _LL.x()>=ll.x())
 }
 
 /********************Point*********************/
