@@ -21,6 +21,7 @@ void CircuitMgr::addShape(int x1, int y1, int x2, int y2, int layer)
 
 bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
 {
+   if(x1==x2 || y1==y2) return false;
    Line l(x1, y1, x2, y2, layer);
    if (!valid(l))
       return false;

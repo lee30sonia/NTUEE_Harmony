@@ -182,7 +182,7 @@ public:
    void mst(Graph*) { } //solve minimum spanning tree(return type?)
    
    // path.cpp
-   bool shortestPath(Point s, Point t, int layer);
+   bool shortestPath(const Point s, const Point t, const int layer);
    void init4short(int layer);
    bool check4short(const Point& p, const Point& t, const int& layer, const char& dir,
       const int& dis2t, const int& level);

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vector>
 #include <queue>
 #include <climits>
@@ -5,11 +6,12 @@
 
 using namespace std;
 
-bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
+bool CircuitMgr::shortestPath(const Point s, const Point t, const int layer) {
    int current = -1, dis2t, level;
    bool reach = false;
    Point p;
    setLevel(s,layer,0);
+   setDir(s, layer, 's');
    (_Q[0]).push(s);
 
    // update all the needed level
@@ -34,8 +36,18 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
    }
 
    // collect the path
-   p = t;
-   
+   Point start = p = t;
+   char lastDir = getDir(t, layer);
+   while(p != s) {
+      if(!p.move(lastDir)) {
+         cout << "Connection Error!" << endl;
+         break;
+      }
+      if(getDir(p, layer) != lastDir) {
+         addLine(start.x(), start.y(), p.x(), p.y(), layer);
+         lastDir = getDir(p, layer);
+      }
+   }
 }
 
 void CircuitMgr::init4short(int layer) {
