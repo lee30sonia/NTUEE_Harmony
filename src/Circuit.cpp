@@ -6,6 +6,7 @@
 #include "Circuit.h"
 #include "Graph.h"
 #include <iostream>
+#include <algorithm>
 #include <cmath>
 #include <sstream>
 
@@ -319,12 +320,12 @@ bool Point::inside(Point LL, Point UR, int spacing)
    }
 }
 
-void Point::move(bool vertical)
+void Point::move(bool vertical, int dis)
 {
    if (vertical)
-      ++_y;
+      _y+=dis;
    else
-      ++_x;
+      _x+=dis;
 }
 
 bool Point::operator!=(const Point& p)

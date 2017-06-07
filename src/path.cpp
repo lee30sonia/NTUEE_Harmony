@@ -12,6 +12,7 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
    setLevel(s,layer,0);
    (_Q[0]).push(s);
 
+   // update all the needed level
    while(!reach) {
       current++;
       _Q.push_back(queue<Point>());
@@ -20,19 +21,28 @@ bool CircuitMgr::shortestPath(Point s, Point t, int layer) {
          _Q[current].pop();
          dis2t = p.disXY(t);
          level = getLevel(p, layer);
-         reach = check4short(Point(p.x()-1,p.y()), t, layer, 'r', dis2t, level);
-         reach = check4short(Point(p.x()+1,p.y()), t, layer, 'l', dis2t, level);
-         reach = check4short(Point(p.x(),p.y()-1), t, layer, 'u', dis2t, level);
-         reach = check4short(Point(p.x(),p.y()+1), t, layer, 'd', dis2t, level);
+         p.move(false, -1);
+         reach = check4short(p, t, layer, 'r', dis2t, level);
+         p.move(false, 2);
+         reach = check4short(p, t, layer, 'l', dis2t, level);
+         p.move(false, -1);
+         p.move(true, -1);
+         reach = check4short(p, t, layer, 'u', dis2t, level);
+         p.move(true, 2);
+         reach = check4short(p, t, layer, 'd', dis2t, level);
       }
    }
 
-   // not yet done
+   // collect the path
+   p = t;
+   
 }
 
 void CircuitMgr::init4short(int layer) {
+   // the map of each level is no built until needed
    if(!_levelMap[layer])   _levelMap[layer] = new int*[_LL.disX(_UR)];
    if(!_dirMap[layer])     _dirMap[layer] = new char*[_LL.disX(_UR)];
+   // initiate all the level cell to -1, all the dir to 0
    for(int i=0; i<_LL.disX(_UR); i++) {
       _levelMap[layer][i] = new int[_LL.disY(_UR)];
       _dirMap[layer][i] = new char[_LL.disY(_UR)];
@@ -43,6 +53,7 @@ void CircuitMgr::init4short(int layer) {
          _dirMap[layer][i][j] = 0;
       }
 
+   // initiate obstables as INT_MAX 
    Obstacle* it;
    for(unsigned n=0; n<_obstacles[layer].size(); n++) {
       it = &_obstacles[layer][0];
@@ -51,11 +62,12 @@ void CircuitMgr::init4short(int layer) {
             _levelMap[layer][i][j] = INT_MAX;
    }
    
+   // initiate the queue vector
    _Q.clear();
    _Q.push_back(queue<Point>());
 }
 
-bool CircuitMgr::check4short(Point p, const Point& t, const int& layer, const char& dir,
+bool CircuitMgr::check4short(const Point& p, const Point& t, const int& layer, const char& dir,
       const int& dis2t, const int& level) {
    if(p.x()<0 || p.x()>(_LL.disX(_UR))) return false; 
    if(p.y()<0 || p.y()>(_LL.disY(_UR))) return false; 

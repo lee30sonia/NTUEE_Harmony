@@ -35,15 +35,16 @@ public:
    int x() const { return _x; }
    int y() const { return _y; }
    string str();
-   int disX(const Point& p) { return abs(_x-p.x()); }
-   int disY(const Point& p) { return abs(_y-p.y()); }
-   int disXY(const Point& p) { return disX(p)+disY(p); }
+   int disX(const Point& p) const { return abs(_x-p.x()); }
+   int disY(const Point& p) const { return abs(_y-p.y()); }
+   int disXY(const Point& p) const { return disX(p)+disY(p); }
    //int& level(const int& layer) { return _map[layer][_x][_y]; }
    
    bool inside(Point LL, Point UR, int spacing=0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
 
    //for line iteration
-   void move(bool vertical); //increase y by 1 if vertical, x otherwise
+   void move(bool vertical, int dis = 1); //increase y by dis if vertical, x otherwise
+   void move(char dir);    // u, d, l, r
    bool operator!=(const Point& p);
 
 private:
@@ -183,7 +184,7 @@ public:
    // path.cpp
    bool shortestPath(Point s, Point t, int layer);
    void init4short(int layer);
-   bool check4short(Point p, const Point& t, const int& layer, const char& dir,
+   bool check4short(const Point& p, const Point& t, const int& layer, const char& dir,
       const int& dis2t, const int& level);
    int& getLevel(const Point& p, const int& layer) { return _levelMap[layer][p.x()][p.y()]; }
    char& getDir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
