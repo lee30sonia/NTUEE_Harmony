@@ -44,7 +44,7 @@ public:
 
    //for line iteration
    void move(bool vertical, int dis = 1); //increase y by dis if vertical, x otherwise
-   void move(char dir);    // u, d, l, r
+   bool move(char dir);    // u, d, l, r
    bool operator!=(const Point& p);
 
 private:

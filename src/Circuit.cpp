@@ -328,6 +328,23 @@ void Point::move(bool vertical, int dis)
       _x+=dis;
 }
 
+bool Point::move(char dir)
+{
+   if(dir == 'u') {
+      _y++; return true;
+   }
+   if(dir == 'd') {
+      _y--; return true;
+   }
+   if(dir == 'r') {
+      _x++; return true;
+   }
+   if(dir == 'l') {
+      _x--; return true;
+   }
+   return false;
+}
+
 bool Point::operator!=(const Point& p)
 {
    return !(_x==p._x && _y==p._y);
