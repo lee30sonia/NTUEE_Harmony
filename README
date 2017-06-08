@@ -2,5 +2,36 @@ This program is to solve the finding open net problem.
 
 Author: §õÄìªå¡B©P©û¡B§d©y¤Z
 
-bin/: executable files
-lib/: time usage library
+bin/:
+   Executable files.
+lib/:
+   Time usage library.
+test/:
+   Test files
+src/:
+   Source codes. Including:
+
+   Circuit.h:
+      Define the classes for circuit objects and class CircuitMgr. The read-in circuit is store in CircuitMgr and most of the functions in this program are the member function of it.
+
+   Circuit.cpp:
+      Define the basis member functions of the classes. Also define the functions to build a graph by scanning the circuit on both dimension and looking for overlapped objects.
+
+   io.cpp:
+      Functions for read in the input file and write the output file.
+
+   Graph.h/cpp:
+      Define the classes for building a graph. The graph is to find trivial connections between object and to check for disjoined sets.
+
+   path.cpp:
+      Functions to apply Hadlock's algorithm to find a optimal path between between two given points.
+
+
+Unsolved problems:
+   * Minimum spanning tree for finding effective edges and add them as Lines.
+   * The seconding scanning for overlapping, looking for trivial connections between Shapes and the new built Lines.
+   * Collecting disjoint sets and find the best points pair to connect them.
+   * Way to find Vias.
+   * Simple test cases to verify logical correction.
+   * Class presentation and paper report.
+
