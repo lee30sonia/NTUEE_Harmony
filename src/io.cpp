@@ -10,7 +10,7 @@ using namespace std;
 
 bool CircuitMgr::readCircuit(char* filename)
 {
-   fstream fin("filename");
+   fstream fin(filename,fstream::in);
    if(!fin) {
       cout << "Error: can not open file " << filename << endl;
       return false;

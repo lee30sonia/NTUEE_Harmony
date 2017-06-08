@@ -35,10 +35,10 @@ greedy.o		: Greedy.cpp Circuit.h Graph.h
 #debug version
 dbg	: ../bin/net_open_finder_dbg
 	@echo -n""
-../bin/net_open_finder_dbg	: main_dbg.o graph_dbg.o path_dbg.o circuit_dbg.o io_dbg.o greedy_dbg.o ../lib
+../bin/net_open_finder_dbg	: main_dbg.o graph_dbg.o path_dbg.o circuit_dbg.o io_dbg.o greedy_dbg.o ../lib/libtm_usage.a
 	$(CXX) $^ -o $@ 
 
-main_dbg.o		: main.cpp Circuit.h
+main_dbg.o		: main.cpp Circuit.h ../lib/tm_usage.h
 	$(CXX) $(DBGFLAGS) $(LIBS) -c $< -o $@
 
 path_dbg.o	: path.cpp Circuit.h
@@ -66,4 +66,4 @@ tm_usage.o: ../lib/tm_usage.cpp ../lib/tm_usage.h
 
 
 clean	:
-	rm -rf *.o ../lib/*.a ../lib/*.o ../bin/net_open_finder
+	rm -rf *.o ../lib/*.a ../lib/*.o ../bin/net_open_finder ../bin/net_open_finder_dbg ../outputs/*
