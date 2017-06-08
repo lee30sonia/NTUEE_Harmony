@@ -10,7 +10,7 @@ LIBFLAGS	:= -ltm_usage -Llib
 # optimised version
 all	: ../bin/net_open_finder
 	@echo -n""
-../bin/net_open_finder	: main.o graph.o path.o circuit.o io.o ../lib/libtm_usage.a
+../bin/net_open_finder	: main.o graph.o path.o circuit.o io.o greedy.o ../lib/libtm_usage.a
 	$(CXX) $^ -o $@
 
 main.o		: main.cpp Circuit.h ../lib/tm_usage.h
@@ -27,12 +27,15 @@ path.o	: path.cpp Circuit.h
 
 io.o		: io.cpp Circuit.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
+	
+greedy.o		: Greedy.cpp Circuit.h Graph.h 
+	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 
 #debug version
 dbg	: ../bin/net_open_finder_dbg
 	@echo -n""
-../bin/net_open_finder_dbg	: main_dbg.o graph_dbg.o path_dbg.o circuit_dbg.o io_dbg.o ../lib
+../bin/net_open_finder_dbg	: main_dbg.o graph_dbg.o path_dbg.o circuit_dbg.o io_dbg.o greedy_dbg.o ../lib
 	$(CXX) $^ -o $@ 
 
 main_dbg.o		: main.cpp Circuit.h
@@ -48,6 +51,9 @@ graph_dbg.o	: Graph.cpp Graph.h
 	$(CXX) $(DBGFLAGS) -c $< -o $@
 
 io_dbg.o		: io.cpp Circuit.h
+	$(CXX) $(DBGFLAGS) -c $< -o $@
+	
+greedy_dbg.o		: Greedy.cpp Circuit.h Graph.h 
 	$(CXX) $(DBGFLAGS) -c $< -o $@
 
 #library
