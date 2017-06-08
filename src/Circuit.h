@@ -47,8 +47,6 @@ public:
    bool move(char dir);    // u, d, l, r
    bool operator!=(const Point& p);
 
-   // fro debugging
-   string print() const { return string('(' + _x + ',' + _y + ')'); }
 private:
    int _x;
    int _y;
