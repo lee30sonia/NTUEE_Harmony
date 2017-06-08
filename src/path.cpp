@@ -53,6 +53,7 @@ bool CircuitMgr::shortestPath(const Point s, const Point t, const int layer) {
          lastDir = getDir(p, layer);
       }
    }
+   return true; //?
 }
 
 void CircuitMgr::init4short(int layer) {

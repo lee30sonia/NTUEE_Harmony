@@ -31,7 +31,15 @@ bool CircuitMgr::readCircuit(char* filename)
    #ifdef _DEBUG_ON
    cout << "reading in data..." << endl;
    #endif
-
+   
+   for(int i=0; i<=_layernum; ++i){
+      vector<Shape> shapeVec;
+      vector<Line> lineVec;
+      vector<Obstacle> obstacleVec;
+      _shapes.push_back(shapeVec);
+      _lines.push_back(lineVec);
+      _obstacles.push_back(obstacleVec);
+   }
    for(int i=0; i<routedShapes; i++) {
       fin.ignore(13);   fin >> layer;
       fin.ignore(2);    fin >> x1;  fin.ignore();  fin >> y1;
@@ -39,10 +47,10 @@ bool CircuitMgr::readCircuit(char* filename)
       fin.ignore(2);
       addShape(x1, y1, x2, y2, layer);
    }
-   if(routedShapes != _shapes.size()) {
+   /*if(routedShapes != _shapes.size()) {
       cout << "Error: input RoutedShapes format error!" << endl;
       return false;
-   }
+   }*/
 
    for(int i=0; i<routedVias; i++) {
       fin.ignore(11);   fin >> layer;
@@ -63,10 +71,10 @@ bool CircuitMgr::readCircuit(char* filename)
       fin.ignore(2);
       addObstacle(x1, y1, x2, y2, layer);
    }
-   if(obstacles != _obstacles.size()) {
+   /*if(obstacles != _obstacles.size()) {
       cout << "Error: input RoutedShapes format error!" << endl;
       return false;
-   }
+   }*/
    
    fin.close();
    #ifdef _DEBUG_ON

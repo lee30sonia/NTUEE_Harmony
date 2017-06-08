@@ -19,12 +19,12 @@ int main(int argc, char* argv[])
    CircuitMgr ccMgr;
    tmusg.periodStart();
    ccMgr.readCircuit(argv[1]);
-   //ccMgr.greedy();
+   ccMgr.greedy();
 
    tmusg.getPeriodUsage(stat);
    cout << "Total CPU time: " << (stat.uTime + stat.sTime) / 1000.0 << "ms" << endl;
    cout << "memory: " << stat.vmPeak / 1024.0 << "MB" << endl;
-   //ccMgr.writeOutput(argv[2]);
+   ccMgr.writeOutput(argv[2]);
 
    return 0;
 }

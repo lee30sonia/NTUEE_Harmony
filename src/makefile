@@ -2,7 +2,7 @@ AR			:= ar
 ARFLAGS		:= rcv
 CXX			:= g++
 CPPFLAGS	:= -O2
-DBGFLAGS	:= -g -D_DEBUG_ON_
+DBGFLAGS	:= -g -D _DEBUG_ON
 LIBS		:= -Ilib
 LIBFLAGS	:= -ltm_usage -Llib
 

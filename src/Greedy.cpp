@@ -10,7 +10,7 @@ using namespace std;
 
 void CircuitMgr::greedy()
 {
-   for (int layer=0; layer<_layernum; ++layer)
+   for (int layer=1; layer<=_layernum; ++layer)
    {
       Graph* g = buildGraph(layer);
       mst(g);

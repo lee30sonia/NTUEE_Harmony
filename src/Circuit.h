@@ -34,7 +34,7 @@ public:
 
    int x() const { return _x; }
    int y() const { return _y; }
-   string str();
+   string str() const;
    int disX(const Point& p) const { return abs(_x-p.x()); }
    int disY(const Point& p) const { return abs(_y-p.y()); }
    int disXY(const Point& p) const { return disX(p)+disY(p); }

@@ -6,7 +6,6 @@
 #include "Circuit.h"
 #include "Graph.h"
 #include <iostream>
-#include <algorithm>
 #include <cmath>
 #include <sstream>
 
@@ -28,7 +27,7 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
    _lines.at(layer).push_back(l);
 
    #ifdef _DEBUG_ON
-   cout << "Line" << l.startpoint.print() << l.endpoint.print() 
+   cout << "Line" << l.startpoint().str() << l.endpoint().str()
       << "on layer" << layer << " added." << endl;
    #endif
 
@@ -94,109 +93,6 @@ int CircuitMgr::cost()
          c+=_viaCost;
    }
    return c;
-}
-
-
-bool compareByX(Shape& s1, Shape& s2)
-{
-   return s1.getLL().x()<s2.getLL().x();
-}
-
-bool compareByY(Shape& s1, Shape& s2)
-{
-   return s1.getUR().y()>s2.getUR().y();
-}
-
-Graph* CircuitMgr::buildGraph(int layer)
-{
-   Graph* g=new Graph;
-   vector<Shape>& shapes = _shapes.at(layer);
-   sort(shapes.begin(), shapes.end(), compareByX);
-   for (int i=0; i<shapes.size()-1; ++i)
-   {
-      for (int j=i+1; j<shapes.size(); ++j)
-      {
-         if (shapes.at(i).overlapX(shapes.at(j)))
-         {
-            int d=dist(shapes.at(i),shapes.at(j),true);
-            if (d>=0)
-               g->addEdge(&(shapes.at(i)),&(shapes.at(j)),d);
-         }
-         else
-            break;
-      }
-   }
-   sort(shapes.begin(), shapes.end(), compareByY);
-   for (int i=0; i<shapes.size()-1; ++i)
-   {
-      for (int j=i+1; j<shapes.size(); ++j)
-      {
-         if (shapes.at(i).overlapY(shapes.at(j)))
-         {
-            int d=dist(shapes.at(i),shapes.at(j),false);
-            if (d>=0)
-               g->addEdge(&(shapes.at(i)),&(shapes.at(j)),d);
-         }
-         else
-            break;
-      }
-   }
-   return g;
-}
-
-int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
-{
-   vector<Obstacle>& obstacles = _obstacles.at(s1.layer());
-   int x1,x2,y1,y2;
-   int d;
-   if (xType)
-   {
-      x1=s2.getLL().x();
-      x2=s1.getUR().x();
-      if (compareByY(s1,s2))
-      {
-         if (s1.overlapY(s2))
-            return 0;
-         y1=s2.getUR().y();
-         y2=s1.getLL().y();
-      }
-      else
-      {
-         if (s2.overlapY(s1))
-            return 0;
-         y1=s1.getUR().y();
-         y2=s2.getLL().y();
-      }
-      d=y2-y1;
-   }
-   else
-   {
-      y1=s1.getLL().y();
-      y2=s2.getUR().y();
-      if (compareByX(s1,s2))
-      {
-         if (s1.overlapX(s2))
-            return 0;
-         x1=s1.getUR().x();
-         x2=s2.getLL().x();
-      }
-      else
-      {
-         if (s2.overlapX(s1))
-            return 0;
-         x1=s2.getUR().x();
-         x2=s1.getLL().x();
-      }
-      d=x2-x1;
-   }
-   Point ll(x1,y1);
-   Point ur(x2,y2);
-   for (int i=0; i<obstacles.size(); ++i)
-   {
-      if (obstacles.at(i).inside(ll,ur,xType,_spacing))
-         return -1;
-   }
-   return d;
 }
 
 /********************Shape*********************/
@@ -300,7 +196,7 @@ Point::Point(int x, int y)
    _y=y;
 }
 
-string Point::str()
+string Point::str() const
 {
    stringstream ss;
    ss << "(" << _x << "," << _y << ")";
