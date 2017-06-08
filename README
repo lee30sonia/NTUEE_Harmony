@@ -1,17 +1,6 @@
-5/9
-目前分工：
-周昀 parser (io.cpp)
-瓖芸 data structure (Circuit.h Circuit.cpp)
-宜凡 greedy (Greedy.cpp)
-// 有空的人可以弄一下Makefile和main.cpp
+This program is to solve the finding open net problem.
 
+Author: 李瓖芸、周昀、吳宜凡
 
-
-// I just put the problem that I encoutered here.
-
-1. Can we change the _LL and _UR of the boundary to something different than the ones for the shapes,
-   so it's easier to distinguish?
-2. We need default value for class Point or a constructor for class CircuitMgr,
-   otherwise the _LL and _UR will fail.
-3. Is the _layernum for metalLayers only or M+V? (I use M first.)
-4. Are we not using inheritance and polimorphism? XDD
+bin/: executable files
+lib/: time usage library
