@@ -9,7 +9,7 @@ using namespace std;
 bool CircuitMgr::shortestPath(const Point s, const Point t, const int layer) {
 
    #ifdef _DEBUG_ON
-   cout << "Finding shortest path between " << s.print() << "and " << t.print() << endl;
+   cout << "Finding shortest path between " << s.str() << "and " << t.str() << endl;
    #endif
 
    int current = -1, dis2t, level;
