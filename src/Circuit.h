@@ -199,10 +199,10 @@ private:
    int _layernum; //how many layers
 
    //can get by _xxx.at(layer), .at(0) is empty
-   vector< vector<Shape> > _shapes;
-   vector< vector<Line> > _lines;
-   vector<Via> _vias;
-   vector< vector<Obstacle> > _obstacles;
+   vector< vector<Shape*> > _shapes;
+   vector< vector<Line*> > _lines;
+   vector<Via*> _vias;
+   vector< vector<Obstacle*> > _obstacles;
 
    // these are for function shortestPath
    int***                     _levelMap;

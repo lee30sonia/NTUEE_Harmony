@@ -35,7 +35,7 @@ void Graph::addEdge(Node* n1, Node* n2, int& weight)
    Edge* e = new Edge(n1,n2,weight);
    _edges.push_back(e);
    #ifdef _DEBUG_ON
-   cout<<"Graph: add edge from node "<<n1<<" to node "<<n2<<endl;
+   cout<<"Graph: add edge from node "<<n1->_id<<" to node "<<n2->_id<<" with weight "<<weight<<endl;
    #endif
 }
 void Graph::addEdge(Obj* o1, Obj* o2, int& weight)
@@ -51,11 +51,17 @@ void Graph::addEdge(Obj* o1, Obj* o2, int& weight)
    if (!n1)
    {
       n1=new Node(o1);
+      #ifdef _DEBUG_ON
+      n1->setId(_nodes.size());
+      #endif
       _nodes.push_back(n1);
    }
    if (!n2)
    {
       n2=new Node(o2);
+      #ifdef _DEBUG_ON
+      n2->setId(_nodes.size());
+      #endif
       _nodes.push_back(n2);
    }
    addEdge(n1,n2,weight);
@@ -76,8 +82,16 @@ bool compareByY(Shape& s1, Shape& s2)
 
 Graph* CircuitMgr::buildGraph(int layer)
 {
-   Graph* g=new Graph;
    vector<Shape>& shapes = _shapes.at(layer);
+   if (shapes.size()==0)
+   {
+      #ifdef _DEBUG_ON
+      cout<<"Graph of layer "<<layer<<" does not build because no shape is in the layer."<<endl;
+      #endif
+      return 0;
+   }
+   
+   Graph* g=new Graph;
    sort(shapes.begin(), shapes.end(), compareByX);
    for (int i=0; i<shapes.size()-1; ++i)
    {
@@ -87,7 +101,7 @@ Graph* CircuitMgr::buildGraph(int layer)
          {
             int d=dist(shapes.at(i),shapes.at(j),true);
             if (d>=0)
-               g->addEdge(&(shapes.at(i)),&(shapes.at(j)),d);
+               g->addEdge(shapes.at(i),shapes.at(j),d);
          }
          else
             break;
@@ -102,12 +116,15 @@ Graph* CircuitMgr::buildGraph(int layer)
          {
             int d=dist(shapes.at(i),shapes.at(j),false);
             if (d>=0)
-               g->addEdge(&(shapes.at(i)),&(shapes.at(j)),d);
+               g->addEdge(shapes.at(i),shapes.at(j),d);
          }
          else
             break;
       }
    }
+   #ifdef _DEBUG_ON
+   cout<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
+   #endif
    return g;
 }
 
@@ -119,7 +136,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
    if (xType)
    {
       x1=s2.getLL().x();
-      x2=s1.getUR().x();
+      x2=(s1.getUR().x()<s2.getUR().x())?s1.getUR().x():s2.getUR().x();
       if (compareByY(s1,s2))
       {
          if (s1.overlapY(s2))
@@ -138,7 +155,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
    }
    else
    {
-      y1=s1.getLL().y();
+      y1=(s1.getLL().y()>s2.getLL().y())?s1.getLL().y():s2.getLL().y();
       y2=s2.getUR().y();
       if (compareByX(s1,s2))
       {
@@ -158,6 +175,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
    }
    Point ll(x1,y1);
    Point ur(x2,y2);
+   cout<<ll.str()<<" "<<ur.str()<<endl;
    for (int i=0; i<obstacles.size(); ++i)
    {
       if (obstacles.at(i).inside(ll,ur,xType,_spacing))

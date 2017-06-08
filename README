@@ -21,10 +21,10 @@ src/:
       Functions for read in the input file and write the output file.
 
    Graph.h/cpp:
-      Define the classes for building a graph. The graph is to find trivial connections between object and to check for disjoined sets.
+      Define the classes for building a graph. The graph is to find trivial connections between object and to check for disjoint sets.
 
    path.cpp:
-      Functions to apply Hadlock's algorithm to find a optimal path between between two given points.
+      Functions to apply Hadlock's algorithm to find an optimal path between between two given points.
 
 
 Unsolved problems:
