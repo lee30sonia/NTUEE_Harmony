@@ -43,9 +43,6 @@ bool CircuitMgr::readCircuit(char* filename)
       cout << "Error: input RoutedShapes format error!" << endl;
       return false;
    }
-   #ifdef _DEBUG_ON
-   cout << rountedShapes << " Shapes added." << endl;
-   #endif
 
    for(int i=0; i<routedVias; i++) {
       fin.ignore(11);   fin >> layer;
@@ -72,6 +69,9 @@ bool CircuitMgr::readCircuit(char* filename)
    }
    
    fin.close();
+   #ifdef _DEBUG_ON
+   cout << "Read in file successfully." << endl;
+   #endif
    return true; //return true if read in file succeed
 }
 
@@ -79,6 +79,9 @@ void CircuitMgr::writeOutput(char* filename)
 {
    fstream fout;
    fout.open(filename, ios::out);
+   #ifdef _DEBUG_ON
+   cout << "writing output file..." << endl;
+   #endif
    
    for(unsigned layer=1; layer<_lines.size(); ++layer){
       for(unsigned i=0; i<_lines.at(layer).size(); i++) {
@@ -92,5 +95,8 @@ void CircuitMgr::writeOutput(char* filename)
       fout << "Via V" << _vias[i].layer() << " " << _vias[i].pos().str() << endl;
    }
 
+   #ifdef _DEBUG_ON
+   cout << "file output successfully." << endl;
+   #endif
    fout.close();
 }
