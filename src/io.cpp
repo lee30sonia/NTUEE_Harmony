@@ -28,6 +28,9 @@ bool CircuitMgr::readCircuit(char* filename)
    fin.ignore(16);   fin >> routedShapes; fin.ignore();
    fin.ignore(14);   fin >> routedVias;   fin.ignore();
    fin.ignore(13);   fin >> obstacles;   fin.ignore();
+   #ifdef _DEBUG_ON
+   cout << "reading in data..." << endl;
+   #endif
 
    for(int i=0; i<routedShapes; i++) {
       fin.ignore(13);   fin >> layer;
@@ -40,6 +43,9 @@ bool CircuitMgr::readCircuit(char* filename)
       cout << "Error: input RoutedShapes format error!" << endl;
       return false;
    }
+   #ifdef _DEBUG_ON
+   cout << rountedShapes << " Shapes added." << endl;
+   #endif
 
    for(int i=0; i<routedVias; i++) {
       fin.ignore(11);   fin >> layer;

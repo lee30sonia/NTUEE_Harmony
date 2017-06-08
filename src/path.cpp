@@ -7,6 +7,11 @@
 using namespace std;
 
 bool CircuitMgr::shortestPath(const Point s, const Point t, const int layer) {
+
+   #ifdef _DEBUG_ON
+   cout << "Finding shortest path between " << s.print() << "and " << t.print() << endl;
+   #endif
+
    int current = -1, dis2t, level;
    bool reach = false;
    Point p;
@@ -38,7 +43,7 @@ bool CircuitMgr::shortestPath(const Point s, const Point t, const int layer) {
    // collect the path
    Point start = p = t;
    char lastDir = getDir(t, layer);
-   while(p != s) {
+   while(lastDir != 's') {
       if(!p.move(lastDir)) {
          cout << "Connection Error!" << endl;
          break;
@@ -93,5 +98,9 @@ bool CircuitMgr::check4short(const Point& p, const Point& t, const int& layer, c
    setLevel(p, layer, level2);
    _Q[level2].push(p);
    return false;
+
+   #ifdef _DEBUG_ON
+   cout << "Maps initialized." << endl;
+   #endif
 }
 
