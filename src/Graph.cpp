@@ -82,7 +82,7 @@ bool compareByY(Shape& s1, Shape& s2)
 
 Graph* CircuitMgr::buildGraph(int layer)
 {
-   vector<Shape>& shapes = _shapes.at(layer);
+   vector<Shape*>& shapes = _shapes.at(layer);
    if (shapes.size()==0)
    {
       #ifdef _DEBUG_ON
@@ -97,9 +97,9 @@ Graph* CircuitMgr::buildGraph(int layer)
    {
       for (int j=i+1; j<shapes.size(); ++j)
       {
-         if (shapes.at(i).overlapX(shapes.at(j)))
+         if (shapes.at(i)->overlapX(*shapes.at(j)))
          {
-            int d=dist(shapes.at(i),shapes.at(j),true);
+            int d=dist(*shapes.at(i),*shapes.at(j),true);
             if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d);
          }
@@ -112,9 +112,9 @@ Graph* CircuitMgr::buildGraph(int layer)
    {
       for (int j=i+1; j<shapes.size(); ++j)
       {
-         if (shapes.at(i).overlapY(shapes.at(j)))
+         if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
-            int d=dist(shapes.at(i),shapes.at(j),false);
+            int d=dist(*shapes.at(i),*shapes.at(j),false);
             if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d);
          }
@@ -130,7 +130,7 @@ Graph* CircuitMgr::buildGraph(int layer)
 
 int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
 {
-   vector<Obstacle>& obstacles = _obstacles.at(s1.layer());
+   vector<Obstacle*>& obstacles = _obstacles.at(s1.layer());
    int x1,x2,y1,y2;
    int d;
    if (xType)
@@ -178,7 +178,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
    cout<<ll.str()<<" "<<ur.str()<<endl;
    for (int i=0; i<obstacles.size(); ++i)
    {
-      if (obstacles.at(i).inside(ll,ur,xType,_spacing))
+      if (obstacles.at(i)->inside(ll,ur,xType,_spacing))
          return -1;
    }
    return d;
