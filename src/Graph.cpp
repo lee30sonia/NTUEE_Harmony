@@ -184,5 +184,9 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
    return d;
 }
 
+void CircuitMgr::mst(Graph* g){
+
+}
+
 
 

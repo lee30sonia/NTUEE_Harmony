@@ -163,6 +163,8 @@ public:
    
    // Greedy.cpp
    void greedy();
+   void mstBound();
+   int mstSave();
 
    //Circuit.cpp
    ////circuit manipulation methods
@@ -179,7 +181,7 @@ public:
    //Graph.cpp
    Graph* buildGraph(int layer); //build graph for a selected layer
    int dist(Shape& s1, Shape& s2, bool xType); //for buildGraph. return -1 if there is obstacle between them
-   void mst(Graph*) { } //solve minimum spanning tree(return type?)
+   void mst(Graph*); //solve minimum spanning tree(return type?)
    
    // path.cpp
    bool shortestPath(const Point s, const Point t, const int layer);
