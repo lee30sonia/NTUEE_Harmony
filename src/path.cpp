@@ -74,7 +74,7 @@ void CircuitMgr::init4short(int layer) {
    // initiate obstables as INT_MAX 
    Obstacle* it;
    for(unsigned n=0; n<_obstacles[layer].size(); n++) {
-      it = &_obstacles[layer][0];
+      it = _obstacles[layer][0];
       for(int i=it->getLL().x(); i<=it->getUR().x(); i++)
          for(int j=it->getLL().y(); j<=it->getUR().y(); j++)
             _levelMap[layer][i][j] = INT_MAX;

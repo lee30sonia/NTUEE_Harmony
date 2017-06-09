@@ -34,9 +34,9 @@ bool CircuitMgr::readCircuit(char* filename)
    #endif
    
    for(int i=0; i<=_layernum; ++i){
-      vector<Shape> shapeVec;
-      vector<Line> lineVec;
-      vector<Obstacle> obstacleVec;
+      vector<Shape*> shapeVec;
+      vector<Line*> lineVec;
+      vector<Obstacle*> obstacleVec;
       _shapes.push_back(shapeVec);
       _lines.push_back(lineVec);
       _obstacles.push_back(obstacleVec);
@@ -94,14 +94,14 @@ void CircuitMgr::writeOutput(char* filename)
    
    for(unsigned layer=1; layer<_lines.size(); ++layer){
       for(unsigned i=0; i<_lines.at(layer).size(); i++) {
-         fout << (_lines[layer][i].vertical()? "V": "H") << "-line M" << layer << " "
-         << _lines[layer][i].startpoint().str() << " " << _lines[layer][i].endpoint().str() << endl;
+         fout << (_lines[layer][i]->vertical()? "V": "H") << "-line M" << layer << " "
+         << _lines[layer][i]->startpoint().str() << " " << _lines[layer][i]->endpoint().str() << endl;
       }
    }
    
    for(unsigned i=0; i<_vias.size(); i++) {
-      if(_vias[i].given())   continue;
-      fout << "Via V" << _vias[i].layer() << " " << _vias[i].pos().str() << endl;
+      if(_vias[i]->given())   continue;
+      fout << "Via V" << _vias[i]->layer() << " " << _vias[i]->pos().str() << endl;
    }
 
    #ifdef _DEBUG_ON

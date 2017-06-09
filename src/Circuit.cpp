@@ -15,7 +15,7 @@ using namespace std;
 void CircuitMgr::addShape(int x1, int y1, int x2, int y2, int layer)
 {
    Shape s(x1, y1, x2, y2, layer);
-   _shapes.at(layer).push_back(s);
+   _shapes.at(layer).push_back(&s);
 }
 
 bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
@@ -24,7 +24,7 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
    Line l(x1, y1, x2, y2, layer);
    if (!valid(l))
       return false;
-   _lines.at(layer).push_back(l);
+   _lines.at(layer).push_back(&l);
 
    #ifdef _DEBUG_ON
    cout << "Line" << l.startpoint().str() << l.endpoint().str()
@@ -40,24 +40,24 @@ bool CircuitMgr::addVia(int x, int y, int layer, bool given)
    if (!valid(p, layer))
       return false;
    Via v(x, y, layer, given);
-   _vias.push_back(v);
+   _vias.push_back(&v);
    return true;
 }
 
 void CircuitMgr::addObstacle(int x1, int y1, int x2, int y2, int layer)
 {
    Obstacle o(x1, y1, x2, y2, layer);
-   _obstacles.at(layer).push_back(o);
+   _obstacles.at(layer).push_back(&o);
 }
 
 bool CircuitMgr::valid(Point& p, int layer)
 {
    if (!p.inside(_LL,_UR,-1*_spacing))
       return false; //not in boundary
-   vector<Obstacle>& obstacles = _obstacles.at(layer);
+   vector<Obstacle*>& obstacles = _obstacles.at(layer);
    for (int i=0; i<obstacles.size(); ++i)
    {
-      if (p.inside(obstacles.at(i).getLL(), obstacles.at(i).getUR(), _spacing))
+      if (p.inside(obstacles.at(i)->getLL(), obstacles.at(i)->getUR(), _spacing))
          return false;
    }
   return true;
@@ -84,12 +84,12 @@ int CircuitMgr::cost()
    for (int layer=1; layer<_lines.size(); ++layer)
    {
       for (int i=0; i<_lines.at(layer).size(); ++i)
-         c+=_lines.at(layer).at(i).length();
+         c+=_lines.at(layer).at(i)->length();
    }
    
    for (int i=0; i<_vias.size(); ++i)
    {
-      if (!_vias.at(i).given())
+      if (!_vias.at(i)->given())
          c+=_viaCost;
    }
    return c;

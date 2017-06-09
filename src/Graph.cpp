@@ -92,7 +92,7 @@ Graph* CircuitMgr::buildGraph(int layer)
    }
    
    Graph* g=new Graph;
-   sort(shapes.begin(), shapes.end(), compareByX);
+   sort(*shapes.begin(), *shapes.end(), compareByX);
    for (int i=0; i<shapes.size()-1; ++i)
    {
       for (int j=i+1; j<shapes.size(); ++j)
@@ -107,7 +107,7 @@ Graph* CircuitMgr::buildGraph(int layer)
             break;
       }
    }
-   sort(shapes.begin(), shapes.end(), compareByY);
+   sort(*shapes.begin(), *shapes.end(), compareByY);
    for (int i=0; i<shapes.size()-1; ++i)
    {
       for (int j=i+1; j<shapes.size(); ++j)
