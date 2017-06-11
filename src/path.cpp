@@ -3,6 +3,7 @@
 #include <queue>
 #include <climits>
 #include "Circuit.h"
+#include "Graph.h"
 
 using namespace std;
 
@@ -80,7 +81,7 @@ void CircuitMgr::init4short(int layer) {
             _levelMap[layer][i][j] = INT_MAX;
    }
    
-   // initiate the queue vector
+   // initialise the queue vector
    _Q.clear();
    _Q.push_back(queue<Point>());
 }
@@ -104,4 +105,135 @@ bool CircuitMgr::check4short(const Point& p, const Point& t, const int& layer, c
    cout << "Maps initialized." << endl;
    #endif
 }
+
+void CircuitMgr::mstPrim(const Graph* g, Node* n, const int& layer)
+{
+   //Using Prims's algorithm to solve mst
+
+   for (int i=0; i< g->_nodes.size(); ++i) {
+      g->_nodes[i]->_key= INT_MAX;
+      g->_nodes[i]->_pi= NULL;
+      g->_nodes[i]->_inMST= false;
+   }
+
+   //set key to 0 for root node n
+   n->_key= 0;
+   
+   //priority_queue<Node, vector<Node>, greater<Node*>> pQ;
+   vector<Node*> pQ;
+
+   enqueue(pQ,n);
+
+   while(!pQ.empty()) {
+      //Node* u= pQ.top().first;
+      //pQ.pop();
+      Node *u= dequeue(pQ);
+      if (u->_inMST==false) {
+         u->_inMST= true;
+
+         /*
+         list<pair<Node*, int>>::iterator itr;
+
+         for (itr= u->_adj.begin(); itr!= u->_adj.end();itr++) {
+            Node* v= (*i).first;
+            int weight= (*i).second;
+         }
+         */
+
+         for (int i=0; i< u->_adj.size(); i++){
+            Node* v= u->_adj[i]->getNeighbor(u);
+            int weight= u->_adj[i]->_weight;
+
+            if (v->_inMST== false && weight < v->_key) {
+               v->_pi= u;
+               v->_key= weight;
+
+               //pQ.push(make_pair<v, v->key>);
+               enqueue(pQ,v);
+            }
+         }
+      }
+      
+      
+
+   }
+
+}
+
+void CircuitMgr::enqueue(vector<Node *>& pQ, Node* n)
+{
+   int i= pQ.size();
+   Node* temp;
+
+   pQ.push_back(n);
+
+   while (i>=1) {
+      if (pQ[(i-1)/2]->_key > pQ[i]->_key) {
+         temp= pQ[i];
+         pQ[i]= pQ[(i-1)/2];
+         pQ[(i-1)/2]= temp;
+
+         i= (i-1)/2;
+      }
+      else
+         break;
+   }
+}
+
+Node* CircuitMgr::dequeue(vector<Node *>& pQ)
+{
+   //extract min from priority queue
+   Node* min= pQ[0];
+   //delete element from queue
+   pQ[0]= pQ[pQ.size()-1];
+   pQ.pop_back();
+
+   minHeapify(pQ,0);
+
+   return min;
+}
+
+void CircuitMgr::minHeapify(vector<Node *>& pQ, int i)
+{
+   Node* temp;
+   //int i= index;
+
+   while (i*2+1< pQ.size()) { //has child(ren)
+      if (i*2+2>= pQ.size()) { //only left child exists
+         if (pQ[i*2+1]->_key < pQ[i]->_key) {
+            temp= pQ[i];
+            pQ[i]= pQ[i*2+1];
+            pQ[i*2+1]= temp;
+            break;
+         }
+         else
+            break;
+      }
+
+      else { //both children exist
+         if (pQ[i*2+1]->_key < pQ[i]->_key || pQ[i*2+2]->_key < pQ[i]->_key) { //either child is smaller than parent
+            if (pQ[i*2+1]->_key< pQ[i*2+2]->_key) {
+               temp= pQ[i];
+               pQ[i]= pQ[i*2+1];
+               pQ[i*2+1]= temp;
+               i= i*2+1; //going down the heap after swap
+            }
+            else {
+               temp= pQ[i];
+               pQ[i]= pQ[i*2+2];
+               pQ[i*2+2]= temp;
+               i= i*2+2; //going down the heap after swap
+            }
+         }
+         else
+            break;
+      }
+   }
+}
+
+/*
+void CircuitMgr::init4op(const ) {
+
+}
+*/
 

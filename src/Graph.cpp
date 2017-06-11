@@ -19,6 +19,23 @@ Edge::Edge(Node *a, Node *b, const int& w)
    _weight=w;
 }
 
+Node* Edge::getNeighbor(Node* a)
+{
+   if ( _node[0] == a ) return _node[1];
+   if ( _node[1] == a ) return _node[0];
+
+   return 0;
+}
+
+/********************Pair*********************/
+/*
+Pair::Pair(Node *a, const int &k)
+{
+   _node= a;
+   _key= k;
+}
+*/
+
 /********************Node*********************/
 
 /********************Graph*********************/
@@ -34,6 +51,11 @@ void Graph::addEdge(Node* n1, Node* n2, int& weight)
 {
    Edge* e = new Edge(n1,n2,weight);
    _edges.push_back(e);
+   //_adj[n1->_id].push_back(make_pair<n2, weight>);
+   //_adj[n2->_id].push_back(make_pair<n1, weight>);
+   n1->_adj.push_back(e);
+   n2->_adj.push_back(e);
+
    #ifdef _DEBUG_ON
    cout<<"Graph: add edge from node "<<n1->_id<<" to node "<<n2->_id<<" with weight "<<weight<<endl;
    #endif
@@ -182,10 +204,6 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
          return -1;
    }
    return d;
-}
-
-void CircuitMgr::mst(Graph* g){
-
 }
 
 

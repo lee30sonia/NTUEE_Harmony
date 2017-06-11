@@ -163,8 +163,6 @@ public:
    
    // Greedy.cpp
    void greedy();
-   void mstBound();
-   int mstSave();
 
    //Circuit.cpp
    ////circuit manipulation methods
@@ -181,7 +179,6 @@ public:
    //Graph.cpp
    Graph* buildGraph(int layer); //build graph for a selected layer
    int dist(Shape& s1, Shape& s2, bool xType); //for buildGraph. return -1 if there is obstacle between them
-   void mst(Graph*); //solve minimum spanning tree(return type?)
    
    // path.cpp
    bool shortestPath(const Point s, const Point t, const int layer);
@@ -192,6 +189,11 @@ public:
    char& getDir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
    void setLevel(const Point& p, const int& layer, int level) { _levelMap[layer][p.x()][p.y()]= level; }
    void setDir(const Point& p, const int& layer, char dir) { _dirMap[layer][p.x()][p.y()]= dir; }
+   void mstPrim(const Graph* g, Node* n, const int& layer); //solve minimum spanning tree for a selected layer(return type?)
+   void enqueue(vector<Node *>& pQ, Node* n);
+   Node* dequeue(vector<Node *>& pQ);
+   void minHeapify(vector<Node *>& pQ, int i);
+
 
 private:
    int _viaCost;

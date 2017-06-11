@@ -7,6 +7,8 @@
 #define GRAPH_H
 
 #include <vector>
+#include <utility>
+#include <list>
 #include "Circuit.h"
 using namespace std;
 
@@ -43,11 +45,22 @@ public:
    Node* _node[2];
    int _weight;
    
-   //Node *getNeighbor(Node *n);
+   Node* getNeighbor(Node* n);
    
    //bool operator < (const Edge& rhs) const;
    
 };
+
+/*
+class Pair
+{
+public:
+   Pair(Node *a, const int& k);
+   Node* _node;
+   int _key;
+   bool operator>(const Pair &rhs) {return this._key> rhs.key; }
+};
+*/
 
 class Node
 {
@@ -64,8 +77,20 @@ public:
    
    Obj* _obj;
    vector<Edge *> _edges;
+
+   Node* _pi; //parent
+   int _key; //key for priority queue
+   bool _inMST;
+   
+   // saving the adjacency list as pairs
+   //list<pair<Node*, int>> _adj;
+   vector<Edge*> _adj;
+   bool operator>(const Node &rhs) { return this->_key> rhs._key; }
+
+   int _id; //id to store adjacency list (list<pair<Node*, int>>) in Graph, starting from 0, usage: g->_adj[n->_id]
+
    #ifdef _DEBUG_ON
-   int _id;
+   //int _id;
    #endif
 };
 
@@ -84,5 +109,7 @@ public:
    //map<int, Node *> nodesMap;
    vector<Node *> _nodes;
    vector<Edge *> _edges;
+   
+
 };
 #endif
