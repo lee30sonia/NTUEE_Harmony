@@ -156,7 +156,7 @@ void CircuitMgr::mstPrim(const Graph* g, Node* n)
       }
    }
    #ifdef _DEBUG_ON
-   cout<<"MST of layer "<<layer<<" completed."<<endl;
+   cout<<"MST completed."<<endl;
    for (int i=0; i<g->_nodes.size(); ++i)
    {
       cout<<"node "<<g->_nodes[i]->_id<<" ,pi = ";
