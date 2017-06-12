@@ -12,22 +12,43 @@
 using namespace std;
 
 /********************CircuitMgr*********************/
+CircuitMgr::~CircuitMgr()
+{
+   for (int i=0; i<_shapes.size(); ++i)
+   {
+      for (int j=0; j<_shapes[i].size(); ++j)
+         delete _shapes[i][j];
+   }
+   for (int i=0; i<_lines.size(); ++i)
+   {
+      for (int j=0; j<_lines[i].size(); ++j)
+         delete _lines[i][j];
+   }
+   for (int i=0; i<_obstacles.size(); ++i)
+   {
+      for (int j=0; j<_obstacles[i].size(); ++j)
+         delete _obstacles[i][j];
+   }
+   for (int i=0; i<_vias.size(); ++i)
+      delete _vias[i];
+}
+
 void CircuitMgr::addShape(int x1, int y1, int x2, int y2, int layer)
 {
-   Shape s(x1, y1, x2, y2, layer);
-   _shapes.at(layer).push_back(&s);
+   Shape* s = new Shape(x1, y1, x2, y2, layer);
+   _shapes.at(layer).push_back(s);
 }
 
 bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
 {
    if(x1==x2 || y1==y2) return false;
-   Line l(x1, y1, x2, y2, layer);
-   if (!valid(l))
+   Line* l = new Line(x1, y1, x2, y2, layer);
+   if (!valid(*l))
       return false;
-   _lines.at(layer).push_back(&l);
+   _lines.at(layer).push_back(l);
 
    #ifdef _DEBUG_ON
-   cout << "Line" << l.startpoint().str() << l.endpoint().str()
+   cout << "Line" << l->startpoint().str() << l->endpoint().str()
       << "on layer" << layer << " added." << endl;
    #endif
 
@@ -39,15 +60,15 @@ bool CircuitMgr::addVia(int x, int y, int layer, bool given)
    Point p(x,y);
    if (!valid(p, layer))
       return false;
-   Via v(x, y, layer, given);
-   _vias.push_back(&v);
+   Via* v = new Via(x, y, layer, given);
+   _vias.push_back(v);
    return true;
 }
 
 void CircuitMgr::addObstacle(int x1, int y1, int x2, int y2, int layer)
 {
-   Obstacle o(x1, y1, x2, y2, layer);
-   _obstacles.at(layer).push_back(&o);
+   Obstacle* o = new Obstacle(x1, y1, x2, y2, layer);
+   _obstacles.at(layer).push_back(o);
 }
 
 bool CircuitMgr::valid(Point& p, int layer)

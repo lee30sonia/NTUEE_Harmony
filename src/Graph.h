@@ -71,9 +71,8 @@ public:
    //bool operator==(const Obj* o) { return _obj==o; }
    //void addEdge(Node *n);
    //Edge* getEdgeByNeighbor(Node*);
-   #ifdef _DEBUG_ON
+   
    void setId(int i) { _id=i; }
-   #endif
    
    Obj* _obj;
    vector<Edge *> _edges;
@@ -89,9 +88,6 @@ public:
 
    int _id; //id to store adjacency list (list<pair<Node*, int>>) in Graph, starting from 0, usage: g->_adj[n->_id]
 
-   #ifdef _DEBUG_ON
-   //int _id;
-   #endif
 };
 
 class Graph

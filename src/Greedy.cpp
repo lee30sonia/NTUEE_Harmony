@@ -13,8 +13,12 @@ void CircuitMgr::greedy()
    for (int layer=1; layer<=_layernum; ++layer)
    {
       Graph* g = buildGraph(layer);
-      mst(g);
-      // run other methods to make single set
+      if (g==0) continue;
+      if (g->_nodes.size()>0)
+      {
+         mstPrim(g,g->_nodes[0],layer);
+         // run other methods to make single set
+      }
       delete g;
    }
    // deal with connection between different layers(via)

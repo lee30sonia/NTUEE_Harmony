@@ -10,6 +10,7 @@
 #include <queue>
 #include <string>
 #include <stdlib.h>
+#include <iostream>
 #include <cmath>
 #include "Graph.h"
 
@@ -156,6 +157,7 @@ class CircuitMgr
 {
 public:
    CircuitMgr(){}
+   ~CircuitMgr();
    
    // io.cpp
    bool readCircuit(char* filename);
@@ -189,7 +191,7 @@ public:
    char& getDir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
    void setLevel(const Point& p, const int& layer, int level) { _levelMap[layer][p.x()][p.y()]= level; }
    void setDir(const Point& p, const int& layer, char dir) { _dirMap[layer][p.x()][p.y()]= dir; }
-   void mstPrim(const Graph* g, Node* n, const int& layer); //solve minimum spanning tree for a selected layer(return type?)
+   void mstPrim(const Graph* g, Node* n, const int& layer); //solve minimum spanning tree for a selected layer
    void enqueue(vector<Node *>& pQ, Node* n);
    Node* dequeue(vector<Node *>& pQ);
    void minHeapify(vector<Node *>& pQ, int i);
