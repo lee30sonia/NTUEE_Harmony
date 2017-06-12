@@ -16,7 +16,7 @@ void CircuitMgr::greedy()
       if (g==0) continue;
       if (g->_nodes.size()>0)
       {
-         mstPrim(g,g->_nodes[0],layer);
+         mstPrim(g,g->_nodes[0]);
          // run other methods to make single set
       }
       delete g;

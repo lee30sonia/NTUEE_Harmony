@@ -191,10 +191,12 @@ public:
    char& getDir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
    void setLevel(const Point& p, const int& layer, int level) { _levelMap[layer][p.x()][p.y()]= level; }
    void setDir(const Point& p, const int& layer, char dir) { _dirMap[layer][p.x()][p.y()]= dir; }
-   void mstPrim(const Graph* g, Node* n, const int& layer); //solve minimum spanning tree for a selected layer
+   void mstPrim(const Graph* g, Node* n); //solve minimum spanning tree for a selected layer maybe also write Kruskal?
    void enqueue(vector<Node *>& pQ, Node* n);
    Node* dequeue(vector<Node *>& pQ);
    void minHeapify(vector<Node *>& pQ, int i);
+   void makeSet(Node* a);
+   void linkSet(Node* a, Node* b);
 
 
 private:

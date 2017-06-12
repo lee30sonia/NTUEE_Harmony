@@ -106,7 +106,7 @@ bool CircuitMgr::check4short(const Point& p, const Point& t, const int& layer, c
    #endif
 }
 
-void CircuitMgr::mstPrim(const Graph* g, Node* n, const int& layer)
+void CircuitMgr::mstPrim(const Graph* g, Node* n)
 {
    //Using Prims's algorithm to solve mst
 
@@ -232,6 +232,26 @@ void CircuitMgr::minHeapify(vector<Node *>& pQ, int i)
          }
          else
             break;
+      }
+   }
+}
+
+void CircuitMgr::makeSet(Node* a)
+{
+   a->_pi= a;
+   a->_rank= 0;
+}
+
+void CircuitMgr::linkSet(Node* a, Node* b)
+{
+   if (a->_rank >= b->_rank) {
+      b->_pi= a;
+   }
+
+   else {
+      a->_pi= b;
+      if (a->_rank == b->_rank) {
+         b->_rank++;
       }
    }
 }

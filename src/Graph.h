@@ -80,6 +80,7 @@ public:
    Node* _pi; //parent
    int _key; //key for priority queue
    bool _inMST;
+   int _rank;
    
    // saving the adjacency list as pairs
    //list<pair<Node*, int>> _adj;
