@@ -3,12 +3,13 @@
  Synopsis     [ Implementation of graph ]
  ****************************************************************************/
 
-#include "Circuit.h"
 #include "Graph.h"
+#include "Circuit.h"
 #include <iostream>
 #include <algorithm>
 
 using namespace std;
+class Point;
 
 /********************Edge*********************/
 
@@ -17,8 +18,14 @@ Edge::Edge(Node *a, Node *b, const int& w, Point c1, Point c2)
    _node[0]=a;
    _node[1]=b;
    _weight=w;
+   _connect = new Point[2];
    _connect[0] = c1;
    _connect[1] = c2;
+}
+
+Edge::~Edge()
+{
+   delete[] _connect;
 }
 
 Node* Edge::getNeighbor(Node* a)
@@ -126,7 +133,7 @@ Graph* CircuitMgr::buildGraph(int layer)
          {
             int d = dist(*shapes.at(i),*shapes.at(j),true, connect);
             if (d>=0)
-               g->addEdge(shapes.at(i),shapes.at(j),d);
+               g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
          }
          else
             break;
@@ -139,9 +146,9 @@ Graph* CircuitMgr::buildGraph(int layer)
       {
          if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
-            int d = dist(*shapes.at(i),*shapes.at(j),false);
+            int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
             if (d>=0)
-               g->addEdge(shapes.at(i),shapes.at(j),d);
+               g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
          }
          else
             break;
@@ -189,8 +196,21 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       l = x2-x1+1;
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
-      for(int i=0; i<obstacles.size(); i++) {
-
+      for(int i=0; i<obstacles.size(); i++)
+         if(obstacles[i]->getUR().x()>x1 && obstacles[i]->getLL().x()<x2) 
+            for(int j=obstacles[i]->getLL().x(); j<=obstacles[i]->getUR().x(); j++) {
+               if(j>=x1 && j<=x2)   thru[j-x1] = false;
+               else if(j>x2)  break;
+            }
+      for(int i=0; i<l; i++)
+         if(thru[i]) {
+            connect[0].move(false, i);
+            connect[1].move(false, i);
+            delete[] thru;
+            return d;
+         }
+      delete[] thru;
+      return -1;
    }
    else
    {
@@ -212,7 +232,27 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       }
       d=x2-x1;
       connect[0] = Point(x1,y1);
-      connect[1] = Point(x2,y2);
+      connect[1] = Point(x2,y1);
+
+      // check for obstacles
+      l = y2-y1+1;
+      thru = new bool[l];
+      for(int i=0; i<l; i++)  thru[i] = true;
+      for(int i=0; i<obstacles.size(); i++)
+         if(obstacles[i]->getUR().y()>y1 && obstacles[i]->getLL().y()<y2) 
+            for(int j=obstacles[i]->getLL().y(); j<=obstacles[i]->getUR().y(); j++) {
+               if(j>=y1 && j<=y2)   thru[j-y1] = false;
+               else if(j>y2)  break;
+            }
+      for(int i=0; i<l; i++)
+         if(thru[i]) {
+            connect[0].move(true, i);
+            connect[1].move(true, i);
+            delete[] thru;
+            return d;
+         }
+      delete[] thru;
+      return -1;
    }
 
    // check for obstacles
@@ -224,9 +264,6 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       if (obstacles.at(i)->inside(ll,ur,xType,_spacing))
          return -1;
    }*/
-
-   return d;
 }
-
 
 

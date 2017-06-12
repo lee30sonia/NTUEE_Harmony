@@ -6,6 +6,7 @@
 #include "Graph.h"
 
 using namespace std;
+class Node;
 
 bool CircuitMgr::shortestPath(const Point s, const Point t, const int layer) {
 

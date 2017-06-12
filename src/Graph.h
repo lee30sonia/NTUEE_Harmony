@@ -14,6 +14,7 @@ using namespace std;
 
 class Node;
 class Obj;
+class Point;
 /*class DSet;
 
 class DSetObj
@@ -42,9 +43,11 @@ class Edge
    
 public:
    Edge(Node *a, Node *b, const int& w, Point c1, Point c2);
+   ~Edge();
+
    Node* _node[2];
    int _weight;
-   Point _connect[2];
+   Point* _connect;  // _connect[2]
    
    Node* getNeighbor(Node* n);
    
@@ -99,8 +102,8 @@ public:
    Graph() { }
    ~Graph();
    
-   void addEdge(Node* n1, Node* n2, int& weight); //n1 n2 already in graph
-   void addEdge(Obj* n1, Obj* n2, int& weight);
+   void addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2); //n1 n2 already in graph
+   void addEdge(Obj* n1, Obj* n2, int& weight, Point c1, Point c2);
    
    //Node * getNodeById(const int& id);
    
