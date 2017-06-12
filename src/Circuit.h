@@ -180,7 +180,7 @@ public:
    
    //Graph.cpp
    Graph* buildGraph(int layer); //build graph for a selected layer
-   int dist(Shape& s1, Shape& s2, bool xType); //for buildGraph. return -1 if there is obstacle between them
+   int dist(Shape& s1, Shape& s2, bool xType, Point* connect); //for buildGraph. return -1 if there is obstacle between them
    
    // path.cpp
    bool shortestPath(const Point s, const Point t, const int layer);

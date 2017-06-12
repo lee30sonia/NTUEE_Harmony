@@ -41,9 +41,10 @@ class Edge
 {
    
 public:
-   Edge(Node *a, Node *b, const int& w);
+   Edge(Node *a, Node *b, const int& w, Point c1, Point c2);
    Node* _node[2];
    int _weight;
+   Point _connect[2];
    
    Node* getNeighbor(Node* n);
    
