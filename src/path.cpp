@@ -110,18 +110,20 @@ void CircuitMgr::mstPrim(const Graph* g, Node* n)
 {
    //Using Prims's algorithm to solve mst
 
+   //priority_queue<Node, vector<Node>, greater<Node*>> pQ;
+   vector<Node*> pQ;
+
    for (int i=0; i< g->_nodes.size(); ++i) {
       g->_nodes[i]->_key= INT_MAX;
       g->_nodes[i]->_pi= NULL;
       g->_nodes[i]->_inMST= false;
+      enqueue(pQ,g->_nodes[i]);
    }
 
+   
    //set key to 0 for root node n
    n->_key= 0;
    
-   //priority_queue<Node, vector<Node>, greater<Node*>> pQ;
-   vector<Node*> pQ;
-
    enqueue(pQ,n);
 
    while(!pQ.empty()) {
@@ -153,6 +155,7 @@ void CircuitMgr::mstPrim(const Graph* g, Node* n)
             }
          }
       }
+
    }
    #ifdef _DEBUG_ON
    cout<<"MST of layer "<<layer<<" completed."<<endl;
@@ -258,6 +261,8 @@ void CircuitMgr::linkSet(Node* a, Node* b)
 
 void CircuitMgr::mstKruskal(const Graph* g)
 {
+   //using Kruskal's algorithm tp solve MST
+
    for (int i=0;i< g->_nodes.size();i++) {
       makeSet(g->_nodes[i]);
    }
