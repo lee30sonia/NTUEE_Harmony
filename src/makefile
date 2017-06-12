@@ -1,10 +1,11 @@
 AR			:= ar
 ARFLAGS		:= rcv
-CXX			:= g++
+CXX			:= g++ -std=c++11
 CPPFLAGS	:= -O2
 DBGFLAGS	:= -g -D _DEBUG_ON
 LIBS		:= -Ilib
 LIBFLAGS	:= -ltm_usage -Llib
+OMPFLAGS := -fopenmp -lpthread
 
 
 # optimised version
@@ -14,13 +15,13 @@ all	: ../bin/net_open_finder
 	$(CXX) $^ -o $@
 
 main.o		: main.cpp Circuit.h ../lib/tm_usage.h
-	$(CXX) $(CPPFLAGS) $(LIBS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(OMPFLAGS) $(LIBS) -c $< -o $@
 
 circuit.o	: Circuit.cpp Circuit.h Graph.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 graph.o	: Graph.cpp Graph.h Circuit.h
-	$(CXX) $(CPPFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(OMPFLAGS) -c $< -o $@
 
 path.o	: path.cpp Circuit.h
 	$(CXX) $(CPPFLAGS) -c $< -o $@
@@ -39,7 +40,7 @@ dbg	: ../bin/net_open_finder_dbg
 	$(CXX) $^ -o $@ 
 
 main_dbg.o		: main.cpp Circuit.h ../lib/tm_usage.h
-	$(CXX) $(DBGFLAGS) $(LIBS) -c $< -o $@
+	$(CXX) $(DBGFLAGS) $(OMPFLAGS) $(LIBS) -c $< -o $@
 
 path_dbg.o	: path.cpp Circuit.h
 	$(CXX) $(DBGFLAGS) -c $< -o $@
@@ -48,7 +49,7 @@ circuit_dbg.o	: Circuit.cpp Circuit.h
 	$(CXX) $(DBGFLAGS) -c $< -o $@
 
 graph_dbg.o	: Graph.cpp Graph.h
-	$(CXX) $(DBGFLAGS) -c $< -o $@
+	$(CXX) $(DBGFLAGS) $(OMPFLAGS) -c $< -o $@
 
 io_dbg.o		: io.cpp Circuit.h
 	$(CXX) $(DBGFLAGS) -c $< -o $@

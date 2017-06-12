@@ -7,6 +7,7 @@
 #include "Circuit.h"
 #include <iostream>
 #include <algorithm>
+#include <omp.h>
 
 using namespace std;
 class Point;
@@ -125,6 +126,7 @@ Graph* CircuitMgr::buildGraph(int layer)
    Graph* g=new Graph;
    sort(shapes.begin(), shapes.end(), compareByX);
    Point connect[2];
+   #pragma omp parallel for
    for (int i=0; i<shapes.size()-1; ++i)
    {
       for (int j=i+1; j<shapes.size(); ++j)
