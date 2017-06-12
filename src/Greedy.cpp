@@ -6,10 +6,12 @@
 #include "Circuit.h"
 #include "Graph.h"
 #include <iostream>
+#include <omp.h>
 using namespace std;
 
 void CircuitMgr::greedy()
 {
+   #pragma omp parallel for
    for (int layer=1; layer<=_layernum; ++layer)
    {
       Graph* g = buildGraph(layer);

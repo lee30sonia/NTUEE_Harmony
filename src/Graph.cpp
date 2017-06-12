@@ -60,11 +60,13 @@ void Graph::addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2)
    n1->_adj.push_back(e);
    n2->_adj.push_back(e);
 
+   /*
    #ifdef _DEBUG_ON
    //cout<<"Graph: add edge from node "<<n1->_id<<" to node "<<n2->_id<<" with weight "<<weight<<endl;
    if(weight!=c1.disXY(c2))
       cout << "Error: Edge weight and endpoints not consistent!" << endl;
    #endif
+   */
 }
 void Graph::addEdge(Obj* o1, Obj* o2, int& weight, Point c1, Point c2)
 {
