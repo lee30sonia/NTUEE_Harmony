@@ -134,7 +134,7 @@ Graph* CircuitMgr::buildGraph(int layer)
          if (shapes.at(i)->overlapX(*shapes.at(j)))
          {
             int d = dist(*shapes.at(i),*shapes.at(j),true, connect);
-            if (d>=0)
+            if (d>0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
          }
          else
@@ -149,7 +149,7 @@ Graph* CircuitMgr::buildGraph(int layer)
          if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
             int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
-            if (d>=0)
+            if (d>0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
          }
          else
