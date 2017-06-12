@@ -110,7 +110,7 @@ public:
 
    Node* _pi; //parent
    int _key; //key for priority queue
-   bool _inMST;
+   bool _inMST=false;
    int _rank;
    
    // saving the adjacency list as pairs
@@ -131,7 +131,7 @@ public:
    
    void addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2); //n1 n2 already in graph
    void addEdge(Obj* n1, Obj* n2, int& weight, Point c1, Point c2);
-   
+   void addNode(Obj* o);
    //Node * getNodeById(const int& id);
    
    //map<int, Node *> nodesMap;

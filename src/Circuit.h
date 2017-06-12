@@ -62,6 +62,7 @@ class Obj
 {
 public:
    virtual Type type() = 0;  // return the type by an enum. overloaded by each class
+   bool _inGraph = false;
 };
 
 class Shape :public Obj
@@ -77,9 +78,6 @@ public:
    bool connected(Line l); //whether the line is connected to the shape
    bool connected(Point p); //return true if the point is inside the shape, assume the same layer
    
-   //compare methods
-   /*bool compareByX(const Shape& s1, const Shape& s2); //s1 lefter than s2
-   bool compareByY(const Shape& s1, const Shape& s2); //s1 upper than s2 */
    bool overlapX(const Shape& s); //known: s is more right than this
    bool overlapY(const Shape& s); //known: s is lower than this
    
@@ -87,7 +85,6 @@ private:
    Point _LL; //lower left corner
    Point _UR; //upper right corner
    int _layer; //at which layer
-   //int _set; //belongs to which set
 };
 
 class Via :public Obj
@@ -199,7 +196,7 @@ public:
    void setDir(const Point& p, const int& layer, char dir) { _dirMap[layer][p.x()][p.y()]= dir; }
 
    // Minimun spanning tree
-   void mstPrim(const Graph* g, Node* n); //solve minimum spanning tree for a selected layer maybe also write Kruskal?
+   vector<Node*> mstPrim(const Graph* g); //solve minimum spanning tree for a selected layer maybe also write Kruskal?
    void enqueue(vector<Node *>& pQ, Node* n);
    Node* dequeue(vector<Node *>& pQ);
    void minHeapify(vector<Node *>& pQ, int i);

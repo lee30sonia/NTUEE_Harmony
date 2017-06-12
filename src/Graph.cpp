@@ -7,7 +7,7 @@
 #include "Circuit.h"
 #include <iostream>
 #include <algorithm>
-#include <omp.h>
+//#include <omp.h>
 
 using namespace std;
 class Point;
@@ -61,7 +61,7 @@ void Graph::addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2)
    n2->_adj.push_back(e);
 
    #ifdef _DEBUG_ON
-   cout<<"Graph: add edge from node "<<n1->_id<<" to node "<<n2->_id<<" with weight "<<weight<<endl;
+   //cout<<"Graph: add edge from node "<<n1->_id<<" to node "<<n2->_id<<" with weight "<<weight<<endl;
    if(weight!=c1.disXY(c2))
       cout << "Error: Edge weight and endpoints not consistent!" << endl;
    #endif
@@ -83,6 +83,7 @@ void Graph::addEdge(Obj* o1, Obj* o2, int& weight, Point c1, Point c2)
       n1->setId(_nodes.size());
       #endif
       _nodes.push_back(n1);
+      o1->_inGraph=true;
    }
    if (!n2)
    {
@@ -91,10 +92,19 @@ void Graph::addEdge(Obj* o1, Obj* o2, int& weight, Point c1, Point c2)
       n2->setId(_nodes.size());
       #endif
       _nodes.push_back(n2);
+      o2->_inGraph=true;
    }
    addEdge(n1, n2, weight, c1, c2);
 }
 
+void Graph::addNode(Obj* o)
+{
+   Node* n = new Node(o);
+   #ifdef _DEBUG_ON
+   n->setId(_nodes.size());
+   #endif
+   _nodes.push_back(n);
+}
 /********************CircuitMgr*********************/
 
 
@@ -152,6 +162,12 @@ Graph* CircuitMgr::buildGraph(int layer)
             break;
       }
    }
+   
+   for (int i=0; i<shapes.size(); ++i)
+   {
+      if (!shapes.at(i)->_inGraph)
+         g->addNode(shapes.at(i));
+   }
 
    #ifdef _DEBUG_ON
    cout<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
@@ -175,7 +191,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       {
          if (s1.overlapY(s2)) {
             #ifdef _DEBUG_ON
-            cout << "overlap detected." << endl;
+            //cout << "overlap detected." <<s1.getLL().str()<<s1.getUR().str()<<s2.getLL().str()<<s2.getUR().str()<< endl;
             #endif
             connect[0] = connect[1] = Point(0,0);
             return 0;
@@ -187,7 +203,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       {
          if (s2.overlapY(s1)) {
             #ifdef _DEBUG_ON
-            cout << "overlap detected." << endl;
+            //cout << "overlap detected." <<s1.getLL().str()<<s1.getUR().str()<<s2.getLL().str()<<s2.getUR().str()<< endl;
             #endif
             connect[0] = connect[1] = Point(0,0);
             return 0;
@@ -232,7 +248,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       {
          if (s1.overlapX(s2)) {
             #ifdef _DEBUG_ON
-            cout << "overlap detected." << endl;
+            //cout << "overlap detected." <<s1.getLL().str()<<s1.getUR().str()<<s2.getLL().str()<<s2.getUR().str()<< endl;
             #endif
             connect[0] = connect[1] = Point(0,0);
             return 0;
@@ -244,7 +260,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       {
          if (s2.overlapX(s1)) {
             #ifdef _DEBUG_ON
-            cout << "overlap detected." << endl;
+            //cout << "overlap detected." <<s1.getLL().str()<<s1.getUR().str()<<s2.getLL().str()<<s2.getUR().str()<< endl;
             #endif
             connect[0] = connect[1] = Point(0,0);
             return 0;
