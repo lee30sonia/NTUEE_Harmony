@@ -19,14 +19,8 @@ Edge::Edge(Node *a, Node *b, const int& w, Point c1, Point c2)
    _node[0]=a;
    _node[1]=b;
    _weight=w;
-   _connect = new Point[2];
    _connect[0] = c1;
    _connect[1] = c2;
-}
-
-Edge::~Edge()
-{
-   delete[] _connect;
 }
 
 Node* Edge::getNeighbor(Node* a)
@@ -180,9 +174,10 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       if (compareByY(&s1,&s2))
       {
          if (s1.overlapY(s2)) {
-            #ifdef _DBG_ON
+            #ifdef _DEBUG_ON
             cout << "overlap detected." << endl;
             #endif
+            connect[0] = connect[1] = Point(0,0);
             return 0;
          }
          y1=s2.getUR().y();
@@ -191,9 +186,10 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       else
       {
          if (s2.overlapY(s1)) {
-            #ifdef _DBG_ON
+            #ifdef _DEBUG_ON
             cout << "overlap detected." << endl;
             #endif
+            connect[0] = connect[1] = Point(0,0);
             return 0;
          }
          y1=s1.getUR().y();
@@ -231,9 +227,10 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       if (compareByX(&s1,&s2))
       {
          if (s1.overlapX(s2)) {
-            #ifdef _DBG_ON
+            #ifdef _DBUG_ON
             cout << "overlap detected." << endl;
             #endif
+            connect[0] = connect[1] = Point(0,0);
             return 0;
          }
          x1=s1.getUR().x();
@@ -242,9 +239,10 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       else
       {
          if (s2.overlapX(s1)) {
-            #ifdef _DBG_ON
+            #ifdef _DEBUG_ON
             cout << "overlap detected." << endl;
             #endif
+            connect[0] = connect[1] = Point(0,0);
             return 0;
          }
          x1=s2.getUR().x();

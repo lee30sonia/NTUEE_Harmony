@@ -159,9 +159,10 @@ void CircuitMgr::mstPrim(const Graph* g, Node* n)
    cout<<"MST completed."<<endl;
    for (int i=0; i<g->_nodes.size(); ++i)
    {
-      cout<<"node "<<g->_nodes[i]->_id<<" ,pi = ";
-      if (g->_nodes[i]->_pi==0) cout<<"null"<<endl;
-      else cout<<"node "<<g->_nodes[i]->_pi->_id<<endl;
+      if (g->_nodes[i]->_pi) {
+         cout<<"node "<<g->_nodes[i]->_id<<" ,pi = ";
+         cout<<"node "<<g->_nodes[i]->_pi->_id<<endl;
+      }
    }
    #endif
 }

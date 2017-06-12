@@ -29,6 +29,8 @@ enum Type{
    empty, shape, via, obstacle, line
 };
 
+#ifndef POINT
+#define POINT
 class Point
 {
 public:
@@ -54,6 +56,7 @@ private:
    int _x;
    int _y;
 };
+#endif
 
 class Obj
 {

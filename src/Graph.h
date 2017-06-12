@@ -14,7 +14,6 @@ using namespace std;
 
 class Node;
 class Obj;
-class Point;
 /*class DSet;
 
 class DSetObj
@@ -38,16 +37,44 @@ public:
    DSetObj* _tail;
 };*/
 
+#ifndef POINT
+#define POINT
+class Point
+{
+public:
+   Point(){ }
+   Point(int x, int y);
+
+   int x() const { return _x; }
+   int y() const { return _y; }
+   string str() const;
+   int disX(const Point& p) const { return abs(_x-p.x()); }
+   int disY(const Point& p) const { return abs(_y-p.y()); }
+   int disXY(const Point& p) const { return disX(p)+disY(p); }
+   //int& level(const int& layer) { return _map[layer][_x][_y]; }
+   
+   bool inside(Point LL, Point UR, int spacing=0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
+
+   //for line iteration
+   void move(bool vertical, int dis = 1); //increase y by dis if vertical, x otherwise
+   bool move(char dir);    // u, d, l, r
+   bool operator!=(const Point& p);
+
+private:
+   int _x;
+   int _y;
+};
+#endif
+
 class Edge
 {
    
 public:
    Edge(Node *a, Node *b, const int& w, Point c1, Point c2);
-   ~Edge();
 
    Node* _node[2];
    int _weight;
-   Point* _connect;  // _connect[2]
+   Point _connect[2];  // _connect[2]
    
    Node* getNeighbor(Node* n);
    
