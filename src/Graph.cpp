@@ -155,6 +155,8 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
    vector<Obstacle*>& obstacles = _obstacles.at(s1.layer());
    int x1,x2,y1,y2;
    int d;
+
+   // calculate the distance between two shapes 
    if (xType)
    {
       x1=s2.getLL().x();
@@ -195,6 +197,8 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType)
       }
       d=x2-x1;
    }
+
+   // check for obstacles
    Point ll(x1,y1);
    Point ur(x2,y2);
    //cout<<ll.str()<<" "<<ur.str()<<endl;
