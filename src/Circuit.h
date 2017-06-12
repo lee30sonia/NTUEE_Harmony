@@ -23,10 +23,14 @@ class Line;
 class Graph;
 class CircuitMgr;
 
+class Node;
+
 enum Type{
    empty, shape, via, obstacle, line
 };
 
+#ifndef POINT
+#define POINT
 class Point
 {
 public:
@@ -52,6 +56,7 @@ private:
    int _x;
    int _y;
 };
+#endif
 
 class Obj
 {
@@ -180,9 +185,10 @@ public:
    
    //Graph.cpp
    Graph* buildGraph(int layer); //build graph for a selected layer
-   int dist(Shape& s1, Shape& s2, bool xType); //for buildGraph. return -1 if there is obstacle between them
+   int dist(Shape& s1, Shape& s2, bool xType, Point* connect); //for buildGraph. return -1 if there is obstacle between them
    
    // path.cpp
+   // shortest path
    bool shortestPath(const Point s, const Point t, const int layer);
    void init4short(int layer);
    bool check4short(const Point& p, const Point& t, const int& layer, const char& dir,
@@ -191,6 +197,8 @@ public:
    char& getDir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
    void setLevel(const Point& p, const int& layer, int level) { _levelMap[layer][p.x()][p.y()]= level; }
    void setDir(const Point& p, const int& layer, char dir) { _dirMap[layer][p.x()][p.y()]= dir; }
+
+   // Minimun spanning tree
    void mstPrim(const Graph* g, Node* n); //solve minimum spanning tree for a selected layer maybe also write Kruskal?
    void enqueue(vector<Node *>& pQ, Node* n);
    Node* dequeue(vector<Node *>& pQ);
@@ -200,7 +208,6 @@ public:
    void linkSet(Node* a, Node* b);
    Node* findSet(Node* a);
    void unionSet(Node* a, Node* b);
-
 
 private:
    int _viaCost;

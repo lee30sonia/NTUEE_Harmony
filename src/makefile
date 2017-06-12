@@ -1,7 +1,8 @@
 AR			:= ar
 ARFLAGS		:= rcv
-CXX			:= g++
-CPPFLAGS	:= -O2
+CXX			:= g++ -std=c++11
+CPPFLAGS	:= -O2 -fopenmp -lpthread
+OMPFLAGS := -fopenmp -lpthread
 DBGFLAGS	:= -g -D _DEBUG_ON
 LIBS		:= -Ilib
 LIBFLAGS	:= -ltm_usage -Llib
@@ -11,7 +12,7 @@ LIBFLAGS	:= -ltm_usage -Llib
 all	: ../bin/net_open_finder
 	@echo -n""
 ../bin/net_open_finder	: main.o graph.o path.o circuit.o io.o greedy.o ../lib/libtm_usage.a
-	$(CXX) $^ -o $@
+	$(CXX) $(OMPFLAGS) $^ -o $@
 
 main.o		: main.cpp Circuit.h ../lib/tm_usage.h
 	$(CXX) $(CPPFLAGS) $(LIBS) -c $< -o $@
