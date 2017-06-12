@@ -134,7 +134,7 @@ Graph* CircuitMgr::buildGraph(int layer)
          if (shapes.at(i)->overlapX(*shapes.at(j)))
          {
             int d = dist(*shapes.at(i),*shapes.at(j),true, connect);
-            if (d>0)
+            if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
          }
          else
@@ -149,7 +149,7 @@ Graph* CircuitMgr::buildGraph(int layer)
          if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
             int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
-            if (d>0)
+            if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
          }
          else
@@ -177,15 +177,23 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       x2=(s1.getUR().x()<s2.getUR().x())?s1.getUR().x():s2.getUR().x();
       if (compareByY(&s1,&s2))
       {
-         if (s1.overlapY(s2))
+         if (s1.overlapY(s2)) {
+            #ifdef _DBG_ON
+            cout << "overlap detected." << endl;
+            #endif
             return 0;
+         }
          y1=s2.getUR().y();
          y2=s1.getLL().y();
       }
       else
       {
-         if (s2.overlapY(s1))
+         if (s2.overlapY(s1)) {
+            #ifdef _DBG_ON
+            cout << "overlap detected." << endl;
+            #endif
             return 0;
+         }
          y1=s1.getUR().y();
          y2=s2.getLL().y();
       }
@@ -220,15 +228,23 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       y2=s2.getUR().y();
       if (compareByX(&s1,&s2))
       {
-         if (s1.overlapX(s2))
+         if (s1.overlapX(s2)) {
+            #ifdef _DBG_ON
+            cout << "overlap detected." << endl;
+            #endif
             return 0;
+         }
          x1=s1.getUR().x();
          x2=s2.getLL().x();
       }
       else
       {
-         if (s2.overlapX(s1))
+         if (s2.overlapX(s1)) {
+            #ifdef _DBG_ON
+            cout << "overlap detected." << endl;
+            #endif
             return 0;
+         }
          x1=s2.getUR().x();
          x2=s1.getLL().x();
       }
