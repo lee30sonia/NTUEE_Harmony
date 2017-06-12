@@ -227,7 +227,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       if (compareByX(&s1,&s2))
       {
          if (s1.overlapX(s2)) {
-            #ifdef _DBUG_ON
+            #ifdef _DEBUG_ON
             cout << "overlap detected." << endl;
             #endif
             connect[0] = connect[1] = Point(0,0);
