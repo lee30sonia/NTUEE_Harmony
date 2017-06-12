@@ -195,8 +195,11 @@ public:
    void enqueue(vector<Node *>& pQ, Node* n);
    Node* dequeue(vector<Node *>& pQ);
    void minHeapify(vector<Node *>& pQ, int i);
+   void mstKruskal(const Graph* g);
    void makeSet(Node* a);
    void linkSet(Node* a, Node* b);
+   Node* findSet(Node* a);
+   void unionSet(Node* a, Node* b);
 
 
 private:

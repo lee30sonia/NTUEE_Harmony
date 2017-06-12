@@ -256,6 +256,34 @@ void CircuitMgr::linkSet(Node* a, Node* b)
    }
 }
 
+void CircuitMgr::mstKruskal(const Graph* g)
+{
+   for (int i=0;i< g->_nodes.size();i++) {
+      makeSet(g->_nodes[i]);
+   }
+
+   /*****TODO******/
+   //sort the edges by nondecreasing order
+
+   for (int i=0; i< g->_edges.size();i++) {
+      if (findSet(g->_edges[i]->_node[0])!= findSet(g->_edges[i]->_node[1])) {
+         unionSet(g->_edges[i]->_node[0], g->_edges[i]->_node[1]);
+      }
+   }
+}
+
+Node* CircuitMgr::findSet(Node* a)
+{
+   if (a->_pi!= a)
+      a->_pi= findSet(a->_pi);
+   return a->_pi;
+}
+
+void CircuitMgr::unionSet(Node* a, Node* b)
+{
+   linkSet(findSet(a), findSet(b));
+}
+
 /*
 void CircuitMgr::init4op(const ) {
 
