@@ -201,6 +201,10 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       connect[1] = Point(x1,y2);
 
       // check for obstacles
+    /*  #ifdef _DEBUG_ON
+      cout << "Edge: obstacles checking..." << endl;
+      #endif */
+
       l = x2-x1+1;
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
@@ -218,7 +222,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
             return d;
          }
       delete[] thru;
-      return -1;
+      return -1; 
    }
    else
    {
@@ -253,6 +257,9 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       connect[1] = Point(x2,y1);
 
       // check for obstacles
+      /*#ifdef _DEBUG_ON
+      cout << "Edge: obstacles checking..." << endl;
+      #endif*/
       l = y2-y1+1;
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
@@ -270,18 +277,21 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
             return d;
          }
       delete[] thru;
-      return -1;
+      return -1; 
    }
 
    // check for obstacles
-   /*Point ll(x1,y1);
+   /*
+   Point ll(x1,y1);
    Point ur(x2,y2);
    //cout<<ll.str()<<" "<<ur.str()<<endl;
    for (int i=0; i<obstacles.size(); ++i)
    {
       if (obstacles.at(i)->inside(ll,ur,xType,_spacing))
          return -1;
-   }*/
+   }
+   return d;
+   */
 }
 
 
