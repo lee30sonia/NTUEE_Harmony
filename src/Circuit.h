@@ -200,7 +200,7 @@ public:
    void enqueue(vector<Node *>& pQ, Node* n);
    Node* dequeue(vector<Node *>& pQ);
    void decrease_key(vector<Node *>& pQ, int i);
-   void minHeapify(vector<Node *>& pQ, int i);
+   void increase_key(vector<Node *>& pQ, int i);
    void mstKruskal(const Graph* g);
    void makeSet(Node* a);
    void linkSet(Node* a, Node* b);

@@ -198,7 +198,7 @@ Node* CircuitMgr::dequeue(vector<Node *>& pQ)
    pQ[0]= pQ[pQ.size()-1];
    pQ.pop_back();
 
-   minHeapify(pQ,0);
+   increase_key(pQ,0);
 
    return min;
 }
@@ -220,7 +220,7 @@ void CircuitMgr::decrease_key(vector<Node *>& pQ, int i)
 }
 
 // increase key
-void CircuitMgr::minHeapify(vector<Node *>& pQ, int i)
+void CircuitMgr::increase_key(vector<Node *>& pQ, int i)
 {
    Node* temp;
    //int i= index;
