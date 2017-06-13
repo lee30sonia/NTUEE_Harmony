@@ -56,9 +56,9 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer, bool check)
    return true;
 }
 
-bool CircuitMgr::addLine(Point p1, Point p2, int layer)
+bool CircuitMgr::addLine(Point p1, Point p2, int layer, bool check)
 {
-   return addLine(p1.x(), p1.y(), p2.x(), p2.y(), layer);
+   return addLine(p1.x(), p1.y(), p2.x(), p2.y(), layer, check);
 }
 
 

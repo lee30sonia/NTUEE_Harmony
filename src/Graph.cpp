@@ -139,8 +139,8 @@ Graph* CircuitMgr::buildGraph(int layer)
          x = _vias[i]->pos().x();
          y = _vias[i]->pos().y();
          temp = new Shape(x, y, x, y, layer);
-         shapes.pushback(temp);
-         tempVias.pushback(temp);
+         shapes.push_back(temp);
+         tempVias.push_back(temp);
       }
    
    Graph* g=new Graph;
@@ -189,7 +189,7 @@ Graph* CircuitMgr::buildGraph(int layer)
    cout<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
    #endif
 
-   for(int i=0; i<tempVias;
+   for(int i=0; i<tempVias.size(); i++) delete tempVias[i];
 
    return g;
 }
@@ -254,7 +254,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
                   thru[j-x1] = false;
 #ifdef _DEBUG_ON
                   cout << "obstacle detected" 
-                     << obstacles[i]->getLL().str() << obstacles[i]->getUR.str() << endl;
+                     << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
 #endif
                }
                else if(j>x2)  break;
@@ -319,7 +319,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
                   thru[j-y1] = false;
 #ifdef _DEBUG_ON
                   cout << "obstacle detected" 
-                     << obstacles[i]->getLL().str() << obstacles[i]->getUR.str() << endl;
+                     << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
 #endif
                }
                else if(j>y2)  break;

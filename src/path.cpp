@@ -316,7 +316,7 @@ void CircuitMgr::reduce3d(vector<Node*> nodes)
 {
    vector<Node*> nodes_h;
    vector<Node*> nodes_l;
-   vector<NOde*> nodes_prime;
+   vector<Node*> nodes_prime;
    //assume nodes vector has been sorted or initialised in order of layer
 
    int l_m= nodes[nodes.size()/2]->_layer;

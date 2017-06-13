@@ -172,7 +172,7 @@ public:
    ////circuit manipulation methods
    void addShape(int x1, int y1, int x2, int y2, int layer);
    bool addLine(int x1, int y1, int x2, int y2, int layer, bool check=true); // check valid or not
-   bool addLine(Point p1, Point p2, int layer);
+   bool addLine(Point p1, Point p2, int layer, bool check=true);
    bool addVia(int x, int y, int layer, bool given=false);
    void addObstacle(int x1, int y1, int x2, int y2, int layer);
    ////checking methods
@@ -207,7 +207,10 @@ public:
    void linkSet(Node* a, Node* b);
    Node* findSet(Node* a);
    void unionSet(Node* a, Node* b);
+
+   // Vias
    void reduce3d(vector<Node*> nodes); //use 3D reduction to connect nodes from different layers
+   bool check43d(Node* a, const int layer=1);
    void findSteiner(Node* a); //use Kruskal based algorithm to find the Steiner point from a staring node(?)
    bool sameSet(Node* a, Node* b); //determine if two nodes belong to the same set
 
