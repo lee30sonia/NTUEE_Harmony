@@ -307,6 +307,59 @@ void CircuitMgr::unionSet(Node* a, Node* b)
    linkSet(findSet(a), findSet(b));
 }
 
+void CircuitMgr::reduce3d(vector<Node*> nodes)
+{
+   vector<Node*> nodes_h;
+   vector<Node*> nodes_l;
+   vector<NOde*> nodes_prime;
+   //assume nodes vector has been sorted or initialised in order of layer
+
+   int l_m= nodes[nodes.size()/2]->_layer;
+
+   for (int i=0; i< nodes.size(); i++) {
+      if (nodes[i]->_layer > l_m)
+         nodes_h.push_back(nodes[i]);
+      else if (nodes[i]->_layer < l_m)
+         nodes_l.push_back(nodes[i]);
+   }
+
+   for (int i=0; i<nodes_h.size(); i++) {
+      //if the node can connect a line segment to a node in the middle layer without intersecting any obstacles
+      if (check43d(nodes_h[i])) {
+         //create new nodes
+         Node u= *nodes_h[i];
+         u._layer= l_m;
+         nodes_prime.push_back(&u);   
+      }
+   }
+
+   for (int i=0; i<nodes_l.size(); i++) {
+      if (check43d(nodes_h[i])) {
+         Node u= *nodes_l[i];
+         u._layer= l_m;
+         nodes_prime.push_back(&u);
+      }
+   }
+}
+
+bool CircuitMgr::check43d(Node* a, const int layer)
+{
+   return false;
+}
+
+void CircuitMgr::findSteiner(Node* a)
+{
+
+}
+
+bool CircuitMgr::sameSet(Node* a, Node* b)
+{
+   if (findSet(a)==findSet(b))
+      return true;
+   else
+      return false;
+}
+
 /*
 void CircuitMgr::init4op(const ) {
 

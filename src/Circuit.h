@@ -207,6 +207,9 @@ public:
    void linkSet(Node* a, Node* b);
    Node* findSet(Node* a);
    void unionSet(Node* a, Node* b);
+   void reduce3d(vector<Node*> nodes); //use 3D reduction to connect nodes from different layers
+   void findSteiner(Node* a); //use Kruskal based algorithm to find the Steiner point from a staring node(?)
+   bool sameSet(Node* a, Node* b); //determine if two nodes belong to the same set
 
 private:
    int _viaCost;

@@ -113,6 +113,7 @@ public:
    int _key; //key for priority queue
    bool _inMST=false;
    int _rank;
+   int _layer;
    
    // saving the adjacency list as pairs
    //list<pair<Node*, int>> _adj;
