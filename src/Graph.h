@@ -139,6 +139,7 @@ public:
    //map<int, Node *> nodesMap;
    vector<Node *> _nodes;
    vector<Edge *> _edges;
+   vector<vector<Node *>> _trees;
    
 
 };

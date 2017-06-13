@@ -121,6 +121,7 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
    vector<Node*> roots;
    Node *n = g->_nodes[0];
    
+   
    while (n!=0)
    {
       //set key to 0 for root node n
@@ -131,6 +132,7 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
             break;
          }
       }
+      
       roots.push_back(n);
       n=0;
       
@@ -159,10 +161,13 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
             }
          }
       }
+
       for (int i=0; i< g->_nodes.size(); ++i)
       {
+         //find new root for tree if not connected
          if (!g->_nodes[i]->_inMST) {
             n=g->_nodes[i];
+            
             break;
          }
       }
