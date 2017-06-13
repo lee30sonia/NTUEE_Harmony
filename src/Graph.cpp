@@ -109,13 +109,22 @@ void Graph::addNode(Obj* o)
 }
 /********************CircuitMgr*********************/
 
-
 bool compareByX(Shape *s1, Shape *s2)
 {
    return s1->getLL().x()<s2->getLL().x();
 }
 
 bool compareByY(Shape *s1, Shape *s2)
+{
+   return s1->getUR().y()>s2->getUR().y();
+}
+
+bool compareByX_O(Obstacle *s1, Obstacle *s2)
+{
+   return s1->getLL().x()<s2->getLL().x();
+}
+
+bool compareByY_O(Obstacle *s1, Obstacle *s2)
 {
    return s1->getUR().y()>s2->getUR().y();
 }
@@ -247,18 +256,22 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
 #endif
       thru = new bool[l]; // through or not
       for(int i=0; i<l; i++)  thru[i] = true;
-      for(int i=0; i<obstacles.size(); i++)
-         if(obstacles[i]->getUR().x()+_spacing>x1 && obstacles[i]->getLL().x()-_spacing<x2) 
-            for(int j=obstacles[i]->getLL().x()-_spacing; j<=obstacles[i]->getUR().x()+_spacing; j++) {
-               if(j>=x1 && j<=x2) {
-                  thru[j-x1] = false;
+      sort(obstacles.begin(), obstacles.end(), compareByY_O);
+      for(int i=0; i<obstacles.size(); i++) {
+         if(obstacles[i]->getUR().y()+_spacing<y1) break;
+         if(obstacles[i]->getLL().y()-_spacing<y2)
+            if(obstacles[i]->getUR().x()+_spacing>x1 && obstacles[i]->getLL().x()-_spacing<x2) 
+               for(int j=obstacles[i]->getLL().x()-_spacing; j<=obstacles[i]->getUR().x()+_spacing; j++) {
+                  if(j>=x1 && j<=x2) {
+                     thru[j-x1] = false;
 #ifdef _DEBUG_ON
-                  cout << "obstacle detected" 
-                     << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
+                     cout << "obstacle detected" 
+                        << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
 #endif
+                  }
+                  else if(j>x2)  break;
                }
-               else if(j>x2)  break;
-            }
+      }
       for(int i=0; i<l; i++)
          if(thru[i]) {     // choosing the first met available point
             connect[0].move(false, i);
@@ -312,18 +325,22 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
 #endif
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
-      for(int i=0; i<obstacles.size(); i++)
-         if(obstacles[i]->getUR().y()+_spacing>y1 && obstacles[i]->getLL().y()-_spacing<y2) 
-            for(int j=obstacles[i]->getLL().y()-_spacing; j<=obstacles[i]->getUR().y()+_spacing; j++) {
-               if(j>=y1 && j<=y2) {
-                  thru[j-y1] = false;
+      sort(obstacles.begin(), obstacles.end(), compareByX_O);
+      for(int i=0; i<obstacles.size(); i++) {
+         if(obstacles[i]->getLL().x()-_spacing>x2) break;
+         if(obstacles[i]->getUR().x()+_spacing>x1)
+            if(obstacles[i]->getUR().y()+_spacing>y1 && obstacles[i]->getLL().y()-_spacing<y2) 
+               for(int j=obstacles[i]->getLL().y()-_spacing; j<=obstacles[i]->getUR().y()+_spacing; j++) {
+                  if(j>=y1 && j<=y2) {
+                     thru[j-y1] = false;
 #ifdef _DEBUG_ON
-                  cout << "obstacle detected" 
-                     << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
+                     cout << "obstacle detected" 
+                        << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
 #endif
+                  }
+                  else if(j>y2)  break;
                }
-               else if(j>y2)  break;
-            }
+      }
       for(int i=0; i<l; i++)
          if(thru[i]) {
             connect[0].move(true, i);
