@@ -107,11 +107,11 @@ bool CircuitMgr::check4short(const Point& p, const Point& t, const int& layer, c
    #endif
 }
 
+// Using Prims's algorithm to solve mst
 vector<Node*> CircuitMgr::mstPrim(const Graph* g)
 {
-   //Using Prims's algorithm to solve mst
+   // initialize the nodes
    vector<Node*> pQ;
-
    for (int i=0; i< g->_nodes.size(); ++i) {
       g->_nodes[i]->_key= INT_MAX;
       g->_nodes[i]->_pi= NULL;
@@ -126,13 +126,14 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
       //set key to 0 for root node n
       n->_key= 0;
       roots.push_back(n);
-      //cout<<n->_id<<endl;
       n=0;
       
       while(!pQ.empty()) {
          Node *u= dequeue(pQ);
-         if (u->_key==INT_MAX)
+         if (u->_key==INT_MAX) {
+            enqueue(pQ, u);
             break;
+         }
          
          u->_inMST= true;
          for (int i=0; i< u->_adj.size(); i++){
@@ -142,13 +143,20 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
             if (v->_inMST== false && weight < v->_key) {
                v->_pi= u;
                v->_key= weight;
+               for(int j=0; j<pQ.size(); j++)
+                  if(pQ[j] == v) {
+                     decrease_key(pQ, j);
+                     break;
+                  }
             }
          }
       }
       for (int i=0; i< g->_nodes.size(); ++i)
       {
-         if (!g->_nodes[i]->_inMST)
+         if (!g->_nodes[i]->_inMST) {
             n=g->_nodes[i];
+            break;
+         }
       }
    }
    
@@ -167,14 +175,38 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
    return roots;
 }
 
+// insert as a min heap
 void CircuitMgr::enqueue(vector<Node *>& pQ, Node* n)
 {
-   int i= pQ.size();
-   Node* temp;
-
    pQ.push_back(n);
+   decrease_key(pQ, pQ.size()-1);
+}
 
-   while (i>=1) {
+Node* CircuitMgr::dequeue(vector<Node *>& pQ)
+{
+   //extract min from priority queue
+   Node* min= pQ[0];
+   
+#ifdef _DEBUG_ON
+  // for (int i=0; i<pQ.size(); ++i)
+    //  cout<<pQ[i]->_key<<" ";
+    if(min->_key!=INT_MAX)
+   cout << "min:" << min->_key << endl;
+#endif
+
+   //delete element from queue
+   pQ[0]= pQ[pQ.size()-1];
+   pQ.pop_back();
+
+   minHeapify(pQ,0);
+
+   return min;
+}
+
+void CircuitMgr::decrease_key(vector<Node *>& pQ, int i)
+{
+   Node* temp;
+   while (i>0) {
       if (pQ[(i-1)/2]->_key > pQ[i]->_key) {
          temp= pQ[i];
          pQ[i]= pQ[(i-1)/2];
@@ -187,39 +219,21 @@ void CircuitMgr::enqueue(vector<Node *>& pQ, Node* n)
    }
 }
 
-Node* CircuitMgr::dequeue(vector<Node *>& pQ)
-{
-   //extract min from priority queue
-   Node* min= pQ[0];
-#ifdef _DEBUG_ON
-   for (int i=0; i<pQ.size(); ++i)
-      cout<<pQ[i]->_key<<" ";
-   cout<<endl<<"min:"<<min->_key<<endl;
-#endif
-   //delete element from queue
-   pQ[0]= pQ[pQ.size()-1];
-   pQ.pop_back();
-
-   minHeapify(pQ,0);
-
-   return min;
-}
-
+// increase key
 void CircuitMgr::minHeapify(vector<Node *>& pQ, int i)
 {
    Node* temp;
    //int i= index;
 
    while (i*2+1< pQ.size()) { //has child(ren)
+
       if (i*2+2>= pQ.size()) { //only left child exists
          if (pQ[i*2+1]->_key < pQ[i]->_key) {
             temp= pQ[i];
             pQ[i]= pQ[i*2+1];
             pQ[i*2+1]= temp;
-            break;
          }
-         else
-            break;
+         break;
       }
 
       else { //both children exist

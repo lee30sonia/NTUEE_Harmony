@@ -199,6 +199,7 @@ public:
    vector<Node*> mstPrim(const Graph* g); //solve minimum spanning tree for a selected layer maybe also write Kruskal?
    void enqueue(vector<Node *>& pQ, Node* n);
    Node* dequeue(vector<Node *>& pQ);
+   void decrease_key(vector<Node *>& pQ, int i);
    void minHeapify(vector<Node *>& pQ, int i);
    void mstKruskal(const Graph* g);
    void makeSet(Node* a);
