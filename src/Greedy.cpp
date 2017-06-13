@@ -36,7 +36,8 @@ void CircuitMgr::greedy()
                continue;
             if (n->_connectEdge->_weight==0) //already overlap
                continue;
-            if (!addLine(n->_connectEdge->_connect[0],n->_connectEdge->_connect[1],layer))
+            if (!addLine(n->_connectEdge->_connect[0],n->_connectEdge->_connect[1],layer, false))
+               // set check to true if debug is needed
                cout<<"Error: trivial connection addLine failed!"<<n->_connectEdge->_connect[0].str()<<n->_connectEdge->_connect[1].str()<<endl;
          }
          // run other methods to make single set

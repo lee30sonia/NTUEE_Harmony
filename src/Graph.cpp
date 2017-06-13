@@ -122,7 +122,7 @@ bool compareByY(Shape *s1, Shape *s2)
 
 Graph* CircuitMgr::buildGraph(int layer)
 {
-   vector<Shape*>& shapes = _shapes.at(layer);
+   vector<Shape*> shapes = _shapes.at(layer); // copy instead of reference, cause vias will be added
    if (shapes.size()==0)
    {
       #ifdef _DEBUG_ON
@@ -130,6 +130,18 @@ Graph* CircuitMgr::buildGraph(int layer)
       #endif
       return 0;
    }
+   vector<Shape*> tempVias; // this is the store the temperate shapes represent the vias
+                            // so we can delete them later
+   Shape* temp;
+   int x,y;
+   for(int i=0; i<_vias.size(); i++) 
+      if(_vias[i]->layer()==layer || _vias[i]->layer()==layer-1) {
+         x = _vias[i]->pos().x();
+         y = _vias[i]->pos().y();
+         temp = new Shape(x, y, x, y, layer);
+         shapes.pushback(temp);
+         tempVias.pushback(temp);
+      }
    
    Graph* g=new Graph;
    sort(shapes.begin(), shapes.end(), compareByX);
@@ -176,6 +188,9 @@ Graph* CircuitMgr::buildGraph(int layer)
    #ifdef _DEBUG_ON
    cout<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
    #endif
+
+   for(int i=0; i<tempVias;
+
    return g;
 }
 
@@ -226,12 +241,22 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       #endif */
 
       l = x2-x1+1;
+#ifdef _DEBUG_ON
+      cout << "checking obstacle for potential area " 
+         << '(' << x1 << ',' << y1 << ") (" << x2 << ',' << y2 << ')' << endl;
+#endif
       thru = new bool[l]; // through or not
       for(int i=0; i<l; i++)  thru[i] = true;
       for(int i=0; i<obstacles.size(); i++)
          if(obstacles[i]->getUR().x()+_spacing>x1 && obstacles[i]->getLL().x()-_spacing<x2) 
             for(int j=obstacles[i]->getLL().x()-_spacing; j<=obstacles[i]->getUR().x()+_spacing; j++) {
-               if(j>=x1 && j<=x2)   thru[j-x1] = false;
+               if(j>=x1 && j<=x2) {
+                  thru[j-x1] = false;
+#ifdef _DEBUG_ON
+                  cout << "obstacle detected" 
+                     << obstacles[i]->getLL().str() << obstacles[i]->getUR.str() << endl;
+#endif
+               }
                else if(j>x2)  break;
             }
       for(int i=0; i<l; i++)
@@ -281,12 +306,22 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       cout << "Edge: obstacles checking..." << endl;
       #endif*/
       l = y2-y1+1;
+#ifdef _DEBUG_ON
+      cout << "checking obstacle for potential area " 
+         << '(' << x1 << ',' << y1 << ") (" << x2 << ',' << y2 << ')' << endl;
+#endif
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
       for(int i=0; i<obstacles.size(); i++)
          if(obstacles[i]->getUR().y()+_spacing>y1 && obstacles[i]->getLL().y()-_spacing<y2) 
             for(int j=obstacles[i]->getLL().y()-_spacing; j<=obstacles[i]->getUR().y()+_spacing; j++) {
-               if(j>=y1 && j<=y2)   thru[j-y1] = false;
+               if(j>=y1 && j<=y2) {
+                  thru[j-y1] = false;
+#ifdef _DEBUG_ON
+                  cout << "obstacle detected" 
+                     << obstacles[i]->getLL().str() << obstacles[i]->getUR.str() << endl;
+#endif
+               }
                else if(j>y2)  break;
             }
       for(int i=0; i<l; i++)

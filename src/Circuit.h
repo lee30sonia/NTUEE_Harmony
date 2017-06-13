@@ -171,7 +171,7 @@ public:
    //Circuit.cpp
    ////circuit manipulation methods
    void addShape(int x1, int y1, int x2, int y2, int layer);
-   bool addLine(int x1, int y1, int x2, int y2, int layer);
+   bool addLine(int x1, int y1, int x2, int y2, int layer, bool check=true); // check valid or not
    bool addLine(Point p1, Point p2, int layer);
    bool addVia(int x, int y, int layer, bool given=false);
    void addObstacle(int x1, int y1, int x2, int y2, int layer);
