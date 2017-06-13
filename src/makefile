@@ -3,7 +3,7 @@ ARFLAGS		:= rcv
 CXX			:= g++ -std=c++11
 CPPFLAGS	:= -O2 -fopenmp -lpthread
 OMPFLAGS := -fopenmp -lpthread
-DBGFLAGS	:= -g -D _DEBUG_ON -fopenmp -lpthread
+DBGFLAGS	:= -g -D _DEBUG_ON 
 LIBS		:= -Ilib
 LIBFLAGS	:= -ltm_usage -Llib
 
@@ -37,7 +37,7 @@ greedy.o		: Greedy.cpp Circuit.h Graph.h
 dbg	: ../bin/net_open_finder_dbg
 	@echo -n""
 ../bin/net_open_finder_dbg	: main_dbg.o graph_dbg.o path_dbg.o circuit_dbg.o io_dbg.o greedy_dbg.o ../lib/libtm_usage.a
-	$(CXX) $(OMPFLAGS) $^ -o $@ 
+	$(CXX) $^ -o $@ 
 
 main_dbg.o		: main.cpp Circuit.h ../lib/tm_usage.h
 	$(CXX) $(DBGFLAGS) $(LIBS) -c $< -o $@

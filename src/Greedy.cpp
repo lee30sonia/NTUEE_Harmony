@@ -6,7 +6,10 @@
 #include "Circuit.h"
 #include "Graph.h"
 #include <iostream>
+
+#ifndef _DEBUG_ON
 #include <omp.h>
+#endif
 using namespace std;
 
 void CircuitMgr::greedy()
