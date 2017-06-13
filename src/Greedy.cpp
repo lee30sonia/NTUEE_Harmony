@@ -15,7 +15,9 @@ using namespace std;
 
 void CircuitMgr::greedy()
 {
+#ifndef _DEBUG_ON
    #pragma omp parallel for
+#endif
    for (int layer=1; layer<=_layernum; ++layer)
    {
       Graph* g = buildGraph(layer);
