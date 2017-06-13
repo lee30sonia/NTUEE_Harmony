@@ -41,7 +41,7 @@ void CircuitMgr::addShape(int x1, int y1, int x2, int y2, int layer)
 
 bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
 {
-   if(x1==x2 || y1==y2) return false;
+   if(x1==x2 && y1==y2) return false;
    Line* l = new Line(x1, y1, x2, y2, layer);
    if (!valid(*l))
       return false;
@@ -54,6 +54,12 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer)
 
    return true;
 }
+
+bool CircuitMgr::addLine(Point p1, Point p2, int layer)
+{
+   return addLine(p1.x(), p1.y(), p2.x(), p2.y(), layer);
+}
+
 
 bool CircuitMgr::addVia(int x, int y, int layer, bool given)
 {

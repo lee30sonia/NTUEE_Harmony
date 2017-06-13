@@ -109,6 +109,7 @@ public:
    vector<Edge *> _edges;
 
    Node* _pi; //parent
+   Edge* _connectEdge; //the edge to _pi
    int _key; //key for priority queue
    bool _inMST=false;
    int _rank;

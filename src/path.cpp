@@ -125,6 +125,12 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
    {
       //set key to 0 for root node n
       n->_key= 0;
+      for(int j=0; j<pQ.size(); j++){
+         if(pQ[j] == n) {
+            decrease_key(pQ, j);
+            break;
+         }
+      }
       roots.push_back(n);
       n=0;
       
@@ -142,12 +148,14 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
             
             if (v->_inMST== false && weight < v->_key) {
                v->_pi= u;
+               v->_connectEdge = u->_adj[i];
                v->_key= weight;
-               for(int j=0; j<pQ.size(); j++)
+               for(int j=0; j<pQ.size(); j++){
                   if(pQ[j] == v) {
                      decrease_key(pQ, j);
                      break;
                   }
+               }
             }
          }
       }
@@ -166,10 +174,9 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
    {
       if (!g->_nodes[i]->_inMST)
          cout<<"node "<<g->_nodes[i]->_id<<" not in MST.";
-      if (!g->_nodes[i]->_pi) {
-         cout<<"node "<<g->_nodes[i]->_id<<" ,pi = null"<<endl;
-         //cout<<"node "<<g->_nodes[i]->_pi->_id<<endl;
-      }
+      //if (!g->_nodes[i]->_pi) {
+         //cout<<"node "<<g->_nodes[i]->_id<<" ,pi = null"<<endl;
+         //cout<<"node "<<g->_nodes[i]->_pi->_id<<endl; }
    }
    #endif
    return roots;
@@ -186,13 +193,6 @@ Node* CircuitMgr::dequeue(vector<Node *>& pQ)
 {
    //extract min from priority queue
    Node* min= pQ[0];
-   
-#ifdef _DEBUG_ON
-  // for (int i=0; i<pQ.size(); ++i)
-    //  cout<<pQ[i]->_key<<" ";
-    if(min->_key!=INT_MAX)
-   cout << "min:" << min->_key << endl;
-#endif
 
    //delete element from queue
    pQ[0]= pQ[pQ.size()-1];
