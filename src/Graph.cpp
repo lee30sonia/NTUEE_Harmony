@@ -226,16 +226,16 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       #endif */
 
       l = x2-x1+1;
-      thru = new bool[l];
+      thru = new bool[l]; // through or not
       for(int i=0; i<l; i++)  thru[i] = true;
       for(int i=0; i<obstacles.size(); i++)
-         if(obstacles[i]->getUR().x()>x1 && obstacles[i]->getLL().x()<x2) 
-            for(int j=obstacles[i]->getLL().x(); j<=obstacles[i]->getUR().x(); j++) {
+         if(obstacles[i]->getUR().x()+_spacing>x1 && obstacles[i]->getLL().x()-_spacing<x2) 
+            for(int j=obstacles[i]->getLL().x()-_spacing; j<=obstacles[i]->getUR().x()+_spacing; j++) {
                if(j>=x1 && j<=x2)   thru[j-x1] = false;
                else if(j>x2)  break;
             }
       for(int i=0; i<l; i++)
-         if(thru[i]) {
+         if(thru[i]) {     // choosing the first met available point
             connect[0].move(false, i);
             connect[1].move(false, i);
             delete[] thru;
@@ -284,8 +284,8 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
       for(int i=0; i<obstacles.size(); i++)
-         if(obstacles[i]->getUR().y()>y1 && obstacles[i]->getLL().y()<y2) 
-            for(int j=obstacles[i]->getLL().y(); j<=obstacles[i]->getUR().y(); j++) {
+         if(obstacles[i]->getUR().y()+_spacing>y1 && obstacles[i]->getLL().y()-_spacing<y2) 
+            for(int j=obstacles[i]->getLL().y()-_spacing; j<=obstacles[i]->getUR().y()+_spacing; j++) {
                if(j>=y1 && j<=y2)   thru[j-y1] = false;
                else if(j>y2)  break;
             }
