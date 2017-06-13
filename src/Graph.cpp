@@ -251,8 +251,8 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
 
       l = x2-x1+1;
 #ifdef _DEBUG_ON
-      cout << "checking obstacle for potential area " 
-         << '(' << x1 << ',' << y1 << ") (" << x2 << ',' << y2 << ')' << endl;
+     // cout << "checking obstacle for potential area " 
+     //    << '(' << x1 << ',' << y1 << ") (" << x2 << ',' << y2 << ')' << endl;
 #endif
       thru = new bool[l]; // through or not
       for(int i=0; i<l; i++)  thru[i] = true;
@@ -265,8 +265,8 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
                   if(j>=x1 && j<=x2) {
                      thru[j-x1] = false;
 #ifdef _DEBUG_ON
-                     cout << "obstacle detected" 
-                        << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
+                  //   cout << "obstacle detected" 
+                  //      << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
 #endif
                   }
                   else if(j>x2)  break;
@@ -320,8 +320,8 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       #endif*/
       l = y2-y1+1;
 #ifdef _DEBUG_ON
-      cout << "checking obstacle for potential area " 
-         << '(' << x1 << ',' << y1 << ") (" << x2 << ',' << y2 << ')' << endl;
+    //  cout << "checking obstacle for potential area " 
+    //     << '(' << x1 << ',' << y1 << ") (" << x2 << ',' << y2 << ')' << endl;
 #endif
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
@@ -334,8 +334,8 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
                   if(j>=y1 && j<=y2) {
                      thru[j-y1] = false;
 #ifdef _DEBUG_ON
-                     cout << "obstacle detected" 
-                        << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
+               //      cout << "obstacle detected" 
+               //         << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
 #endif
                   }
                   else if(j>y2)  break;
