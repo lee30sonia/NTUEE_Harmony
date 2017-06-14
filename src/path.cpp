@@ -9,7 +9,7 @@ using namespace std;
 class Node;
 
 // Using Prims's algorithm to solve mst
-vector<Node*> CircuitMgr::mstPrim(const Graph* g)
+vector<Node*> CircuitMgr::mstPrim(const Graph* g, vector<unsigned>& set_sizes)
 {
    // initialize the nodes
    vector<Node*> pQ;
@@ -23,12 +23,14 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
    Node* n = pQ[0];
    // Node *n = g->_nodes[0];
    short setNum = -1;
+   unsigned size;
 
    while (n!=0)
    {
       //set key to 0 for root node n
       n->_key= 0;
       /*
+      // since we always set pQ[0] as n, there is no more need to descrease_key it here
       for(int j=0; j<pQ.size(); j++){
          if(pQ[j] == n) {
             decrease_key(pQ, j);
@@ -39,6 +41,7 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
       
       roots.push_back(n);
       setNum++;
+      size = 0;
       n=0;
       
       while(!pQ.empty()) {
@@ -49,6 +52,7 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
          }
          
          u->_inMST = setNum;
+         size++;
          for (int i=0; i< u->_adj.size(); i++){
             Node* v= u->_adj[i]->getNeighbor(u);
             int weight= u->_adj[i]->_weight;
@@ -67,7 +71,9 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g)
          }
       }
    
+      set_sizes.push_back(size);
       if(!pQ.empty()) n = pQ[0];
+      // checking pQ is the same. this way we don't need to go through all the nodes
       /*
       for (int i=0; i< g->_nodes.size(); ++i)
       {

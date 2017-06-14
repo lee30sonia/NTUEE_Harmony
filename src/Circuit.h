@@ -200,7 +200,7 @@ public:
 */
 
    // Minimun spanning tree
-   vector<Node*> mstPrim(const Graph* g); //solve minimum spanning tree for a selected layer maybe also write Kruskal?
+   vector<Node*> mstPrim(const Graph* g, vector<unsigned>& set_sizes); //solve minimum spanning tree 
    void enqueue(vector<Node *>& pQ, Node* n);
    Node* dequeue(vector<Node *>& pQ);
    void decrease_key(vector<Node *>& pQ, int i);

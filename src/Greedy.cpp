@@ -24,9 +24,11 @@ void CircuitMgr::greedy()
       if (g==0) continue;
       if (g->_nodes.size()>0)
       {
-         vector<Node*> roots = mstPrim(g);
+         vector<unsigned> set_sizes;
+         vector<Node*> roots = mstPrim(g, set_sizes);
          #ifdef _DEBUG_ON
          cout<<"#disjoint set: "<<roots.size()<<endl;
+         for(int i=0; i<set_sizes.size(); i++)  cout << "set " << i << ":" << set_sizes[i] << endl;
          #endif
          
          for (int i=0; i<g->_nodes.size(); ++i)
@@ -50,10 +52,16 @@ void CircuitMgr::greedy()
    // final optimization (ex. remove redundant lines; replace a long line with two vias)
 }
 
-
+// assume that all the trivial connections have been found
+// also assume we got one main set and other small ones
 void CircuitMgr::L_connect(vector<Node*>& roots)
 {
+   // this is to check if all the sets are joint
    short* sets = new short[roots.size()];
+   for(int i=0; i<roots.size(); i++)   sets[i] = i;
+
+
+
 
    delete[] sets;
 }
