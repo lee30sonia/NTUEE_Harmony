@@ -49,8 +49,7 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer, bool check)
    _lines.at(layer).push_back(l);
 
    #ifdef _DEBUG_ON
-   cout << "Line" << l->startpoint().str() << l->endpoint().str()
-      << "on layer" << layer << " added." << endl;
+   //cout << "Line" << l->startpoint().str() << l->endpoint().str()<< "on layer" << layer << " added." << endl;
    #endif
 
    return true;
