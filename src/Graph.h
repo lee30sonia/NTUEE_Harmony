@@ -66,6 +66,9 @@ private:
 };
 #endif
 
+//set
+//member pointers: root, ulmost, llmost, ...
+
 class Edge
 {
    
