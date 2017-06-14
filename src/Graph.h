@@ -94,10 +94,9 @@ public:
 */
 
 class Node
-{
-   
+{   
 public:
-   Node(Obj* obj): _obj(obj) { }
+   Node(Obj* obj): _obj(obj), _inMST(-1) { }
    void addEdge(Edge *e) { _edges.push_back(e); }
    //bool operator==(const Obj* o) { return _obj==o; }
    //void addEdge(Node *n);
@@ -111,7 +110,7 @@ public:
    Node* _pi; //parent
    Edge* _connectEdge; //the edge to _pi
    int _key; //key for priority queue
-   bool _inMST=false;
+   short _inMST;
    int _rank;
    int _layer;
    

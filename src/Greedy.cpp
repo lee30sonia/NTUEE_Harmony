@@ -40,10 +40,20 @@ void CircuitMgr::greedy()
                // set check to true if debug is needed
                cout<<"Error: trivial connection addLine failed!"<<n->_connectEdge->_connect[0].str()<<n->_connectEdge->_connect[1].str()<<endl;
          }
+
+         L_connect(roots);
          // run other methods to make single set
       }
       delete g;
    }
    // deal with connection between different layers(via)
    // final optimization (ex. remove redundant lines; replace a long line with two vias)
+}
+
+
+void CircuitMgr::L_connect(vector<Node*>& roots)
+{
+   short* sets = new short[roots.size()];
+
+   delete[] sets;
 }

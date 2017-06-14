@@ -186,7 +186,9 @@ public:
    int dist(Shape& s1, Shape& s2, bool xType, Point* connect); //for buildGraph. return -1 if there is obstacle between them
    
    // path.cpp
+
    // shortest path
+   /*
    bool shortestPath(const Point s, const Point t, const int layer);
    void init4short(int layer);
    bool check4short(const Point& p, const Point& t, const int& layer, const char& dir,
@@ -195,6 +197,7 @@ public:
    char& getDir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
    void setLevel(const Point& p, const int& layer, int level) { _levelMap[layer][p.x()][p.y()]= level; }
    void setDir(const Point& p, const int& layer, char dir) { _dirMap[layer][p.x()][p.y()]= dir; }
+*/
 
    // Minimun spanning tree
    vector<Node*> mstPrim(const Graph* g); //solve minimum spanning tree for a selected layer maybe also write Kruskal?
@@ -214,6 +217,8 @@ public:
    void findSteiner(Node* a); //use Kruskal based algorithm to find the Steiner point from a staring node(?)
    bool sameSet(Node* a, Node* b); //determine if two nodes belong to the same set
 
+   // other connection
+   void L_connect(vector<Node*>& roots);
 private:
    int _viaCost;
    int _spacing;
