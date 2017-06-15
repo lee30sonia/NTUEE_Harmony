@@ -13,7 +13,7 @@
 using namespace std;
 
 class Node;
-class Obj;
+class Shape;
 /*class DSet;
 
 class DSetObj
@@ -99,7 +99,7 @@ public:
 class Node
 {   
 public:
-   Node(Obj* obj): _obj(obj), _inMST(-1) { }
+   Node(Shape* obj): _obj(obj), _inMST(false) { }
    void addEdge(Edge *e) { _edges.push_back(e); }
    //bool operator==(const Obj* o) { return _obj==o; }
    //void addEdge(Node *n);
@@ -107,13 +107,13 @@ public:
    
    void setId(int i) { _id=i; }
    
-   Obj* _obj;
+   Shape* _obj;
    vector<Edge *> _edges;
 
    Node* _pi; //parent
    Edge* _connectEdge; //the edge to _pi
    int _key; //key for priority queue
-   short _inMST;
+   bool _inMST;
    int _rank;
    int _layer;
    
@@ -134,15 +134,13 @@ public:
    ~Graph();
    
    void addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2); //n1 n2 already in graph
-   void addEdge(Obj* n1, Obj* n2, int& weight, Point c1, Point c2);
-   void addNode(Obj* o);
+   void addEdge(Shape* n1, Shape* n2, int& weight, Point c1, Point c2);
+   void addNode(Shape* o);
    //Node * getNodeById(const int& id);
    
    //map<int, Node *> nodesMap;
    vector<Node *> _nodes;
    vector<Edge *> _edges;
    vector<vector<Node *>> _trees;
-   
-
 };
 #endif

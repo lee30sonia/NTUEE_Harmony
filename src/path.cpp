@@ -51,13 +51,14 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g, vector<unsigned>& set_sizes)
             break;
          }
          
-         u->_inMST = setNum;
+         u->_inMST = true;
+         u->_obj->setsetNum(setNum);
          size++;
          for (int i=0; i< u->_adj.size(); i++){
             Node* v= u->_adj[i]->getNeighbor(u);
             int weight= u->_adj[i]->_weight;
             
-            if (v->_inMST<0 && weight < v->_key) {
+            if (v->_inMST==false && weight < v->_key) {
                v->_pi= u;
                v->_connectEdge = u->_adj[i];
                v->_key= weight;
@@ -90,7 +91,7 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g, vector<unsigned>& set_sizes)
    cout<<"MST completed."<<endl;
    for (int i=0; i<g->_nodes.size(); ++i)
    {
-      if (g->_nodes[i]->_inMST<0)
+      if (!g->_nodes[i]->_inMST)
          cout<<"node "<<g->_nodes[i]->_id<<" not in MST.";
       //if (!g->_nodes[i]->_pi) {
          //cout<<"node "<<g->_nodes[i]->_id<<" ,pi = null"<<endl;

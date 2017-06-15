@@ -74,6 +74,8 @@ public:
    Point& getLL() { return _LL; }
    Point& getUR() { return _UR; }
    int layer() { return _layer; }
+   void setsetNum(short s ) { setNum = s; }
+   short getsetNum() const { return setNum; }
 
    bool connected(Line l); //whether the line is connected to the shape
    bool connected(Point p); //return true if the point is inside the shape, assume the same layer
@@ -85,6 +87,7 @@ private:
    Point _LL; //lower left corner
    Point _UR; //upper right corner
    int _layer; //at which layer
+   short setNum;
 };
 
 class Via :public Obj
@@ -125,6 +128,7 @@ private:
 class Line :public Obj
 {
 public:
+   Line() {};
    Line(int x1, int y1, int x2, int y2, int layer);
 
    Type type() { return line; }
@@ -218,7 +222,9 @@ public:
    bool sameSet(Node* a, Node* b); //determine if two nodes belong to the same set
 
    // other connection
-   void L_connect(vector<Node*>& roots);
+   bool collectRemains(vector<Node*>& roots);
+   Shape* findNearest(Shape* target, const short mainSet, short& x, short& y);
+   bool L_connect(Shape* root, Shape* connect, short& x, short& y);
 private:
    int _viaCost;
    int _spacing;

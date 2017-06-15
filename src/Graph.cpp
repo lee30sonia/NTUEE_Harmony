@@ -68,7 +68,7 @@ void Graph::addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2)
    #endif
    */
 }
-void Graph::addEdge(Obj* o1, Obj* o2, int& weight, Point c1, Point c2)
+void Graph::addEdge(Shape* o1, Shape* o2, int& weight, Point c1, Point c2)
 {
    Node *n1=0, *n2=0;
    for (int i=0; i<_nodes.size(); ++i)
@@ -99,7 +99,7 @@ void Graph::addEdge(Obj* o1, Obj* o2, int& weight, Point c1, Point c2)
    addEdge(n1, n2, weight, c1, c2);
 }
 
-void Graph::addNode(Obj* o)
+void Graph::addNode(Shape* o)
 {
    Node* n = new Node(o);
    #ifdef _DEBUG_ON
@@ -153,25 +153,10 @@ Graph* CircuitMgr::buildGraph(int layer)
       }
    
    Graph* g=new Graph;
-   sort(shapes.begin(), shapes.end(), compareByX);
    Point connect[2];
 #ifndef _DEBUG_ON
    #pragma omp parallel for
 #endif
-   for (int i=0; i<shapes.size()-1; ++i)
-   {
-      for (int j=i+1; j<shapes.size(); ++j)
-      {
-         if (shapes.at(i)->overlapX(*shapes.at(j)))
-         {
-            int d = dist(*shapes.at(i),*shapes.at(j),true, connect);
-            if (d>=0)
-               g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
-         }
-         else
-            break;
-      }
-   }
    sort(shapes.begin(), shapes.end(), compareByY);
    for (int i=0; i<shapes.size()-1; ++i)
    {
@@ -180,6 +165,21 @@ Graph* CircuitMgr::buildGraph(int layer)
          if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
             int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
+            if (d>=0)
+               g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
+         }
+         else
+            break;
+      }
+   }
+   sort(shapes.begin(), shapes.end(), compareByX);
+   for (int i=0; i<shapes.size()-1; ++i)
+   {
+      for (int j=i+1; j<shapes.size(); ++j)
+      {
+         if (shapes.at(i)->overlapX(*shapes.at(j)))
+         {
+            int d = dist(*shapes.at(i),*shapes.at(j),true, connect);
             if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
          }

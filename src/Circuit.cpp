@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -90,10 +91,25 @@ bool CircuitMgr::valid(Point& p, int layer)
   return true;
 }
 
+bool compareByX_O(Obstacle *s1, Obstacle *s2);
+
 bool CircuitMgr::valid(Line& l)
 {
    Point p=l.startpoint();
-   bool vertical=l.vertical();
+   vector<Obstacle*>& obstacles = _obstacles.at(l.layer());
+
+   // sort and check through all the obstacles once
+   // might be faster
+   sort(obstacles.begin(), obstacles.end(), compareByX_O);
+   for(int i=0; i<obstacles.size(); i++) {
+      if(obstacles[i]->getUR().x()+_spacing<l.startpoint().x()) continue;
+      if(obstacles[i]->getLL().x()-_spacing>l.endpoint().x()) break;
+      if(obstacles[i]->getLL().y()-_spacing<l.startpoint().y() &&
+         obstacles[i]->getUR().y()+_spacing>l.endpoint().y())  return false;
+   }
+
+   // check through all the obstacles for every point on the line
+   /*
    while(p!=l.endpoint())
    {
       if (!valid(p, l.layer()))
@@ -102,6 +118,7 @@ bool CircuitMgr::valid(Line& l)
    }
    if (!valid(p, l.layer())) //check endpoint
       return false;
+      */
    return true;
 }
 
@@ -128,6 +145,7 @@ Shape::Shape(int x1, int y1, int x2, int y2, int layer)
    _LL=Point(x1,y1);
    _UR=Point(x2,y2);
    _layer=layer;
+   setNum = -1;
 }
 
 bool Shape::connected(Line l)
