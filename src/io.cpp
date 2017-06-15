@@ -30,7 +30,9 @@ bool CircuitMgr::readCircuit(char* filename)
    fin.ignore(13);   fin >> obstacles;   fin.ignore();
    #ifdef _DEBUG_ON
    cout << "reading in data..." << endl;
-   cout << "input size: shape num = "<<routedShapes<<", obstacle num = "<<obstacles<<endl;
+   cout << "input size: shape num = " << routedShapes 
+        << ", vias num = " << routedVias
+        << ", obstacle num = " << obstacles << endl;
    #endif
    
    for(int i=0; i<=_layernum; ++i){
@@ -59,6 +61,9 @@ bool CircuitMgr::readCircuit(char* filename)
       fin.ignore();     fin >> y1;
       fin.ignore(2);
       addVia(x1, y1, layer, true);
+      // also add vias as shapes
+      addShape(x1, y1, x1, y1, layer);
+      addShape(x1, y1, x1, y1, layer+1);
    }
    if(routedVias != _vias.size()) {
       cout << "Error: input RoutedVias format error!" << endl;
