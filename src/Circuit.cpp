@@ -65,8 +65,9 @@ bool CircuitMgr::addLine(Point p1, Point p2, int layer, bool check)
 bool CircuitMgr::addVia(int x, int y, int layer, bool given)
 {
    Point p(x,y);
-   if (!valid(p, layer))
+   if (!valid(p, layer)||!valid(p, layer+1))
       return false;
+
    Via* v = new Via(x, y, layer, given);
    _vias.push_back(v);
    return true;

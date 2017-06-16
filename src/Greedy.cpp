@@ -57,7 +57,6 @@ void CircuitMgr::greedy()
          #ifdef _DEBUG_ON
          cout<<"#disjoint set: "<<set_sizes.size()<<endl;
          for(int i=0; i<set_sizes.size(); i++)  cout << "set " << i << ": " << set_sizes[i] << endl;
-         cout<<"After collectRemains()..."<<endl;
          #endif
          // try to connect remaining shapes
          if(roots.size()>1) {

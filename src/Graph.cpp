@@ -7,6 +7,7 @@
 #include "Circuit.h"
 #include <iostream>
 #include <algorithm>
+#include <climits>
 //#include <omp.h>
 
 using namespace std;
@@ -205,7 +206,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
             #ifdef _DEBUG_ON
             //cout << "overlap detected." <<s1.getLL().str()<<s1.getUR().str()<<s2.getLL().str()<<s2.getUR().str()<< endl;
             #endif
-            connect[0] = connect[1] = Point(0,0);
+            connect[0] = connect[1] = Point(x1,s1.getLL().y());
             return 0;
          }
          y1=s2.getUR().y();
@@ -217,7 +218,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
             #ifdef _DEBUG_ON
             //cout << "overlap detected." <<s1.getLL().str()<<s1.getUR().str()<<s2.getLL().str()<<s2.getUR().str()<< endl;
             #endif
-            connect[0] = connect[1] = Point(0,0);
+            connect[0] = connect[1] = Point(x1,s2.getLL().y());
             return 0;
          }
          y1=s1.getUR().y();
@@ -266,7 +267,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
       delete[] thru;
       return -1; 
    }
-   else
+   else //yType
    {
       y1=(s1.getLL().y()>s2.getLL().y())?s1.getLL().y():s2.getLL().y();
       y2=s2.getUR().y();
@@ -276,7 +277,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
             #ifdef _DEBUG_ON
             //cout << "overlap detected." <<s1.getLL().str()<<s1.getUR().str()<<s2.getLL().str()<<s2.getUR().str()<< endl;
             #endif
-            connect[0] = connect[1] = Point(0,0);
+            connect[0] = connect[1] = Point(s2.getLL().x(),y1);
             return 0;
          }
          x1=s1.getUR().x();
@@ -288,7 +289,7 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
             #ifdef _DEBUG_ON
             //cout << "overlap detected." <<s1.getLL().str()<<s1.getUR().str()<<s2.getLL().str()<<s2.getUR().str()<< endl;
             #endif
-            connect[0] = connect[1] = Point(0,0);
+            connect[0] = connect[1] = Point(s1.getLL().x(),y1);
             return 0;
          }
          x1=s2.getUR().x();
@@ -355,24 +356,57 @@ void CircuitMgr::connectLayer(int layer)
 #ifdef _DEBUG_ON
    cout<<"connecting layer "<<layer<<" and "<<layer+1<<" with via."<<endl;
 #endif
-   vector<Shape*>& shapes1 = _shapes.at(layer);
-   vector<Shape*>& shapes2 = _shapes.at(layer+1);
-   sort(shapes1.begin(), shapes1.end(), compareByY);
-   sort(shapes2.begin(), shapes2.end(), compareByY);
-   /*int j=0;
-    for (int i=0; i<shapes1.size()-1; ++i)
-    {
-    while(shapes2.at(j))
-    for (; j<shapes2.size(); ++j)
-    {
-    if (shapes.at(i)->overlapY(*shapes.at(j)))
-    {
-    int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
-    if (d>=0)
-    g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
-    }
-    else
-    break;
-    }
-    }*/
+   vector<Shape*> shapes = _shapes.at(layer);
+   for (int i=0; i<_shapes.at(layer+1).size(); ++i)
+      shapes.push_back(_shapes.at(layer+1).at(i));
+   
+   Point connect[2];
+   int dMin=INT_MAX; Point c[2]; int l;
+   sort(shapes.begin(), shapes.end(), compareByY);
+   for (int i=0; i<shapes.size()-1; ++i)
+   {
+      for (int j=i+1; j<shapes.size(); ++j)
+      {
+         if (shapes.at(i)->overlapY(*shapes.at(j)))
+         {
+            if (shapes.at(i)->layer()!=shapes.at(j)->layer())
+            {
+               int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
+               if (d==0)
+               {
+                  addVia(connect[0].x(),connect[0].y(),layer);
+                  return;
+               }
+               else if (d>0)
+               {
+                  if (d<dMin)
+                  {
+                     Shape& s1=*shapes.at(i);
+                     Shape& s2=*shapes.at(j);
+                     dMin=d;
+                     c[0]=(connect[0].inside(s2.getLL(),s2.getUR()))?connect[0]:connect[1]; //the one that is in s2. to add Via here
+                     c[1]=(c[0]!=connect[0])?c[0]:c[1]; //the other one. to addLine on s1.layer()
+                     l=s1.layer();
+                  }
+               }
+            }
+         }
+         else
+            break;
+      }
+   }
+   // if the program reaches here, means there is not any overlap between the two layers
+   if (dMin<INT_MAX)
+   {
+      if (!addVia(connect[0].x(),connect[0].y(),layer))
+         cout<<"addVia ERROR in connectLayer()!!"<<endl;
+      if (!addLine(connect[0],connect[1],l))
+         cout<<"addLine ERROR in connectLayer()!!"<<endl;
+   }
+   else
+   {
+      #ifdef _BEDUG_ON
+      cout<<"No trivial place to add Via..."<<endl;
+      #endif
+   }
 }
