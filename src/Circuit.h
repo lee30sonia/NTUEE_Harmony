@@ -220,11 +220,15 @@ public:
    bool check43d(Node* a, const int layer=1);
    void findSteiner(Node* a); //use Kruskal based algorithm to find the Steiner point from a staring node(?)
    bool sameSet(Node* a, Node* b); //determine if two nodes belong to the same set
-
+   
+   // Greedy.cpp
    // other connection
    bool collectRemains(vector<Node*>& roots);
    Shape* findNearest(Shape* target, const short mainSet, short& x, short& y);
    bool L_connect(Shape* root, Shape* connect, short& x, short& y);
+   // Graph.cpp
+   void connectLayer(int l); //add via on layer l to connect l and l+1
+   
 private:
    int _viaCost;
    int _spacing;

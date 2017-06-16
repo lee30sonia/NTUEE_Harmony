@@ -16,6 +16,17 @@ using namespace std;
 
 void CircuitMgr::greedy()
 {
+   // deal with connection between different layers(via)
+   vector<bool> checkVia;
+   checkVia.resize(_layernum, false);
+   for (int i=0; i<_vias.size(); ++i)
+      checkVia[_vias.at(i)->layer()]=true;
+   for (int layer=1; layer<_layernum; ++layer)
+   {
+      if (!checkVia[layer])
+         connectLayer(layer);
+   }
+   
 #ifndef _DEBUG_ON
    #pragma omp parallel for
 #endif
@@ -29,10 +40,6 @@ void CircuitMgr::greedy()
          // find the MST for the graph
          vector<unsigned> set_sizes;
          vector<Node*> roots = mstPrim(g, set_sizes);
-         #ifdef _DEBUG_ON
-         cout<<"#disjoint set: "<<roots.size()<<endl;
-         for(int i=0; i<set_sizes.size(); i++)  cout << "set " << i << ":" << set_sizes[i] << endl;
-         #endif
          
          // add the MST as actual lines
          for (int i=0; i<g->_nodes.size(); ++i)
@@ -46,22 +53,29 @@ void CircuitMgr::greedy()
                // set check to true if debug is needed
                cout<<"Error: trivial connection addLine failed!"<<n->_connectEdge->_connect[0].str()<<n->_connectEdge->_connect[1].str()<<endl;
          }
+         
+         #ifdef _DEBUG_ON
+         cout<<"#disjoint set: "<<set_sizes.size()<<endl;
+         for(int i=0; i<set_sizes.size(); i++)  cout << "set " << i << ": " << set_sizes[i] << endl;
+         cout<<"After collectRemains()..."<<endl;
+         #endif
+         // try to connect remaining shapes
          if(roots.size()>1) {
             // make sure the largest set is at roots[0]
             for(int i=1; i<roots.size(); i++)
                if(set_sizes[i]>set_sizes[0]) swap(roots[0], roots[i]);
             // join the remained sets using L_connect
             if(collectRemains(roots)) {
-#ifdef _DEBUG_ON
+               #ifdef _DEBUG_ON
                cout << "Joint as one set!" << endl;
-#endif
+               #endif
             }
          }
          // run other methods to make single set
       }
       delete g;
    }
-   // deal with connection between different layers(via)
+   
    // final optimization (ex. remove redundant lines; replace a long line with two vias)
 }
 
@@ -76,7 +90,7 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
       Shape* connect = findNearest(roots[i]->_obj, mainSet, x, y);
       if(!L_connect(roots[i]->_obj, connect, x, y)) {
 #ifdef _DEBUG_ON
-         cout << "set " << i << " con't be joined." << endl;
+         cout << "set " << i << " can't be joined." << endl;
 #endif
          joint = false;
       }
@@ -92,7 +106,7 @@ Shape* CircuitMgr::findNearest(Shape* target, const short mainSet, short& x, sho
    Shape* result;
    int bound = (target->getLL().y()<target->getUR().disY(_UR))?
                target->getUR().disY(_UR): target->getLL().y();
-   // I still can't deside which is faster
+   // I still can't decide which is faster
    // scan through the whole thing
    for(int i=0; i<shapes.size(); i++) {
       if(shapes[i]->getsetNum() != mainSet)  continue;
@@ -178,3 +192,5 @@ bool CircuitMgr::L_connect(Shape* root, Shape* connect, short& x, short& y)
 
    return false;
 }
+
+

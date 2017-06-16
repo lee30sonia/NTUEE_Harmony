@@ -135,7 +135,7 @@ Graph* CircuitMgr::buildGraph(int layer)
    if (shapes.size()==0)
    {
       #ifdef _DEBUG_ON
-      cout<<"Graph of layer "<<layer<<" does not build because no shape is in the layer."<<endl;
+      cout<<endl<<"Graph of layer "<<layer<<" does not build because no shape is in the layer."<<endl;
       #endif
       return 0;
    }
@@ -182,7 +182,7 @@ Graph* CircuitMgr::buildGraph(int layer)
    }
 
    #ifdef _DEBUG_ON
-   cout<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
+   cout<<endl<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
    #endif
    return g;
 }
@@ -350,4 +350,29 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
    */
 }
 
-
+void CircuitMgr::connectLayer(int layer)
+{
+#ifdef _DEBUG_ON
+   cout<<"connecting layer "<<layer<<" and "<<layer+1<<" with via."<<endl;
+#endif
+   vector<Shape*>& shapes1 = _shapes.at(layer);
+   vector<Shape*>& shapes2 = _shapes.at(layer+1);
+   sort(shapes1.begin(), shapes1.end(), compareByY);
+   sort(shapes2.begin(), shapes2.end(), compareByY);
+   /*int j=0;
+    for (int i=0; i<shapes1.size()-1; ++i)
+    {
+    while(shapes2.at(j))
+    for (; j<shapes2.size(); ++j)
+    {
+    if (shapes.at(i)->overlapY(*shapes.at(j)))
+    {
+    int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
+    if (d>=0)
+    g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
+    }
+    else
+    break;
+    }
+    }*/
+}
