@@ -97,22 +97,21 @@ bool compareByX_O(Obstacle *s1, Obstacle *s2);
 bool CircuitMgr::valid(Line& l)
 {
    Point p=l.startpoint();
-   bool vertical = l.vertical();
+   // bool vertical = l.vertical();
    vector<Obstacle*>& obstacles = _obstacles.at(l.layer());
 
    // sort and check through all the obstacles once
    // might be faster
-   /*
    sort(obstacles.begin(), obstacles.end(), compareByX_O);
    for(int i=0; i<obstacles.size(); i++) {
       if(obstacles[i]->getUR().x()+_spacing<l.startpoint().x()) continue;
       if(obstacles[i]->getLL().x()-_spacing>l.endpoint().x()) break;
-      if(obstacles[i]->getLL().y()-_spacing<l.startpoint().y() &&
-         obstacles[i]->getUR().y()+_spacing>l.endpoint().y())  return false;
-   }*/
+      if(obstacles[i]->getLL().y()-_spacing<l.endpoint().y() &&
+         obstacles[i]->getUR().y()+_spacing>l.startpoint().y())  return false;
+   }
 
    // check through all the obstacles for every point on the line
-   
+  /* 
    while(p!=l.endpoint())
    {
       if (!valid(p, l.layer()))
@@ -121,7 +120,7 @@ bool CircuitMgr::valid(Line& l)
    }
    if (!valid(p, l.layer())) //check endpoint
       return false;
-      
+    */  
    return true;
 }
 
