@@ -1,13 +1,20 @@
-This program is to solve the finding open net problem.
+This program is for ICCAD 2017 Contest, Problem B, Net Open Location Finder with Obstacles
 
-Author: §õÄìªå¡B©P©û¡B§d©y¤Z
+Team: 6
+Author: B04901005 §õÄìªå¡BB02901038 ©P©û¡BB02901037§d©y¤Z
 
+Directories:
 bin/:
    Executable files.
+   - cada057: optimized version
+   - net_open_finder_dbg: debug version
+   - eval: evaluation program released by CAD
+   - eval_2: evaluation program version.2 released by CAD (6/12)
 lib/:
-   Time usage library.
-test/:
-   Test files
+   Time and memory usage library.
+inputs/:
+   Simple testing input created by us (simple1) and
+   benchmarks released by CAD (benchmarks/).
 src/:
    Source codes. Including:
 
@@ -15,7 +22,7 @@ src/:
       Define the classes for circuit objects and class CircuitMgr. The read-in circuit is store in CircuitMgr and most of the functions in this program are the member function of it.
 
    Circuit.cpp:
-      Define the basis member functions of the classes. Also define the functions to build a graph by scanning the circuit on both dimension and looking for overlapped objects.
+      Define the basic member functions of the classes. Also define the functions to build a graph by scanning the circuit on both dimension and looking for overlapped objects.
 
    io.cpp:
       Functions for read in the input file and write the output file.
@@ -25,13 +32,20 @@ src/:
 
    path.cpp:
       Functions to apply Hadlock's algorithm to find an optimal path between between two given points.
+   
+   Greedy.cpp:
+      Implementation of the whole combined algorithm.
+      
+   makefile:
+      Need C++11 and gcc version at least 4.6 (for multi-thread library omp.h).
 
 
-Unsolved problems:
-   * Minimum spanning tree for finding effective edges and add them as Lines.
-   * The seconding scanning for overlapping, looking for trivial connections between Shapes and the new built Lines.
-   * Collecting disjoint sets and find the best points pair to connect them.
-   * Way to find Vias.
-   * Simple test cases to verify logical correction.
-   * Class presentation and paper report.
-
+Usage:
+   1. To compile:
+   - make: creates binary file ../bin/cada057 (optimized version with multi-threading)
+   - make dbg: creates binary file ../bin/net_open_finder_dbg (debug version. If you don't have gcc 4.6, use this.)
+   - make clean: remove all object files, binary files, and output files.
+   
+   2. To exacute / To evaluate result:
+   - ./[cada057 | net_open_finder_dbg | eval | eval_2] <input file> <output file>
+   ***If you do not have C++11, do not "make clean" and try the binary files we provide.
