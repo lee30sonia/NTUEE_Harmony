@@ -9,7 +9,7 @@
 #include <vector>
 #include <climits>
 
-#ifndef _DEBUG_ON
+#ifdef _OMP
 #include <omp.h>
 #endif
 using namespace std;

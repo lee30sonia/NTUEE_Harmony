@@ -8,7 +8,9 @@
 #include <iostream>
 #include <algorithm>
 #include <climits>
-//#include <omp.h>
+#ifdef _OMP
+#include <omp.h>
+#endif
 
 using namespace std;
 class Point;
@@ -143,7 +145,7 @@ Graph* CircuitMgr::buildGraph(int layer)
    Graph* g=new Graph;
    Point connect[2];
    sort(shapes.begin(), shapes.end(), compareByY);
-#ifndef _DEBUG_ON
+#ifdef _OMP
    #pragma omp parallel for
 #endif
    for (int i=0; i<shapes.size()-1; ++i)
@@ -161,7 +163,7 @@ Graph* CircuitMgr::buildGraph(int layer)
       }
    }
    sort(shapes.begin(), shapes.end(), compareByX);
-#ifndef _DEBUG_ON
+#ifdef _OMP
    #pragma omp parallel for
 #endif
    for (int i=0; i<shapes.size()-1; ++i)

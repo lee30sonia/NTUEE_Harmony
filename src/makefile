@@ -2,7 +2,7 @@ AR			:= ar
 ARFLAGS		:= rcv
 CXX			:= g++ -std=c++11
 CPPFLAGS	:= -O2 
-OMPFLAGS := -fopenmp -lpthread
+OMPFLAGS := -fopenmp -lpthread -D _OMP
 DBGFLAGS	:= -g -D _DEBUG_ON 
 LIBS		:= -Ilib
 LIBFLAGS	:= -ltm_usage -Llib
