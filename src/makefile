@@ -1,18 +1,17 @@
 AR			:= ar
 ARFLAGS		:= rcv
 CXX			:= g++ -std=c++11
-CPPFLAGS	:= -O2 -fopenmp -lpthread
+CPPFLAGS	:= -O2 
 OMPFLAGS := -fopenmp -lpthread
 DBGFLAGS	:= -g -D _DEBUG_ON 
 LIBS		:= -Ilib
 LIBFLAGS	:= -ltm_usage -Llib
 
-
-# optimised version
-all	: ../bin/net_open_finder
+# optimised version without multi-thread
+all	: ../bin/cada057
 	@echo -n""
-../bin/net_open_finder	: main.o graph.o path.o circuit.o io.o greedy.o ../lib/libtm_usage.a
-	$(CXX) $(OMPFLAGS) $^ -o $@
+../bin/cada057	: main.o graph.o path.o circuit.o io.o greedy.o ../lib/libtm_usage.a
+	$(CXX) $^ -o $@
 
 main.o		: main.cpp Circuit.h ../lib/tm_usage.h
 	$(CXX) $(CPPFLAGS) $(LIBS) -c $< -o $@
@@ -31,6 +30,30 @@ io.o		: io.cpp Circuit.h
 	
 greedy.o		: Greedy.cpp Circuit.h Graph.h 
 	$(CXX) $(CPPFLAGS) -c $< -o $@
+
+# optimised version with muti-thread
+omp	: ../bin/net_open_finder
+	@echo -n""
+../bin/net_open_finder	: main_omp.o graph_omp.o path_omp.o circuit_omp.o io_omp.o greedy_omp.o ../lib/libtm_usage.a
+	$(CXX) $(OMPFLAGS) $^ -o $@
+
+main_omp.o		: main.cpp Circuit.h ../lib/tm_usage.h
+	$(CXX) $(CPPFLAGS) $(OMPFLAGS) $(LIBS) -c $< -o $@
+
+circuit_omp.o	: Circuit.cpp Circuit.h Graph.h
+	$(CXX) $(CPPFLAGS) $(OMPFLAGS) -c $< -o $@
+
+graph_omp.o	: Graph.cpp Graph.h Circuit.h
+	$(CXX) $(CPPFLAGS) $(OMPFLAGS) -c $< -o $@
+
+path_omp.o	: path.cpp Circuit.h
+	$(CXX) $(CPPFLAGS) $(OMPFLAGS) -c $< -o $@
+
+io_omp.o		: io.cpp Circuit.h
+	$(CXX) $(CPPFLAGS) $(OMPFLAGS) -c $< -o $@
+	
+greedy_omp.o		: Greedy.cpp Circuit.h Graph.h 
+	$(CXX) $(CPPFLAGS) $(OMPFLAGS) -c $< -o $@
 
 
 #debug version
@@ -64,7 +87,6 @@ greedy_dbg.o		: Greedy.cpp Circuit.h Graph.h
 	$(AR) $(ARFLAGS) $@ $<
 tm_usage.o: ../lib/tm_usage.cpp ../lib/tm_usage.h
 	$(CXX) -c $<
-
 
 clean	:
 	rm -rf *.o ../lib/*.a ../lib/*.o ../bin/net_open_finder ../bin/net_open_finder_dbg ../outputs/*

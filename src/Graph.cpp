@@ -142,10 +142,10 @@ Graph* CircuitMgr::buildGraph(int layer)
    }
    Graph* g=new Graph;
    Point connect[2];
+   sort(shapes.begin(), shapes.end(), compareByY);
 #ifndef _DEBUG_ON
    #pragma omp parallel for
 #endif
-   sort(shapes.begin(), shapes.end(), compareByY);
    for (int i=0; i<shapes.size()-1; ++i)
    {
       for (int j=i+1; j<shapes.size(); ++j)
@@ -161,6 +161,9 @@ Graph* CircuitMgr::buildGraph(int layer)
       }
    }
    sort(shapes.begin(), shapes.end(), compareByX);
+#ifndef _DEBUG_ON
+   #pragma omp parallel for
+#endif
    for (int i=0; i<shapes.size()-1; ++i)
    {
       for (int j=i+1; j<shapes.size(); ++j)
