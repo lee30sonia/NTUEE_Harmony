@@ -10,7 +10,7 @@ LIBFLAGS	:= -ltm_usage -Llib
 # optimized version
 all	: ../bin/net_open_finder
 	@echo -n""
-../bin/cada057	: main.o graph.o path.o circuit.o io.o greedy.o ../lib/libtm_usage.a
+../bin/net_open_finder	: main.o graph.o path.o circuit.o io.o greedy.o ../lib/libtm_usage.a
 	$(CXX) $(OMPFLAGS) $^ -o $@
 
 main.o		: main.cpp Circuit.h ../lib/tm_usage.h
