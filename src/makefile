@@ -8,7 +8,7 @@ LIBS		:= -Ilib
 LIBFLAGS	:= -ltm_usage -Llib
 
 # optimized version
-all	: ../bin/cada057
+all	: ../bin/net_open_finder
 	@echo -n""
 ../bin/cada057	: main.o graph.o path.o circuit.o io.o greedy.o ../lib/libtm_usage.a
 	$(CXX) $(OMPFLAGS) $^ -o $@
