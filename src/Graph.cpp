@@ -63,13 +63,11 @@ void Graph::addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2)
    n1->_adj.push_back(e);
    n2->_adj.push_back(e);
 
-   /*
    #ifdef _DEBUG_ON
-   //cout<<"Graph: add edge from node "<<n1->_id<<" to node "<<n2->_id<<" with weight "<<weight<<endl;
-   if(weight!=c1.disXY(c2))
-      cout << "Error: Edge weight and endpoints not consistent!" << endl;
+   cout << "add edge #" << _edges.size() << endl;
+   //if(weight!=c1.disXY(c2))
+   //   cout << "Error: Edge weight and endpoints not consistent!" << endl;
    #endif
-   */
 }
 void Graph::addEdge(Shape* o1, Shape* o2, int& weight, Point c1, Point c2)
 {
@@ -135,6 +133,7 @@ bool compareByY_O(Obstacle *s1, Obstacle *s2)
 Graph* CircuitMgr::buildGraph(int layer)
 {
    vector<Shape*>& shapes = _shapes.at(layer); 
+   vector<Obstacle*>& obstacles = _obstacles.at(layer);
    if (shapes.size()==0)
    {
       #ifdef _DEBUG_ON
@@ -148,6 +147,7 @@ Graph* CircuitMgr::buildGraph(int layer)
    cout << "scanning trivial connections for layer " << layer << endl;
    #endif
    sort(shapes.begin(), shapes.end(), compareByY);
+   sort(obstacles.begin(), obstacles.end(), compareByX_O);
    #ifdef _DEBUG_ON
    cout << "shapes sorted by Y." << endl;
    #endif
@@ -164,6 +164,9 @@ Graph* CircuitMgr::buildGraph(int layer)
          // thus not all the connections will be found, but the speed is accelerated
          if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
+            #ifdef _DEBUG_ON
+            cout << "checking obstacles for shape " << i << " and " << j << endl;
+            #endif
             int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
             if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
@@ -175,7 +178,9 @@ Graph* CircuitMgr::buildGraph(int layer)
    #ifdef _DEBUG_ON
    cout << "Y trivial checked and built." << endl;
    #endif
+
    sort(shapes.begin(), shapes.end(), compareByX);
+   sort(obstacles.begin(), obstacles.end(), compareByY_O);
    #ifdef _DEBUG_ON
    cout << "shapes sorted by X." << endl;
    #endif
@@ -188,6 +193,9 @@ Graph* CircuitMgr::buildGraph(int layer)
       {
          if (shapes.at(i)->overlapX(*shapes.at(j)))
          {
+            #ifdef _DEBUG_ON
+            cout << "checking obstacles for shape " << i << " and " << j << endl;
+            #endif
             int d = dist(*shapes.at(i),*shapes.at(j),true, connect);
             if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
@@ -265,7 +273,6 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
 #endif
       thru = new bool[l]; // through or not
       for(int i=0; i<l; i++)  thru[i] = true;
-      sort(obstacles.begin(), obstacles.end(), compareByY_O);
       for(int i=0; i<obstacles.size(); i++) {
          if(obstacles[i]->getUR().y()+_spacing<y1) break;
          if(obstacles[i]->getLL().y()-_spacing<y2)
@@ -334,7 +341,6 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
 #endif
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
-      sort(obstacles.begin(), obstacles.end(), compareByX_O);
       for(int i=0; i<obstacles.size(); i++) {
          if(obstacles[i]->getLL().x()-_spacing>x2) break;
          if(obstacles[i]->getUR().x()+_spacing>x1)
