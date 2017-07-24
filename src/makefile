@@ -64,4 +64,4 @@ tm_usage.o: ../lib/tm_usage.cpp ../lib/tm_usage.h
 	$(CXX) -c $<
 
 clean	:
-	rm -rf *.o ../lib/*.a ../lib/*.o ../bin/cada057 ../bin/net_open_finder_dbg ../outputs/*
+	rm -rf *.o ../lib/*.a ../lib/*.o ../bin/net_open_finder ../bin/net_open_finder_dbg ../outputs/*

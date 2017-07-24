@@ -73,7 +73,7 @@ void CircuitMgr::greedy()
          // run other methods to make single set
       }
       delete g;
-      cout<<"layer "<<layer<<"finished."<<endl;
+      cout<<"layer "<<layer<<" finished."<<endl<<endl;
    }
    
    // final optimization (ex. remove redundant lines; replace a long line with two vias)

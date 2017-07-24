@@ -144,7 +144,13 @@ Graph* CircuitMgr::buildGraph(int layer)
    }
    Graph* g=new Graph;
    Point connect[2];
+   #ifdef _DEBUG_ON
+   cout << "scanning trivial connections for layer " << layer << endl;
+   #endif
    sort(shapes.begin(), shapes.end(), compareByY);
+   #ifdef _DEBUG_ON
+   cout << "shapes sorted by Y." << endl;
+   #endif
 #ifdef _OMP
    #pragma omp parallel for
 #endif
@@ -152,6 +158,10 @@ Graph* CircuitMgr::buildGraph(int layer)
    {
       for (int j=i+1; j<shapes.size(); ++j)
       {
+         if(shapes.at(i)->getLL().disXY(shapes.at(j)->getLL()) > _UR.y()) continue;
+         // this condition skip checking for shapes that are too far from each other
+         // too far == more than the width of the whole boundary
+         // thus not all the connections will be found, but the speed is accelerated
          if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
             int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
@@ -162,7 +172,13 @@ Graph* CircuitMgr::buildGraph(int layer)
             break;
       }
    }
+   #ifdef _DEBUG_ON
+   cout << "Y trivial checked and built." << endl;
+   #endif
    sort(shapes.begin(), shapes.end(), compareByX);
+   #ifdef _DEBUG_ON
+   cout << "shapes sorted by X." << endl;
+   #endif
 #ifdef _OMP
    #pragma omp parallel for
 #endif
@@ -180,6 +196,9 @@ Graph* CircuitMgr::buildGraph(int layer)
             break;
       }
    }
+   #ifdef _DEBUG_ON
+   cout << "X trivial checked and built." << endl;
+   #endif
    
    for (int i=0; i<shapes.size(); ++i)
    {
@@ -188,7 +207,7 @@ Graph* CircuitMgr::buildGraph(int layer)
    }
 
    #ifdef _DEBUG_ON
-   cout<<endl<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
+   cout<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
    #endif
    return g;
 }

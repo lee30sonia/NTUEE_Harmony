@@ -84,7 +84,7 @@ bool CircuitMgr::readCircuit(char* filename)
    
    fin.close();
    #ifdef _DEBUG_ON
-   cout << "Read in file successfully." << endl;
+   cout << "Read in file successfully." << endl << endl;
    #endif
    return true; //return true if read in file succeed
 }
