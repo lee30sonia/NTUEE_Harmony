@@ -62,13 +62,8 @@ void Graph::addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2)
    //_adj[n2->_id].push_back(make_pair<n1, weight>);
    n1->_adj.push_back(e);
    n2->_adj.push_back(e);
-
-   #ifdef _DEBUG_ON
-   cout << "add edge #" << _edges.size() << endl;
-   //if(weight!=c1.disXY(c2))
-   //   cout << "Error: Edge weight and endpoints not consistent!" << endl;
-   #endif
 }
+
 void Graph::addEdge(Shape* o1, Shape* o2, int& weight, Point c1, Point c2)
 {
    Node *n1=0, *n2=0;
@@ -158,15 +153,12 @@ Graph* CircuitMgr::buildGraph(int layer)
    {
       for (int j=i+1; j<shapes.size(); ++j)
       {
-         if(shapes.at(i)->getLL().disXY(shapes.at(j)->getLL()) > _UR.y()) continue;
+         // if(shapes.at(i)->getLL().disXY(shapes.at(j)->getLL()) > _UR.y()) continue;
          // this condition skip checking for shapes that are too far from each other
          // too far == more than the width of the whole boundary
          // thus not all the connections will be found, but the speed is accelerated
          if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
-            #ifdef _DEBUG_ON
-            cout << "checking obstacles for shape " << i << " and " << j << endl;
-            #endif
             int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
             if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
@@ -193,9 +185,6 @@ Graph* CircuitMgr::buildGraph(int layer)
       {
          if (shapes.at(i)->overlapX(*shapes.at(j)))
          {
-            #ifdef _DEBUG_ON
-            cout << "checking obstacles for shape " << i << " and " << j << endl;
-            #endif
             int d = dist(*shapes.at(i),*shapes.at(j),true, connect);
             if (d>=0)
                g->addEdge(shapes.at(i),shapes.at(j),d, connect[0], connect[1]);
@@ -273,28 +262,30 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
 #endif
       thru = new bool[l]; // through or not
       for(int i=0; i<l; i++)  thru[i] = true;
+      int block = 0;
       for(int i=0; i<obstacles.size(); i++) {
          if(obstacles[i]->getUR().y()+_spacing<y1) break;
          if(obstacles[i]->getLL().y()-_spacing<y2)
             if(obstacles[i]->getUR().x()+_spacing>x1 && obstacles[i]->getLL().x()-_spacing<x2) 
                for(int j=obstacles[i]->getLL().x()-_spacing; j<=obstacles[i]->getUR().x()+_spacing; j++) {
                   if(j>=x1 && j<=x2) {
-                     thru[j-x1] = false;
-#ifdef _DEBUG_ON
-                  //   cout << "obstacle detected" 
-                  //      << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
-#endif
+                     if(thru[j-x1]) {
+                        thru[j-x1] = false;
+                        block++;
+                     }
                   }
                   else if(j>x2)  break;
                }
+         if(block == l) break;
       }
-      for(int i=0; i<l; i++)
-         if(thru[i]) {     // choosing the first met available point
-            connect[0].move(false, i);
-            connect[1].move(false, i);
-            delete[] thru;
-            return d;
-         }
+      if(block != l)
+         for(int i=0; i<l; i++)
+            if(thru[i]) {     // choosing the first met available point
+               connect[0].move(false, i);
+               connect[1].move(false, i);
+               delete[] thru;
+               return d;
+            }
       delete[] thru;
       return -1; 
    }
@@ -341,28 +332,30 @@ int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
 #endif
       thru = new bool[l];
       for(int i=0; i<l; i++)  thru[i] = true;
+      int block = 0;
       for(int i=0; i<obstacles.size(); i++) {
          if(obstacles[i]->getLL().x()-_spacing>x2) break;
          if(obstacles[i]->getUR().x()+_spacing>x1)
             if(obstacles[i]->getUR().y()+_spacing>y1 && obstacles[i]->getLL().y()-_spacing<y2) 
                for(int j=obstacles[i]->getLL().y()-_spacing; j<=obstacles[i]->getUR().y()+_spacing; j++) {
                   if(j>=y1 && j<=y2) {
-                     thru[j-y1] = false;
-#ifdef _DEBUG_ON
-               //      cout << "obstacle detected" 
-               //         << obstacles[i]->getLL().str() << obstacles[i]->getUR().str() << endl;
-#endif
+                     if(thru[j-y1]) {
+                        thru[j-y1] = false;
+                        block++;
+                     }
                   }
                   else if(j>y2)  break;
                }
+         if(block == l) break;
       }
-      for(int i=0; i<l; i++)
-         if(thru[i]) {
-            connect[0].move(true, i);
-            connect[1].move(true, i);
-            delete[] thru;
-            return d;
-         }
+      if(block != l)
+         for(int i=0; i<l; i++)
+            if(thru[i]) {
+               connect[0].move(true, i);
+               connect[1].move(true, i);
+               delete[] thru;
+               return d;
+            }
       delete[] thru;
       return -1; 
    }
