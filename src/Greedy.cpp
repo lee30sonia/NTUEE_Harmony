@@ -37,6 +37,15 @@ void CircuitMgr::greedy()
       if (g==0) continue;
       if (g->_nodes.size()>0)
       {
+         // merge 0 nodes
+         for (int i=0; i<g->_edges.size(); ++i)
+         {
+            if (g->_edges[i]->_weight==0)
+            {
+               g->mergeNodes(g->_edges[i]);
+               --i; //because this function will delete the current edge
+            }
+         }
          // find the MST for the graph
          vector<unsigned> set_sizes;
          vector<Node*> roots = mstPrim(g, set_sizes);
@@ -83,12 +92,12 @@ void CircuitMgr::greedy()
 // also assume we got one main set(roots[0]) and other small ones
 bool CircuitMgr::collectRemains(vector<Node*>& roots)
 {
-   short mainSet = roots[0]->_obj->getsetNum();
+   short mainSet = roots[0]->_obj[0]->getsetNum();
    short x, y;
    bool joint = true;
    for(int i=1; i<roots.size(); i++) {
-      Shape* connect = findNearest(roots[i]->_obj, mainSet, x, y);
-      if(!L_connect(roots[i]->_obj, connect, x, y)) {
+      Shape* connect = findNearest(roots[i]->_obj[0], mainSet, x, y);
+      if(!L_connect(roots[i]->_obj[0], connect, x, y)) {
 #ifdef _DEBUG_ON
          cout << "set " << i << " can't be joined." << endl;
 #endif

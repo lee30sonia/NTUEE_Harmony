@@ -99,7 +99,7 @@ public:
 class Node
 {   
 public:
-   Node(Shape* obj): _obj(obj), _inMST(false) { }
+   Node(Shape* obj): _inMST(false) { _obj.push_back(obj); }
    void addEdge(Edge *e) { _edges.push_back(e); }
    //bool operator==(const Obj* o) { return _obj==o; }
    //void addEdge(Node *n);
@@ -107,7 +107,7 @@ public:
    
    void setId(int i) { _id=i; }
    
-   Shape* _obj;
+   vector<Shape*> _obj;
    vector<Edge *> _edges;
 
    Node* _pi; //parent
@@ -136,6 +136,7 @@ public:
    void addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2); //n1 n2 already in graph
    void addEdge(Shape* n1, Shape* n2, int& weight, Point c1, Point c2);
    void addNode(Shape* o);
+   void mergeNodes(Edge* e);
    //Node * getNodeById(const int& id);
    
    //map<int, Node *> nodesMap;

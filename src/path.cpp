@@ -52,7 +52,8 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g, vector<unsigned>& set_sizes)
          }
          
          u->_inMST = true;
-         u->_obj->setsetNum(setNum);
+         for (int i=0; i<u->_obj.size(); ++i)
+            u->_obj[i]->setsetNum(setNum);
          size++;
          for (int i=0; i< u->_adj.size(); i++){
             Node* v= u->_adj[i]->getNeighbor(u);

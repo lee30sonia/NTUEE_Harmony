@@ -69,9 +69,9 @@ void Graph::addEdge(Shape* o1, Shape* o2, int& weight, Point c1, Point c2)
    Node *n1=0, *n2=0;
    for (int i=0; i<_nodes.size(); ++i)
    {
-      if (_nodes.at(i)->_obj==o1)
+      if (_nodes.at(i)->_obj[0]==o1)
          n1=_nodes.at(i);
-      else if (_nodes.at(i)->_obj==o2)
+      else if (_nodes.at(i)->_obj[0]==o2)
          n2=_nodes.at(i);
    }
    if (!n1)
@@ -102,6 +102,25 @@ void Graph::addNode(Shape* o)
    n->setId(_nodes.size());
    #endif
    _nodes.push_back(n);
+}
+
+void Graph::mergeNodes(Edge* e)
+{
+   for (int i=0; i<e->_node[1]->_obj.size(); ++i)
+      e->_node[0]->_obj.push_back(e->_node[1]->_obj[i]);
+   for (int i=0; i<e->_node[1]->_edges.size(); ++i)
+   {
+      if (e->_node[1]->_edges[i]!=e)
+         e->_node[0]->_edges.push_back(e->_node[1]->_edges[i]);
+   }
+   for (int i=0; i<_edges.size(); ++i)
+   {
+      if (_edges[i]==e)
+      {
+         _edges.erase(_edges.begin()+i);
+         break;
+      }
+   }
 }
 /********************CircuitMgr*********************/
 
