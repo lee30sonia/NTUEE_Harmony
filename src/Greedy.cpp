@@ -198,6 +198,45 @@ bool CircuitMgr::L_connect(Shape* root, Shape* connect, short& x, short& y)
       return true;
    }
    
+   // trivial L connect not found
+   // look for extented L connect
+   
+   Point pp1, pp2, c;
+   bool V_valid, H_valid;
+
+   // V -> H
+   pp1 = p1;   pp2 = p2;
+   while(root->inside(pp1,'x') && connect->inside(pp2,'y')) {
+      c = Point(pp1.x(), pp2.y());
+      lineV = Line(pp1.x(), pp1.y(), c.x(), c.y(), layer);
+      lineH = Line(c.x(), c.y(), pp2.x(), pp2.y(), layer);
+      V_valid = valid(lineV);
+      H_valid = valid(lineH);
+      if(V_valid && H_valid) {
+         addLine(pp1, c, layer, false);
+         addLine(c, pp2, layer, false);
+         return true;
+      }
+      if(!V_valid)   pp1.move(false, x*(-1));
+      if(!H_valid)   pp2.move(true, y);
+   }
+
+   // H -> V
+   pp1 = p1;   pp2 = p2;
+   while(root->inside(pp1,'y') && connect->inside(pp2,'x')) {
+      c = Point(pp2.x(), pp1.y());
+      lineH = Line(pp1.x(), pp1.y(), c.x(), c.y(), layer);
+      lineV = Line(c.x(), c.y(), pp2.x(), pp2.y(), layer);
+      H_valid = valid(lineH);
+      V_valid = valid(lineV);
+      if(V_valid && H_valid) {
+         addLine(pp1, c, layer, false);
+         addLine(c, pp2, layer, false);
+         return true;
+      }
+      if(!H_valid)   pp1.move(true, y*(-1));
+      if(!V_valid)   pp2.move(false, x);
+   }
 
    return false;
 }

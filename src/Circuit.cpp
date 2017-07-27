@@ -167,6 +167,15 @@ bool Shape::overlapX(const Shape& s)
    return (s._LL.x()<=_UR.x());
 }
 
+bool Shape::inside(const Point p, const char d)
+{
+   if(d != 'y')  // check for x
+      if(p.x()<_LL.x() || p.x()>_UR.x())  return false;
+   if(d != 'x')  // check for y
+      if(p.y()<_LL.y() || p.y()>_UR.y())  return false;
+   return true;
+}
+
 bool Shape::overlapY(const Shape& s)
 {
    return s._UR.y()>=_LL.y();

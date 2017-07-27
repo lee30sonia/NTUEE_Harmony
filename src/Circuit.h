@@ -79,7 +79,9 @@ public:
 
    bool connected(Line l); //whether the line is connected to the shape
    bool connected(Point p); //return true if the point is inside the shape, assume the same layer
-   
+   bool inside(const Point p, const char d = 'b');
+   // d = 'x' only check for x;    d = 'y' only check for y;  d = 'b' check for both
+
    bool overlapX(const Shape& s); //known: s is more right than this
    bool overlapY(const Shape& s); //known: s is lower than this
    

@@ -94,9 +94,6 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g, vector<unsigned>& set_sizes)
    {
       if (!g->_nodes[i]->_inMST)
          cout<<"node "<<g->_nodes[i]->_id<<" not in MST.";
-      //if (!g->_nodes[i]->_pi) {
-         //cout<<"node "<<g->_nodes[i]->_id<<" ,pi = null"<<endl;
-         //cout<<"node "<<g->_nodes[i]->_pi->_id<<endl; }
    }
    #endif
    return roots;
