@@ -42,7 +42,7 @@ void CircuitMgr::greedy()
          {
             if (g->_edges[i]->_weight==0)
             {
-               g->mergeNodes(g->_edges[i]);
+               g->mergeNodes(g->_edges[i], i);
                --i; //because this function will delete the current edge
             }
          }

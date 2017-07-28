@@ -32,7 +32,9 @@ bool CircuitMgr::readCircuit(char* filename)
    cout << "reading in data..." << endl;
    cout << "input size: shape num = " << routedShapes 
         << ", vias num = " << routedVias
-        << ", obstacle num = " << obstacles << endl;
+        << ", obstacle num = " << obstacles 
+        << ", layer num = " << _layernum
+        << ", via cost = " << _viaCost << endl;
    #endif
    
    for(int i=0; i<=_layernum; ++i){

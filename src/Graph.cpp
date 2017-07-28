@@ -104,7 +104,7 @@ void Graph::addNode(Shape* o)
    _nodes.push_back(n);
 }
 
-void Graph::mergeNodes(Edge* e)
+void Graph::mergeNodes(Edge* e, const int num)
 {
    for (int i=0; i<e->_node[1]->_obj.size(); ++i)
       e->_node[0]->_obj.push_back(e->_node[1]->_obj[i]);
@@ -113,15 +113,12 @@ void Graph::mergeNodes(Edge* e)
       if (e->_node[1]->_edges[i]!=e)
          e->_node[0]->_edges.push_back(e->_node[1]->_edges[i]);
    }
-   for (int i=0; i<_edges.size(); ++i)
-   {
-      if (_edges[i]==e)
-      {
-         _edges.erase(_edges.begin()+i);
-         break;
-      }
-   }
+   // erase the edge
+   vector<Edge*>::iterator target = _edges.begin()+num, end = _edges.end()-1;
+   swap(target, end);
+   _edges.pop_back();
 }
+
 /********************CircuitMgr*********************/
 
 bool compareByX(Shape *s1, Shape *s2)

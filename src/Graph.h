@@ -136,7 +136,7 @@ public:
    void addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2); //n1 n2 already in graph
    void addEdge(Shape* n1, Shape* n2, int& weight, Point c1, Point c2);
    void addNode(Shape* o);
-   void mergeNodes(Edge* e);
+   void mergeNodes(Edge* e, const int num);
    //Node * getNodeById(const int& id);
    
    //map<int, Node *> nodesMap;
