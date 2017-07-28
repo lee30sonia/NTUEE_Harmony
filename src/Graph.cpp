@@ -126,15 +126,9 @@ void Graph::mergeNodes(Edge* e, const int num)
    }
    else {
       // copy the shapes
-#ifdef _DEBUG_ON
-      cout << "copy the shapes   ";
-#endif
       for (int i=0; i<e->_node[1]->_obj.size(); ++i)
          e->_node[0]->_obj.push_back(e->_node[1]->_obj[i]);
       // copy the edges
-#ifdef _DEBUG_ON
-      cout << "copy the edges    " ;
-#endif
       for (int i=0; i<e->_node[1]->_edges.size(); ++i)
       {
          tempEdge = e->_node[1]->_edges[i];
@@ -145,9 +139,6 @@ void Graph::mergeNodes(Edge* e, const int num)
          else num2 = i;
       }
       // delete the node
-#ifdef _DEBUG_ON
-      cout << "delete the node   ";
-#endif
       for (int i=0; i<_nodes.size(); i++) {
          if(_nodes[i] == e->_node[1]) {
             _nodes[i]=_nodes.back();
@@ -156,17 +147,14 @@ void Graph::mergeNodes(Edge* e, const int num)
             break;
          }
       }
+#ifdef _DEBUG_ON
+      cout << "merging node " << e->_node[0]->_id << " and node " << e->_node[1]->_id << endl;
+#endif
    }
    // erase the edge from the list of the node
-#ifdef _DEBUG_ON 
-   cout << "erase the edge    ";
-#endif
    e->_node[0]->_edges[num2] = e->_node[0]->_edges.back();
    e->_node[0]->_edges.pop_back();
    // erase the edge from the list of the graph and delete it
-#ifdef _DEBUG_ON
-   cout << "delete the edge" << endl;
-#endif
    _edges[num]=_edges.back();
    _edges.pop_back();
    delete e;
