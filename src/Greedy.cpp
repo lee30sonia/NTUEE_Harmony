@@ -37,7 +37,7 @@ void CircuitMgr::greedy()
       if (g==0) continue;
       if (g->_nodes.size()>0)
       {
-         /*
+         
          // merge 0 nodes
          for (int i=0; i<g->_edges.size(); ++i)
          {
@@ -47,7 +47,7 @@ void CircuitMgr::greedy()
                --i; //because this function will delete the current edge
             }
          }
-         */
+         
          // find the MST for the graph
          vector<unsigned> set_sizes;
          vector<Node*> roots = mstPrim(g, set_sizes);
