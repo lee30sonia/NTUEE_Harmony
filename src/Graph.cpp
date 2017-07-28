@@ -71,8 +71,8 @@ void Graph::addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2)
    _edges.push_back(e);
    //_adj[n1->_id].push_back(make_pair<n2, weight>);
    //_adj[n2->_id].push_back(make_pair<n1, weight>);
-   n1->_adj.push_back(e);
-   n2->_adj.push_back(e);
+   n1->_edges.push_back(e);
+   n2->_edges.push_back(e);
 }
 
 void Graph::addEdge(Shape* o1, Shape* o2, int& weight, Point c1, Point c2)
@@ -121,18 +121,23 @@ void Graph::mergeNodes(Edge* e, const int num)
    for (int i=0; i<e->_node[1]->_obj.size(); ++i)
       e->_node[0]->_obj.push_back(e->_node[1]->_obj[i]);
    // segmentation fault, waiting for debug
-   
    // copy the edges
    Edge* tempEdge;
+   int num2;
    for (int i=0; i<e->_node[1]->_edges.size(); ++i)
    {
       tempEdge = e->_node[1]->_edges[i];
-      if (tempEdge != e)
-      {
+      if (tempEdge != e) {
          tempEdge->changeNode(e->_node[1], e->_node[0]);
          e->_node[0]->_edges.push_back(tempEdge);
       }
+      else num2 = i;
    }
+   // erase the edge from the list of the node
+   vector<Edge*>::iterator e_target = e->_node[0]->_edges.begin()+num2, 
+                           e_end = e->_node[0]->_edges.end()-1;
+   swap(e_target, e_end);
+   e->_node[0]->_edges.pop_back();
    // delete the node
    for (int i=0; i<_nodes.size(); i++) {
       if(_nodes[i] == e->_node[1]) {
@@ -142,8 +147,7 @@ void Graph::mergeNodes(Edge* e, const int num)
          break;
       }
    }
-   
-   // erase the edge
+   // erase the edge from the list of the graph and delete it
    _edges[num]=_edges.back();
    _edges.pop_back();
    delete e;

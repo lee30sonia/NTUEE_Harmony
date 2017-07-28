@@ -119,8 +119,7 @@ public:
    int _layer;
    
    // saving the adjacency list as pairs
-   //list<pair<Node*, int>> _adj;
-   vector<Edge*> _adj;
+   // list<pair<Node*, int>> _adj;
    bool operator>(const Node &rhs) { return this->_key> rhs._key; }
 
    int _id; //id to store adjacency list (list<pair<Node*, int>>) in Graph, starting from 0, usage: g->_adj[n->_id]

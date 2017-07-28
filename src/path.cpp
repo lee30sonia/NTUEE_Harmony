@@ -11,6 +11,9 @@ class Node;
 // Using Prims's algorithm to solve mst
 vector<Node*> CircuitMgr::mstPrim(const Graph* g, vector<unsigned>& set_sizes)
 {
+#ifdef _DEBUG_ON
+   cout << "Building MST..." << endl;
+#endif
    // initialize the nodes
    vector<Node*> pQ;
    for (int i=0; i< g->_nodes.size(); ++i) {
@@ -55,13 +58,13 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g, vector<unsigned>& set_sizes)
          for (int i=0; i<u->_obj.size(); ++i)
             u->_obj[i]->setsetNum(setNum);
          size++;
-         for (int i=0; i< u->_adj.size(); i++){
-            Node* v= u->_adj[i]->getNeighbor(u);
-            int weight= u->_adj[i]->_weight;
+         for (int i=0; i< u->_edges.size(); i++){
+            Node* v= u->_edges[i]->getNeighbor(u);
+            int weight= u->_edges[i]->_weight;
             
             if (v->_inMST==false && weight < v->_key) {
                v->_pi= u;
-               v->_connectEdge = u->_adj[i];
+               v->_connectEdge = u->_edges[i];
                v->_key= weight;
                for(int j=0; j<pQ.size(); j++){
                   if(pQ[j] == v) {
