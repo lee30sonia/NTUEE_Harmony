@@ -117,37 +117,56 @@ void Graph::addNode(Shape* o)
 
 void Graph::mergeNodes(Edge* e, const int num)
 {
-   // copy the shapes
-   for (int i=0; i<e->_node[1]->_obj.size(); ++i)
-      e->_node[0]->_obj.push_back(e->_node[1]->_obj[i]);
-   // segmentation fault, waiting for debug
-   // copy the edges
    Edge* tempEdge;
    int num2;
-   for (int i=0; i<e->_node[1]->_edges.size(); ++i)
-   {
-      tempEdge = e->_node[1]->_edges[i];
-      if (tempEdge != e) {
-         tempEdge->changeNode(e->_node[1], e->_node[0]);
-         e->_node[0]->_edges.push_back(tempEdge);
+   if(e->_node[0] == e->_node[1]) {
+      for (int i=0; i<e->_node[1]->_edges.size(); ++i)
+         if(e->_node[1]->_edges[i] == e)
+            num2 = i;
+   }
+   else {
+      // copy the shapes
+#ifdef _DEBUG_ON
+      cout << "copy the shapes   ";
+#endif
+      for (int i=0; i<e->_node[1]->_obj.size(); ++i)
+         e->_node[0]->_obj.push_back(e->_node[1]->_obj[i]);
+      // copy the edges
+#ifdef _DEBUG_ON
+      cout << "copy the edges    " ;
+#endif
+      for (int i=0; i<e->_node[1]->_edges.size(); ++i)
+      {
+         tempEdge = e->_node[1]->_edges[i];
+         if (tempEdge != e) {
+            tempEdge->changeNode(e->_node[1], e->_node[0]);
+            e->_node[0]->_edges.push_back(tempEdge);
+         }
+         else num2 = i;
       }
-      else num2 = i;
+      // delete the node
+#ifdef _DEBUG_ON
+      cout << "delete the node   ";
+#endif
+      for (int i=0; i<_nodes.size(); i++) {
+         if(_nodes[i] == e->_node[1]) {
+            _nodes[i]=_nodes.back();
+            _nodes.pop_back();
+            delete e->_node[1];
+            break;
+         }
+      }
    }
    // erase the edge from the list of the node
-   vector<Edge*>::iterator e_target = e->_node[0]->_edges.begin()+num2, 
-                           e_end = e->_node[0]->_edges.end()-1;
-   swap(e_target, e_end);
+#ifdef _DEBUG_ON 
+   cout << "erase the edge    ";
+#endif
+   e->_node[0]->_edges[num2] = e->_node[0]->_edges.back();
    e->_node[0]->_edges.pop_back();
-   // delete the node
-   for (int i=0; i<_nodes.size(); i++) {
-      if(_nodes[i] == e->_node[1]) {
-         _nodes[i]=_nodes.back();
-         _nodes.pop_back();
-         delete e->_node[1];
-         break;
-      }
-   }
    // erase the edge from the list of the graph and delete it
+#ifdef _DEBUG_ON
+   cout << "delete the edge" << endl;
+#endif
    _edges[num]=_edges.back();
    _edges.pop_back();
    delete e;
