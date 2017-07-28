@@ -80,6 +80,7 @@ public:
    Point _connect[2];  // _connect[2]
    
    Node* getNeighbor(Node* n);
+   bool changeNode(Node* from, Node* to);
    
    //bool operator < (const Edge& rhs) const;
    

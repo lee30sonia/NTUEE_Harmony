@@ -34,6 +34,17 @@ Node* Edge::getNeighbor(Node* a)
    return 0;
 }
 
+bool Edge::changeNode(Node* from, Node* to)
+{
+   if( _node[0] == from ) {
+      _node[0] = to;    return true;
+   }
+   if( _node[1] == from) {
+      _node[1] = to;    return true;
+   }
+   return false;
+}
+
 /********************Pair*********************/
 /*
 Pair::Pair(Node *a, const int &k)
@@ -106,17 +117,37 @@ void Graph::addNode(Shape* o)
 
 void Graph::mergeNodes(Edge* e, const int num)
 {
+   // copy the shapes
    for (int i=0; i<e->_node[1]->_obj.size(); ++i)
       e->_node[0]->_obj.push_back(e->_node[1]->_obj[i]);
+   // segmentation fault, waiting for debug
+   /*
+   // copy the edges
+   Edge* tempEdge;
    for (int i=0; i<e->_node[1]->_edges.size(); ++i)
    {
-      if (e->_node[1]->_edges[i]!=e)
-         e->_node[0]->_edges.push_back(e->_node[1]->_edges[i]);
+      tempEdge = e->_node[1]->_edges[i];
+      if (tempEdge != e)
+         tempEdge->changeNode(e->_node[1], e->_node[0]);
+         e->_node[0]->_edges.push_back(tempEdge);
    }
+   // delete the node
+   for (int i=0; i<_nodes.size(); i++) {
+      if(_nodes[i] == e->_node[1]) {
+         vector<Node*>::iterator n_target = _nodes.begin()+i, n_end = _nodes.end()-1;
+         swap(n_target, n_end);
+         _nodes.pop_back();
+         delete e->_node[1];
+         break;
+      }
+   }
+   */
    // erase the edge
-   vector<Edge*>::iterator target = _edges.begin()+num, end = _edges.end()-1;
-   swap(target, end);
+   vector<Edge*>::iterator e_target = _edges.begin()+num, e_end = _edges.end()-1;
+   swap(e_target, e_end);
    _edges.pop_back();
+   // delete e;
+   
 }
 
 /********************CircuitMgr*********************/
