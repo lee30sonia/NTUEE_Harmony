@@ -99,14 +99,21 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
 {
    short mainSet = roots[0]->_obj[0]->getsetNum();
    short x, y;
+   Point p1, p2;
    bool joint = true;
    for(int i=1; i<roots.size(); i++) {
       Shape* connect = findNearest(roots[i]->_obj[0], mainSet, x, y);
-      if(!L_connect(roots[i]->_obj[0], connect, x, y)) {
+      if(!L_connect(roots[i]->_obj[0], connect, p1, p2, x, y)) {
 #ifdef _DEBUG_ON
-         cout << "set " << i << " can't be joined." << endl;
+         cout << "set " << i << " can't be joined by L_connect." << endl;
 #endif
-         joint = false;
+         if (1)
+         {
+#ifdef _DEBUG_ON
+            cout << "set " << i << " can't either be joined by routing." << endl;
+#endif
+            joint = false;
+         }
       }
    }
    return joint;
@@ -165,12 +172,9 @@ Shape* CircuitMgr::findNearest(Shape* target, const short mainSet, short& x, sho
    return result;
 }
 
-bool CircuitMgr::L_connect(Shape* root, Shape* connect, short& x, short& y)
+// determine the connection point
+void CircuitMgr::DeterminePoints(Point& p1, Point& p2, short& x, short& y, Shape* root, Shape* connect)
 {
-   Point p1, p2, p3, p4;
-   int layer = root->layer();
-   
-   // determine the connection point
    if(x>0 && y>0) {
       p1 = root->getUR();  p2 = connect->getLL();
    }
@@ -185,6 +189,14 @@ bool CircuitMgr::L_connect(Shape* root, Shape* connect, short& x, short& y)
    else if(x<0 && y<0) {
       p1 = root->getLL();  p2 = connect->getUR();
    }
+}
+
+bool CircuitMgr::L_connect(Shape* root, Shape* connect, Point& p1, Point& p2, short& x, short& y)
+{
+   Point p3, p4;
+   int layer = root->layer();
+   DeterminePoints(p1,p2,x,y,root,connect);
+   
    p3 = Point(p1.x(), p2.y());   // V -> H
    p4 = Point(p2.x(), p1.y());   // H -> V
 

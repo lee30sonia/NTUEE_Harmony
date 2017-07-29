@@ -227,7 +227,8 @@ public:
    // other connection
    bool collectRemains(vector<Node*>& roots);
    Shape* findNearest(Shape* target, const short mainSet, short& x, short& y);
-   bool L_connect(Shape* root, Shape* connect, short& x, short& y);
+   void DeterminePoints(Point& p1, Point& p2, short& x, short& y, Shape* root, Shape* connect);
+   bool L_connect(Shape* root, Shape* connect, Point& p1, Point& p2, short& x, short& y);
    // Graph.cpp
    void connectLayer(int l); //add via on layer l to connect l and l+1
    
