@@ -7,4 +7,4 @@ Boundary = (0,0) (200,200)
 #Obstacles = 1
 RoutedShape M1 (20,20) (40,40)
 RoutedShape M1 (90,20) (100,30)
-Obstacle M1 (60,5) (70,100)
+Obstacle M1 (60,5) (70,50)

@@ -235,7 +235,7 @@ public:
    bool L_connect(Shape* root, Shape* connect, Point& p1, Point& p2, short& x, short& y);
    // Graph.cpp
    void connectLayer(int l); //add via on layer l to connect l and l+1
-   bool routing(Point& p1, Point& p2, short& x, short& y, int layer);
+   bool routing(Point& p1, Point& p2, int layer);
    
 private:
    int _viaCost;

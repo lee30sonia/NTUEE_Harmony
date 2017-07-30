@@ -48,7 +48,7 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer, bool check)
       if (!valid(*l))
       {
          #ifdef _DEBUG_ON
-         cout<<"Line added is invalid!"<<endl;
+         cout<<"Line added is invalid! "<<x1<<","<<y1<<" "<<x2<<","<<y2<<endl;
          #endif
          return false;
       }
@@ -98,6 +98,7 @@ bool CircuitMgr::valid(Point& p, int layer)
 }
 
 bool compareByX_O(Obstacle *s1, Obstacle *s2);
+ //  return s1->getLL().x()<s2->getLL().x();
 
 bool CircuitMgr::valid(Line& l)
 {
@@ -109,8 +110,8 @@ bool CircuitMgr::valid(Line& l)
    // might be faster
    sort(obstacles.begin(), obstacles.end(), compareByX_O);
    for(int i=0; i<obstacles.size(); i++) {
-      if(obstacles[i]->getUR().x()+_spacing<l.startpoint().x()) continue;
-      if(obstacles[i]->getLL().x()-_spacing>l.endpoint().x()) break;
+      if(obstacles[i]->getUR().x()+_spacing<=l.startpoint().x()) continue;
+      if(obstacles[i]->getLL().x()-_spacing>=l.endpoint().x()) break;
       if(obstacles[i]->getLL().y()-_spacing<l.endpoint().y() &&
          obstacles[i]->getUR().y()+_spacing>l.startpoint().y())  return false;
    }
@@ -312,13 +313,13 @@ bool Point::move(char dir)
 bool Point::encounter(Obstacle* ob, char dir, int spacing)
 {
    if (dir=='u')
-      return (ob->getLL().x()-spacing<=_x && ob->getUR().x()+spacing>=_x && ob->getLL().y()-spacing<=_y);
+      return (ob->getLL().x()-spacing<_x && ob->getUR().x()+spacing>_x && ob->getLL().y()-spacing<=_y);
    if (dir=='d')
-      return (ob->getLL().x()-spacing<=_x && ob->getUR().x()+spacing>=_x && ob->getUR().y()+spacing>=_y);
+      return (ob->getLL().x()-spacing<_x && ob->getUR().x()+spacing>_x && ob->getUR().y()+spacing>=_y);
    if (dir=='r')
-      return (ob->getLL().y()-spacing<=_y && ob->getUR().y()+spacing>=_y && ob->getLL().x()-spacing<=_x);
+      return (ob->getLL().y()-spacing<_y && ob->getUR().y()+spacing>_y && ob->getLL().x()-spacing<=_x);
    if (dir=='l')
-      return (ob->getLL().y()-spacing<=_y && ob->getUR().y()+spacing>=_y && ob->getUR().x()+spacing>=_x);
+      return (ob->getLL().y()-spacing<_y && ob->getUR().y()+spacing>_y && ob->getUR().x()+spacing>=_x);
    cout<<"Error: encounter() dir error"<<endl;
    return false;
 }
