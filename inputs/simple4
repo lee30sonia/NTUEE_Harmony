@@ -5,8 +5,8 @@ Boundary = (0,0) (100,100)
 #RoutedShapes = 2
 #RoutedVias = 0
 #Obstacles = 5
-RoutedShape M1 (5,5) (10,10)
 RoutedShape M1 (70,70) (75,75)
+RoutedShape M1 (5,5) (10,10)
 Obstacle M1 (8,80) (45,85)
 Obstacle M1 (40,8) (50,90)
 Obstacle M1 (60,85) (90,88)

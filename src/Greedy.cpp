@@ -115,8 +115,8 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
 #endif
             joint = false;
          }
-         //else
-            //cout<<"L failed but routing succeed"<<endl;
+         else
+            cout<<"L failed but routing succeed"<<endl;
       }
    }
    return joint;
@@ -335,7 +335,15 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
             }
          }
          if (enc2)
+         {
+            if (dir.size()<4)
+            {
+               found=false;
+               break;
+            }
             dir.erase(dir.begin());
+            dir.erase(dir.begin());
+         }
          
          dir.erase(dir.begin());
          continue;
@@ -349,6 +357,8 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
             visited.push_back(pp);
             swap(dir[0],dir[1]);
             swap(dir[2],dir[3]);
+            swap(target_dir[0],target_dir[1]);
+            swap(target_dir[2],target_dir[3]);
             
             bool enc4=false;
             for (int i=0; i<_obstacles[layer].size(); ++i)
@@ -368,12 +378,10 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
       }
       else
       {
-         Point tmp(p);
-         tmp.move(goal);
          bool enc3=false;
          for (int i=0; i<_obstacles[layer].size(); ++i)
          {
-            if (tmp.encounter(_obstacles[layer][i],goal,_spacing))
+            if (p.encounter(_obstacles[layer][i],goal,_spacing))
             {
                enc3=true;
                break;
@@ -383,11 +391,11 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
          {
             Point* pp = new Point(p);
             visited.push_back(pp);
-            int i;
-            for (i=0; i<4; ++i)
-               if (target_dir[i]==goal) break;
-            if (dir.size()==2-i)
-               dir.insert(dir.begin(),target_dir[i+1]);
+            if (dir.size()==1 && target_dir[0]==goal)
+            {
+               dir.insert(dir.begin(),target_dir[2]);
+               dir.insert(dir.begin(),target_dir[1]);
+            }
             dir.insert(dir.begin(),goal);
             
             if (dir.size()==4)
@@ -395,12 +403,19 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
                for (int j=0; j<2; ++j)
                {
                   if ((dir[j]=='r'&&p.x()>p2.x()) || (dir[j]=='l'&&p.x()<p2.x()) || (dir[j]=='u'&&p.y()>p2.y()) || (dir[j]=='d'&&p.y()<p2.y()))
+                  {
                      swap(dir[j],dir[j+2]);
+                     swap(target_dir[j],target_dir[j+2]);
+                  }
                }
                goal='f';
             }
             else
-               goal=target_dir[i-1];
+            {
+               for (int i=1; i<4; ++i)
+                  if (target_dir[i]==goal)
+                     goal=target_dir[i-1];
+            }
          }
       }
    }
