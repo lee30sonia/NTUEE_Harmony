@@ -304,8 +304,26 @@ bool Point::move(char dir)
    return false;
 }
 
+bool Point::encounter(Obstacle* ob, char dir, int spacing)
+{
+   if (dir=='u')
+      return (ob->getLL().x()-spacing<=_x && ob->getUR().x()+spacing>=_x && ob->getLL().y()-spacing<=_y);
+   if (dir=='d')
+      return (ob->getLL().x()-spacing<=_x && ob->getUR().x()+spacing>=_x && ob->getUR().y()+spacing>=_y);
+   if (dir=='r')
+      return (ob->getLL().y()-spacing<=_y && ob->getUR().y()+spacing>=_y && ob->getLL().x()-spacing<=_x);
+   if (dir=='l')
+      return (ob->getLL().y()-spacing<=_y && ob->getUR().y()+spacing>=_y && ob->getUR().x()+spacing>=_x);
+   cout<<"Error: encounter() dir error"<<endl;
+   return false;
+}
+
 bool Point::operator!=(const Point& p)
 {
    return !(_x==p._x && _y==p._y);
 }
 
+bool Point::operator==(const Point& p)
+{
+   return (_x==p._x && _y==p._y);
+}

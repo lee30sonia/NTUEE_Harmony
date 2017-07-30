@@ -107,7 +107,7 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
 #ifdef _DEBUG_ON
          cout << "set " << i << " can't be joined by L_connect." << endl;
 #endif
-         if (1)
+         if (routing(p1, p2, x, y, roots[0]->_obj[0]->layer()))
          {
 #ifdef _DEBUG_ON
             cout << "set " << i << " can't either be joined by routing." << endl;
@@ -256,6 +256,130 @@ bool CircuitMgr::L_connect(Shape* root, Shape* connect, Point& p1, Point& p2, sh
    }
 
    return false;
+}
+
+bool CircuitMgr::routing(Point& p1, Point& p2, short& x, short& y, int layer)
+{
+   char target_dir[4];
+   if(x>0) { target_dir[0]='r'; target_dir[2]='l'; }
+   else { target_dir[0]='l'; target_dir[2]='r'; }
+   if(y>0) { target_dir[1]='u'; target_dir[3]='d'; }
+   else { target_dir[1]='d'; target_dir[3]='u'; }
+   
+   vector<char> dir;
+   for (int i=0; i<4; ++i) dir.push_back(target_dir[i]);
+   
+   char goal='f'; // 'f'=fulfill dir[0]
+   vector<Point*> visited;
+   Point p(p1);
+   bool found;
+   
+   while (dir.size()>0 && visited.size()<100) // to avoid infinite-loop
+   {
+      p.move(dir[0]);
+      if (p==p2)
+      {
+         found=true;
+         break;
+      }
+      
+      for(int i=0; i<visited.size(); ++i)
+      {
+         if (p==*(visited[i]))
+         {
+            found=false;
+            break;
+         }
+      }
+      
+      bool enc=false;
+      for (int i=0; i<_obstacles[layer].size(); ++i)
+      {
+         if (p.encounter(_obstacles[layer][i],dir[0],_spacing))
+         {
+            enc=true;
+            break;
+         }
+      }
+      if (enc)
+      {
+         Point* pp = new Point(p);
+         visited.push_back(pp);
+         if (dir.size()==1)
+         {
+            found=false;
+            break;
+         }
+         
+         goal=dir[0];
+         
+         bool enc2=false;
+         for (int i=0; i<_obstacles[layer].size(); ++i)
+         {
+            if (p.encounter(_obstacles[layer][i],dir[1],_spacing))
+            {
+               enc2=true;
+               break;
+            }
+         }
+         if (enc2)
+            dir.pop_front();
+         
+         dir.pop_front();
+         continue;
+      }
+      
+      if (goal=='f')
+      {
+         if (((dir[0]=='r'||dir[0]=='l')&&p.x()==p2.x())||((dir[0]=='u'||dir[0]=='d')&&p.y()==p2.y()))
+         {
+            Point* pp = new Point(p);
+            visited.push_back(pp);
+            swap(dir[0],dir[1]);
+            swap(dir[2],dir[3]);
+         }
+      }
+      else
+      {
+         Point p2(p);
+         p2.move(goal);
+         bool enc3=false;
+         for (int i=0; i<_obstacles[layer].size(); ++i)
+         {
+            if (p2.encounter(_obstacles[layer][i],dir[0],_spacing))
+            {
+               enc3=true;
+               break;
+            }
+         }
+         if (!enc3)
+         {
+            Point* pp = new Point(p);
+            visited.push_back(pp);
+            int i;
+            for (i=0; i<4; ++i)
+               if (target_dir[i]==goal) break;
+            if (dir.size()==2-i)
+               dir.insert(dir.begin(),target_dir[i+1]);
+            dir.insert(dir.begin(),goal);
+            
+            if (dir.size()==4)
+            {
+               for (int j=0; i<2; ++j)
+               {
+                  if ((dir[j]=='r'&&p.x()>p2.x()) || (dir[j]=='l'&&p.x()<p2.x()) || (dir[j]=='u'&&p.y()>p2.y()) || (dir[j]=='d'&&p.y()<p2.y()))
+                     swap(dir[j],dir[j+2]);
+               }
+               goal='f';
+            }
+            else
+               goal=target_dir[i-1];
+         }
+      }
+   }
+   
+   for (int i=0; i<visited.size(); ++i)
+      delete visited[i];
 }
 
 

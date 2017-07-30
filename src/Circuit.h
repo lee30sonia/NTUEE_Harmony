@@ -36,6 +36,7 @@ class Point
 public:
    Point(){ }
    Point(int x, int y);
+   Point(const Point& p){ _x=p.x(); _y=p.y(); }
 
    int x() const { return _x; }
    int y() const { return _y; }
@@ -50,7 +51,10 @@ public:
    //for line iteration
    void move(bool vertical, int dis = 1); //increase y by dis if vertical, x otherwise
    bool move(char dir);    // u, d, l, r
+   bool encounter(Obstacle* ob, char dir, int spacing); //for routing
+   
    bool operator!=(const Point& p);
+   bool operator==(const Point& p);
 
 private:
    int _x;
@@ -231,6 +235,7 @@ public:
    bool L_connect(Shape* root, Shape* connect, Point& p1, Point& p2, short& x, short& y);
    // Graph.cpp
    void connectLayer(int l); //add via on layer l to connect l and l+1
+   bool routing(Point& p1, Point& p2, short& x, short& y, int layer);
    
 private:
    int _viaCost;
