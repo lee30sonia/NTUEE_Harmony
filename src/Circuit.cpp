@@ -46,7 +46,12 @@ bool CircuitMgr::addLine(int x1, int y1, int x2, int y2, int layer, bool check)
    Line* l = new Line(x1, y1, x2, y2, layer);
    if(check)
       if (!valid(*l))
+      {
+         #ifdef _DEBUG_ON
+         cout<<"Line added is invalid!"<<endl;
+         #endif
          return false;
+      }
    _lines.at(layer).push_back(l);
 
    #ifdef _DEBUG_ON

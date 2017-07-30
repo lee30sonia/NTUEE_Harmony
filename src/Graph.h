@@ -14,6 +14,7 @@ using namespace std;
 
 class Node;
 class Shape;
+class Obstacle;
 /*class DSet;
 
 class DSetObj
@@ -58,7 +59,10 @@ public:
    //for line iteration
    void move(bool vertical, int dis = 1); //increase y by dis if vertical, x otherwise
    bool move(char dir);    // u, d, l, r
+   bool encounter(Obstacle* ob, char dir, int spacing); //for routing
+   
    bool operator!=(const Point& p);
+   bool operator==(const Point& p);
 
 private:
    int _x;

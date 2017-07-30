@@ -108,7 +108,7 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
 #ifdef _DEBUG_ON
          cout << "set " << i << " can't be joined by L_connect." << endl;
 #endif
-         if (routing(p1, p2, x, y, roots[0]->_obj[0]->layer()))
+         if (!routing(p1, p2, x, y, roots[0]->_obj[0]->layer()))
          {
 #ifdef _DEBUG_ON
             cout << "set " << i << " can't either be joined by routing." << endl;
@@ -272,6 +272,7 @@ bool CircuitMgr::routing(Point& p1, Point& p2, short& x, short& y, int layer)
    
    char goal='f'; // 'f'=fulfill dir[0]
    vector<Point*> visited;
+   visited.push_back(new Point(p1));
    Point p(p1);
    bool found;
    
@@ -281,6 +282,7 @@ bool CircuitMgr::routing(Point& p1, Point& p2, short& x, short& y, int layer)
       if (p==p2)
       {
          found=true;
+         visited.push_back(new Point(p2));
          break;
       }
       
@@ -324,9 +326,9 @@ bool CircuitMgr::routing(Point& p1, Point& p2, short& x, short& y, int layer)
             }
          }
          if (enc2)
-            dir.pop_front();
+            dir.erase(dir.begin());
          
-         dir.pop_front();
+         dir.erase(dir.begin());
          continue;
       }
       
@@ -379,8 +381,13 @@ bool CircuitMgr::routing(Point& p1, Point& p2, short& x, short& y, int layer)
       }
    }
    
+   for (int i=0; i<visited.size()-1; ++i)
+      addLine(*(visited[i]),*(visited[i+1]),layer);
+   
    for (int i=0; i<visited.size(); ++i)
       delete visited[i];
+   
+   return found;
 }
 
 
