@@ -39,6 +39,7 @@ void CircuitMgr::greedy()
       {
          /*
          // merge 0 nodes
+         // waiting for debug
 #ifdef _DEBUG_ON
          cout << "merging nodes with 0 weight edges..." << endl;
 #endif

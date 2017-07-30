@@ -117,6 +117,7 @@ void Graph::addNode(Shape* o)
 
 void Graph::mergeNodes(Edge* e, const int num)
 {
+   // segmentation fault, waiting for debug
    Edge* tempEdge;
    int num2;
    if(e->_node[0] == e->_node[1]) {
