@@ -59,6 +59,7 @@ public:
    //for line iteration
    void move(bool vertical, int dis = 1); //increase y by dis if vertical, x otherwise
    bool move(char dir);    // u, d, l, r
+   bool move(char dir, Point& ll, Point& ur, int spacing);
    bool encounter(Obstacle* ob, char dir, int spacing); //for routing
    
    bool operator!=(const Point& p);

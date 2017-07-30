@@ -310,6 +310,23 @@ bool Point::move(char dir)
    return false;
 }
 
+bool Point::move(char dir, Point& ll, Point& ur, int spacing)
+{
+   if(dir == 'u') {
+      _y++; return _y<=ur.y()-spacing;
+   }
+   if(dir == 'd') {
+      _y--; return _y>=ll.y()+spacing;
+   }
+   if(dir == 'r') {
+      _x++; return _x<=ur.x()-spacing;
+   }
+   if(dir == 'l') {
+      _x--; return _x>=ll.x()+spacing;
+   }
+   return false;
+}
+
 bool Point::encounter(Obstacle* ob, char dir, int spacing)
 {
    if (dir=='u')

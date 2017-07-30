@@ -115,8 +115,8 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
 #endif
             joint = false;
          }
-         else
-            cout<<"L failed but routing succeed"<<endl;
+         //else
+           // cout<<"L failed but routing succeed"<<endl;
       }
    }
    return joint;
@@ -287,7 +287,11 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
    {
       //cout<<p.str();for (int i=0; i<dir.size(); ++i)cout<<dir[i];cout<<" "<<goal<<endl;
       ++counter;
-      p.move(dir[0]);
+      if (!p.move(dir[0],_LL,_UR,_spacing))
+      {
+         found=false;
+         break;
+      }
       if (p==p2)
       {
          found=true;
