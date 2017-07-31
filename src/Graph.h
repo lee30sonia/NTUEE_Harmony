@@ -17,6 +17,7 @@ using namespace std;
 class Node;
 class Shape;
 class Obstacle;
+bool compareByX_O(Obstacle *s1, Obstacle *s2);
 /*class DSet;
 
 class DSetObj

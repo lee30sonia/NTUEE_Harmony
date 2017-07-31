@@ -12,6 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <climits>
+#include <algorithm>
 
 #ifdef _OMP
 #include <omp.h>
@@ -83,11 +84,8 @@ void CircuitMgr::greedy()
             for(int i=1; i<roots.size(); i++)
                if(set_sizes[i]>set_sizes[0]) swap(roots[0], roots[i]);
             // join the remained sets using L_connect
-            if(collectRemains(roots)) {
-               #ifdef _DEBUG_ON
-               cout << "Joint as one set!" << endl;
-               #endif
-            }
+            if(collectRemains(roots)) 
+               cout << "layer " << layer << " joint as one set!" << endl;
          }
          // run other methods to make single set
       }
@@ -271,6 +269,7 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
    cout<<"routing..."<<p1.str()<<p2.str()<<endl;
    #endif
    // priority of direction to move toward
+   // first horizontal, then vertical
    char target_dir[4];
    if(p2.x()>p1.x()) { target_dir[0]='r'; target_dir[2]='l'; }
    else { target_dir[0]='l'; target_dir[2]='r'; }
@@ -286,27 +285,30 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
    vector<Point*> visited;
    visited.push_back(new Point(p1));
    Point p(p1);
-   bool found=false;
+   bool found=false, enc, enc2, enc3, enc4;
    int counter=0;
    int bound=100*p1.disXY(p2); // to avoid infinite-loop
+
+   vector<Obstacle*>& obstacles = _obstacles.at(layer);
+   sort(obstacles.begin(), obstacles.end(), compareByX_O);
    
    while (dir.size()>0 && counter<bound)
    {
       //cout<<p.str();for (int i=0; i<dir.size(); ++i)cout<<dir[i];cout<<" "<<goal<<endl;
       ++counter;
-      if (!p.move(dir[0],_LL,_UR,_spacing))
+      // move one step
+      if (!p.move(dir[0],_LL,_UR,_spacing))  // hit the boundary
       {
          found=false;
          break;
       }
-      if (p==p2)
+      if (p==p2)  // arrive the target
       {
          found=true;
          visited.push_back(new Point(p2));
          break;
       }
-      
-      for(int i=0; i<visited.size(); ++i)
+      for(int i=0; i<visited.size(); ++i) // back to the start point
       {
          if (p==*(visited[i]))
          {
@@ -315,7 +317,8 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
          }
       }
       
-      bool enc=false;
+      enc=false;
+      // check if encounter any obstacle at dir[0]
       for (int i=0; i<_obstacles[layer].size(); ++i)
       {
          if (p.encounter(_obstacles[layer][i],dir[0],_spacing))
@@ -323,20 +326,21 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
             enc=true;
             break;
          }
+         if(p.x() < _obstacles[layer][i]->getLL().x())  break;
       }
       if (enc)
       {
-         Point* pp = new Point(p);
-         visited.push_back(pp);
-         if (dir.size()==1)
+         visited.push_back(new Point(p));
+         if (dir.size()==1)   // no more ways to go
          {
             found=false;
             break;
          }
          
-         goal=dir[0];
+         goal=dir[0];   // now the goal is to add dir[0] back
          
-         bool enc2=false;
+         enc2=false;
+         // check if encounter any obstacle at dir[1]
          for (int i=0; i<_obstacles[layer].size(); ++i)
          {
             if (p.encounter(_obstacles[layer][i],dir[1],_spacing))
@@ -360,18 +364,18 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
          continue;
       }
       
-      if (goal=='f')
+      if (goal=='f')    // not encounter any obstacles
       {
          if (((dir[0]=='r'||dir[0]=='l')&&p.x()==p2.x())||((dir[0]=='u'||dir[0]=='d')&&p.y()==p2.y()))
+         // reach the same line with the target
          {
-            Point* pp = new Point(p);
-            visited.push_back(pp);
+            visited.push_back(new Point(p));
             swap(dir[0],dir[1]);
             swap(dir[2],dir[3]);
             swap(target_dir[0],target_dir[1]);
             swap(target_dir[2],target_dir[3]);
             
-            bool enc4=false;
+            enc4=false;
             for (int i=0; i<_obstacles[layer].size(); ++i)
             {
                if (p.encounter(_obstacles[layer][i],dir[0],_spacing))
@@ -389,7 +393,7 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
       }
       else
       {
-         bool enc3=false;
+         enc3=false;
          for (int i=0; i<_obstacles[layer].size(); ++i)
          {
             if (p.encounter(_obstacles[layer][i],goal,_spacing))

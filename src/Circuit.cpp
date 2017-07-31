@@ -295,23 +295,6 @@ void Point::move(bool vertical, int dis)
       _x+=dis;
 }
 
-bool Point::move(char dir)
-{
-   if(dir == 'u') {
-      _y++; return true;
-   }
-   if(dir == 'd') {
-      _y--; return true;
-   }
-   if(dir == 'r') {
-      _x++; return true;
-   }
-   if(dir == 'l') {
-      _x--; return true;
-   }
-   return false;
-}
-
 bool Point::move(char dir, Point& ll, Point& ur, int spacing)
 {
    if(dir == 'u') {

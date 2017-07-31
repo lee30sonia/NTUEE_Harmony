@@ -30,12 +30,12 @@ bool CircuitMgr::readCircuit(char* filename)
    fin.ignore(13);   fin >> obstacles;   fin.ignore();
    #ifdef _DEBUG_ON
    cout << "reading in data..." << endl;
+   #endif
    cout << "input size: shape num = " << routedShapes 
         << ", vias num = " << routedVias
         << ", obstacle num = " << obstacles 
         << ", layer num = " << _layernum
         << ", via cost = " << _viaCost << endl;
-   #endif
    
    for(int i=0; i<=_layernum; ++i){
       vector<Shape*> shapeVec;
