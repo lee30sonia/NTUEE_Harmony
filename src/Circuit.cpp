@@ -1,6 +1,8 @@
 /****************************************************************************
   FileName     [ Circuit.cpp ]
   Synopsis     [ Implement basic member functions of circuit classes ]
+  Discription  [ Member functions for object classes in Circuit.h
+                 Basic member functions for CircuitMgr]
 ****************************************************************************/
 
 #include "Circuit.h"

@@ -1,7 +1,9 @@
-/****************************************************************************
+/*******************************************************************************
   FileName     [ Circuit.h ]
   Synopsis     [ Define data structures ]
-****************************************************************************/
+  Discription  [ Define basic classes to build the circuit,
+                 including Point, Shape, Via, Obstacle, Line, and CircuitMgr]
+*******************************************************************************/
 
 #ifndef CIRCUIT_H
 #define CIRCUIT_H

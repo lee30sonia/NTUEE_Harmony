@@ -1,7 +1,11 @@
-/****************************************************************************
+/*******************************************************************************
   FileName     [ Greedy.cpp ]
   Synopsis     [ Implement main algorithm ]
-****************************************************************************/
+  Discription  [ Apply the algorithms to find connection,
+                 in the order of build graph -> check for trivial connections
+                 -> find L connection -> rounting.
+                 Implement the function of L connection and routing ]
+*******************************************************************************/
 
 #include "Circuit.h"
 #include "Graph.h"
@@ -266,12 +270,15 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
    #ifdef _DEBUG_ON
    cout<<"routing..."<<p1.str()<<p2.str()<<endl;
    #endif
+   // priority of direction to move toward
    char target_dir[4];
    if(p2.x()>p1.x()) { target_dir[0]='r'; target_dir[2]='l'; }
    else { target_dir[0]='l'; target_dir[2]='r'; }
    if(p2.y()>p1.y()) { target_dir[1]='u'; target_dir[3]='d'; }
    else { target_dir[1]='d'; target_dir[3]='u'; }
    
+   // possible directions to move toward
+   // in order of priority
    vector<char> dir;
    for (int i=0; i<4; ++i) dir.push_back(target_dir[i]);
    

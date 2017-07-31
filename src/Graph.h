@@ -1,6 +1,8 @@
 /****************************************************************************
   FileName     [ Graph.h ]
   Synopsis     [ Define graph data structures ]
+  Discription  [ Define classes to build the graph,
+                 including Point, Node, Edge, and Graph]
 ****************************************************************************/
 
 #ifndef GRAPH_H

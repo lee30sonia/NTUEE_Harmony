@@ -1,3 +1,7 @@
+/*******************************************************************************
+  FileName     [ path.cpp ]
+  Synopsis     [ Implement MST and Hadlock's algorithm ]
+*******************************************************************************/
 #include <iostream>
 #include <vector>
 #include <queue>

@@ -1,6 +1,7 @@
 /****************************************************************************
  FileName     [ Graph.cpp ]
  Synopsis     [ Implementation of graph ]
+ Discription  [ Memebr functions of Graph.h]
  ****************************************************************************/
 
 #include "Graph.h"
