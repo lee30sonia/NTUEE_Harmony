@@ -348,6 +348,7 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
                enc2=true;
                break;
             }
+            if(p.x() < _obstacles[layer][i]->getLL().x())  break;
          }
          if (enc2)
          {
@@ -356,7 +357,7 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
                found=false;
                break;
             }
-            dir.erase(dir.begin());
+            dir.erase(dir.begin());    // for special case A
             dir.erase(dir.begin());
          }
          
@@ -364,7 +365,7 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
          continue;
       }
       
-      if (goal=='f')    // not encounter any obstacles
+      if (goal=='f')    // not yet encounter any obstacles
       {
          if (((dir[0]=='r'||dir[0]=='l')&&p.x()==p2.x())||((dir[0]=='u'||dir[0]=='d')&&p.y()==p2.y()))
          // reach the same line with the target
@@ -383,6 +384,7 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
                   enc4=true;
                   break;
                }
+               if(p.x() < _obstacles[layer][i]->getLL().x())  break;
             }
             if (enc4)
             {
@@ -401,12 +403,12 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
                enc3=true;
                break;
             }
+            if(p.x() < _obstacles[layer][i]->getLL().x())  break;
          }
          if (!enc3)
          {
-            Point* pp = new Point(p);
-            visited.push_back(pp);
-            if (dir.size()==1 && target_dir[0]==goal)
+            visited.push_back(new Point(p));
+            if (dir.size()==1 && target_dir[0]==goal)    // for special case A
             {
                dir.insert(dir.begin(),target_dir[2]);
                dir.insert(dir.begin(),target_dir[1]);
@@ -417,7 +419,8 @@ bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
             {
                for (int j=0; j<2; ++j)
                {
-                  if ((dir[j]=='r'&&p.x()>p2.x()) || (dir[j]=='l'&&p.x()<p2.x()) || (dir[j]=='u'&&p.y()>p2.y()) || (dir[j]=='d'&&p.y()<p2.y()))
+                  if ((dir[j]=='r'&&p.x()>p2.x()) || (dir[j]=='l'&&p.x()<p2.x()) 
+                        || (dir[j]=='u'&&p.y()>p2.y()) || (dir[j]=='d'&&p.y()<p2.y()))
                   {
                      swap(dir[j],dir[j+2]);
                      swap(target_dir[j],target_dir[j+2]);
