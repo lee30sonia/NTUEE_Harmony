@@ -189,6 +189,12 @@ bool Shape::overlapY(const Shape& s)
    return s._UR.y()>=_LL.y();
 }
 
+int Shape::dis(const Shape* target) const
+{
+   return abs((_UR.x()+_LL.x())/2 - (target->_UR.x()+target->_LL.x())/2)
+      + abs((_UR.y()+_LL.y())/2 - (target->_UR.y()+target->_LL.y())/2);
+}
+
 /********************Line*********************/
 Line::Line(int x1, int y1, int x2, int y2, int layer)
 {

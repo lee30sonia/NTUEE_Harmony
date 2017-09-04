@@ -69,9 +69,25 @@ void CircuitMgr::greedy()
                continue;
             if (n->_connectEdge->_weight==0) //already overlap
                continue;
-            if (!addLine(n->_connectEdge->_connect[0],n->_connectEdge->_connect[1],layer, false))
-               // set check to true if debug is needed
-               cout<<"Error: trivial connection addLine failed!"<<n->_connectEdge->_connect[0].str()<<n->_connectEdge->_connect[1].str()<<endl;
+            if (n->_connectEdge->_turn) {
+               if (!addLine(n->_connectEdge->_connect[0], 
+                        n->_connectEdge->_connect[2], layer, false))
+                  // set check to true if debug is needed
+                  cout<<"Error: L-shape connection addLine failed!"
+                     <<n->_connectEdge->_connect[0].str()<<n->_connectEdge->_connect[1].str()<<endl;
+               if (!addLine(n->_connectEdge->_connect[1], 
+                        n->_connectEdge->_connect[2], layer, false))
+                  // set check to true if debug is needed
+                  cout<<"Error: L-shape connection addLine failed!"
+                     <<n->_connectEdge->_connect[1].str()<<n->_connectEdge->_connect[2].str()<<endl;
+            }
+            else {
+               if (!addLine(n->_connectEdge->_connect[0], 
+                        n->_connectEdge->_connect[1], layer, false))
+                  // set check to true if debug is needed
+                  cout<<"Error: trivial connection addLine failed!"
+                     <<n->_connectEdge->_connect[0].str()<<n->_connectEdge->_connect[1].str()<<endl;
+            }
          }
          
          #ifdef _DEBUG_ON
@@ -105,7 +121,7 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
    Point p1, p2;
    bool joint = true;
    for(int i=1; i<roots.size(); i++) {
-      Shape* connect = findNearest(roots[i]->_obj[0], mainSet, x, y);
+      Shape* connect = findNearest(roots[i]->_obj[0], mainSet, x, y, true);
       if(!L_connect(roots[i]->_obj[0], connect, p1, p2, x, y)) {
 #ifdef _DEBUG_ON
          cout << "set " << i << " can't be joined by L_connect." << endl;
@@ -113,8 +129,13 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
          if (!routing(p1, p2, roots[0]->_obj[0]->layer()))
          {
 #ifdef _DEBUG_ON
-            cout << "set " << i << " can't either be joined by routing." << endl;
+            cout << "set " << i << " can't be joined by routing either." << endl;
 #endif
+            cout << "shapes " << roots[i]->_obj[0]->getLL().str()
+               << roots[i]->_obj[0]->getUR().str() << " and "  
+               << connect->getLL().str() << connect->getUR().str()
+               << " on layer " << roots[0]->_obj[0]->layer() << " can't be connected."
+               << endl;
             joint = false;
          }
          //else
@@ -125,19 +146,20 @@ bool CircuitMgr::collectRemains(vector<Node*>& roots)
 }
 
 // use LL as reference points
-Shape* CircuitMgr::findNearest(Shape* target, const short mainSet, short& x, short& y)
+Shape* CircuitMgr::findNearest(Shape* target, const short mainSet, short& x, short& y, bool checkset)
 {
    vector<Shape*>& shapes = _shapes.at(target->layer());
    int distance = INT_MAX, temp;
    Shape* result;
-   int bound = (target->getLL().y()<target->getUR().disY(_UR))?
-               target->getUR().disY(_UR): target->getLL().y();
+   // int bound = (target->getLL().y()<target->getUR().disY(_UR))?
+   //             target->getUR().disY(_UR): target->getLL().y();
    // I still can't decide which is faster
    // scan through the whole thing
    for(int i=0; i<shapes.size(); i++) {
-      if(shapes[i]->getsetNum() != mainSet)  continue;
+      if(checkset)
+         if(shapes[i]->getsetNum() != mainSet)  continue;
       temp = target->getLL().disXY(shapes[i]->getLL());
-      if(temp<distance) {
+      if(temp<distance && shapes[i]!=target) {
          distance = temp;
          result = shapes[i];
       }
@@ -265,9 +287,9 @@ bool CircuitMgr::L_connect(Shape* root, Shape* connect, Point& p1, Point& p2, sh
 
 bool CircuitMgr::routing(Point& p1, Point& p2, int layer)
 {
-   #ifdef _DEBUG_ON
+//   #ifdef _DEBUG_ON
    cout<<"routing..."<<p1.str()<<p2.str()<<endl;
-   #endif
+//   #endif
    // priority of direction to move toward
    // first horizontal, then vertical
    char target_dir[4];

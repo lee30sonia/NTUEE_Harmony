@@ -82,17 +82,6 @@ vector<Node*> CircuitMgr::mstPrim(const Graph* g, vector<unsigned>& set_sizes)
    
       set_sizes.push_back(size);
       if(!pQ.empty()) n = pQ[0];
-      // checking pQ is the same. this way we don't need to go through all the nodes
-      /*
-      for (int i=0; i< g->_nodes.size(); ++i)
-      {
-         //find new root for tree if not connected
-         if (!g->_nodes[i]->_inMST) {
-            n=g->_nodes[i];         
-            break;
-         }
-      }
-      */
    }
    
    #ifdef _DEBUG_ON

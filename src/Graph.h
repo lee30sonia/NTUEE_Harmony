@@ -82,10 +82,12 @@ class Edge
    
 public:
    Edge(Node *a, Node *b, const int& w, Point c1, Point c2);
+   Edge(Node *a, Node *b, const int& w, Point c1, Point c2, Point c3);
 
    Node* _node[2];
    int _weight;
-   Point _connect[2];  // _connect[2]
+   Point _connect[3];  // _connect[3]
+   bool _turn;
    
    Node* getNeighbor(Node* n);
    bool changeNode(Node* from, Node* to);
@@ -142,7 +144,9 @@ public:
    ~Graph();
    
    void addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2); //n1 n2 already in graph
+   void addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2, Point c3); //n1 n2 already in graph
    void addEdge(Shape* n1, Shape* n2, int& weight, Point c1, Point c2);
+   void addEdge(Shape* n1, Shape* n2, int weight, Point c1, Point c2, Point c3);
    void addNode(Shape* o);
    void mergeNodes(Edge* e, const int num);
    //Node * getNodeById(const int& id);

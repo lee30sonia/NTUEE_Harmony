@@ -80,6 +80,7 @@ public:
    Point& getLL() { return _LL; }
    Point& getUR() { return _UR; }
    int layer() { return _layer; }
+   int dis(const Shape* target) const;
    void setsetNum(short s ) { setNum = s; }
    short getsetNum() const { return setNum; }
 
@@ -196,6 +197,9 @@ public:
    //Graph.cpp
    Graph* buildGraph(int layer); //build graph for a selected layer
    int dist(Shape& s1, Shape& s2, bool xType, Point* connect); //for buildGraph. return -1 if there is obstacle between them
+   bool L_edge(Graph* g, Shape* root, int layer);
+   void connectLayer(int l); //add via on layer l to connect l and l+1
+   bool routing(Point& p1, Point& p2, int layer);
    
    // path.cpp
 
@@ -232,12 +236,9 @@ public:
    // Greedy.cpp
    // other connection
    bool collectRemains(vector<Node*>& roots);
-   Shape* findNearest(Shape* target, const short mainSet, short& x, short& y);
+   Shape* findNearest(Shape* target, const short mainSet, short& x, short& y, bool checkset);
    void DeterminePoints(Point& p1, Point& p2, short& x, short& y, Shape* root, Shape* connect);
    bool L_connect(Shape* root, Shape* connect, Point& p1, Point& p2, short& x, short& y);
-   // Graph.cpp
-   void connectLayer(int l); //add via on layer l to connect l and l+1
-   bool routing(Point& p1, Point& p2, int layer);
    
 private:
    int _viaCost;

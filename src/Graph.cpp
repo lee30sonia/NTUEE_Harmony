@@ -25,6 +25,18 @@ Edge::Edge(Node *a, Node *b, const int& w, Point c1, Point c2)
    _weight=w;
    _connect[0] = c1;
    _connect[1] = c2;
+   _turn = false;
+}
+
+Edge::Edge(Node *a, Node *b, const int& w, Point c1, Point c2, Point c3)
+{
+   _node[0]=a;
+   _node[1]=b;
+   _weight=w;
+   _connect[0] = c1;
+   _connect[1] = c2;
+   _connect[2] = c3;
+   _turn = true;
 }
 
 Node* Edge::getNeighbor(Node* a)
@@ -45,6 +57,7 @@ bool Edge::changeNode(Node* from, Node* to)
    }
    return false;
 }
+
 
 /********************Pair*********************/
 /*
@@ -69,6 +82,16 @@ Graph::~Graph()
 void Graph::addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2)
 {
    Edge* e = new Edge(n1,n2,weight, c1, c2);
+   _edges.push_back(e);
+   //_adj[n1->_id].push_back(make_pair<n2, weight>);
+   //_adj[n2->_id].push_back(make_pair<n1, weight>);
+   n1->_edges.push_back(e);
+   n2->_edges.push_back(e);
+}
+
+void Graph::addEdge(Node* n1, Node* n2, int& weight, Point c1, Point c2, Point c3)
+{
+   Edge* e = new Edge(n1,n2,weight, c1, c2, c3);
    _edges.push_back(e);
    //_adj[n1->_id].push_back(make_pair<n2, weight>);
    //_adj[n2->_id].push_back(make_pair<n1, weight>);
@@ -105,6 +128,37 @@ void Graph::addEdge(Shape* o1, Shape* o2, int& weight, Point c1, Point c2)
       o2->_inGraph=true;
    }
    addEdge(n1, n2, weight, c1, c2);
+}
+
+void Graph::addEdge(Shape* o1, Shape* o2, int weight, Point c1, Point c2, Point c3)
+{
+   Node *n1=0, *n2=0;
+   for (int i=0; i<_nodes.size(); ++i)
+   {
+      if (_nodes.at(i)->_obj[0]==o1)
+         n1=_nodes.at(i);
+      else if (_nodes.at(i)->_obj[0]==o2)
+         n2=_nodes.at(i);
+   }
+   if (!n1)
+   {
+      n1=new Node(o1);
+      #ifdef _DEBUG_ON
+      n1->setId(_nodes.size());
+      #endif
+      _nodes.push_back(n1);
+      o1->_inGraph=true;
+   }
+   if (!n2)
+   {
+      n2=new Node(o2);
+      #ifdef _DEBUG_ON
+      n2->setId(_nodes.size());
+      #endif
+      _nodes.push_back(n2);
+      o2->_inGraph=true;
+   }
+   addEdge(n1, n2, weight, c1, c2, c3);
 }
 
 void Graph::addNode(Shape* o)
@@ -212,10 +266,6 @@ Graph* CircuitMgr::buildGraph(int layer)
    {
       for (int j=i+1; j<shapes.size(); ++j)
       {
-         // if(shapes.at(i)->getLL().disXY(shapes.at(j)->getLL()) > _UR.y()) continue;
-         // this condition skip checking for shapes that are too far from each other
-         // too far == more than the width of the whole boundary
-         // thus not all the connections will be found, but the speed is accelerated
          if (shapes.at(i)->overlapY(*shapes.at(j)))
          {
             int d = dist(*shapes.at(i),*shapes.at(j),false, connect);
@@ -255,7 +305,15 @@ Graph* CircuitMgr::buildGraph(int layer)
    #ifdef _DEBUG_ON
    cout << "X trivial checked and built." << endl;
    #endif
-   
+  
+   // looking for edges with L shape
+   int L_count = 0;
+   for(int i=0; i<shapes.size(); i++)
+      if(L_edge(g, shapes.at(i), layer))   L_count++;
+#ifdef _DEBUG_ON
+   cout << L_count << " edges with L shapes built." << endl;
+#endif
+
    for (int i=0; i<shapes.size(); ++i)
    {
       if (!shapes.at(i)->_inGraph)
@@ -266,6 +324,33 @@ Graph* CircuitMgr::buildGraph(int layer)
    cout<<"Graph of layer "<<layer<<" built, edge num = "<<g->_edges.size()<<", node num = "<<g->_nodes.size()<<endl;
    #endif
    return g;
+}
+
+// looking for edges with L shape
+bool CircuitMgr::L_edge(Graph* g, Shape* root, int layer)
+{
+   short x, y;
+   Shape* target;
+   Point p1, p2, p3, p4;
+   target = findNearest(root, -1, x, y, false);
+   DeterminePoints(p1, p2, x, y, root, target);
+
+   p3 = Point(p1.x(), p2.y());   // V -> H
+   p4 = Point(p2.x(), p1.y());   // H -> V
+
+   Line lineV(p1.x(), p1.y(), p3.x(), p3.y(), layer);
+   Line lineH(p3.x(), p3.y(), p2.x(), p2.y(), layer);
+   if(valid(lineV) && valid(lineH)) {
+      g->addEdge(root, target, lineV.length()+lineH.length(), p1, p2, p3);
+      return true;
+   }
+   lineV = Line(p4.x(), p4.y(), p2.x(), p2.y(), layer);
+   lineH = Line(p1.x(), p1.y(), p4.x(), p4.y(), layer);
+   if(valid(lineV) && valid(lineH)) {
+      g->addEdge(root, target, lineV.length()+lineH.length(), p1, p2, p4);
+      return true;
+   }
+   return false;
 }
 
 int CircuitMgr::dist(Shape& s1, Shape& s2, bool xType, Point* connect)
