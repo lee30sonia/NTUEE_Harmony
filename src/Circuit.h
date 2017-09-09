@@ -48,7 +48,7 @@ public:
    int disXY(const Point& p) const { return disX(p)+disY(p); }
    //int& level(const int& layer) { return _map[layer][_x][_y]; }
    
-   bool inside(Point LL, Point UR, int spacing=0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
+   bool inside(Point LL, Point UR, int spacing = 0); //whether this point is inside the rectangle given by LL and UR or its margin of width "spacing"
 
    //for line iteration
    void move(bool vertical, int dis = 1); //increase y by dis if vertical, x otherwise
@@ -204,16 +204,15 @@ public:
    // path.cpp
 
    // shortest path
-   /*
    bool shortestPath(const Point s, const Point t, const int layer);
-   void init4short(int layer);
-   bool check4short(const Point& p, const Point& t, const int& layer, const char& dir,
+   void init4short(const Point s, const Point t, int layer);
+   bool check4short(const Point& p, const Point& t, const char& dir,
       const int& dis2t, const int& level);
-   int& getLevel(const Point& p, const int& layer) { return _levelMap[layer][p.x()][p.y()]; }
-   char& getDir(const Point& p, const int& layer) { return _dirMap[layer][p.x()][p.y()]; }
-   void setLevel(const Point& p, const int& layer, int level) { _levelMap[layer][p.x()][p.y()]= level; }
-   void setDir(const Point& p, const int& layer, char dir) { _dirMap[layer][p.x()][p.y()]= dir; }
-*/
+   int& getLevel(const Point& p);
+   char& getDir(const Point& p);
+   void setLevel(const Point& p, int level); 
+   void setDir(const Point& p, char dir);
+   
 
    // Minimun spanning tree
    vector<Node*> mstPrim(const Graph* g, vector<unsigned>& set_sizes); //solve minimum spanning tree 
@@ -254,8 +253,10 @@ private:
    vector< vector<Obstacle*> > _obstacles;
 
    // these are for function shortestPath
-   int***                     _levelMap;
-   char***                    _dirMap;
-   vector< queue<Point> >    _Q;
+   int**                     _levelMap;
+   char**                    _dirMap;
+   vector< queue<Point> >     _Q;
+   Point                      _mapLL;
+   Point                      _mapUR;
 };
 #endif

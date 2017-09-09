@@ -116,17 +116,23 @@ void CircuitMgr::greedy()
 // also assume we got one main set(roots[0]) and other small ones
 bool CircuitMgr::collectRemains(vector<Node*>& roots)
 {
+   int layer = roots[0]->_obj[0]->layer();
    short mainSet = roots[0]->_obj[0]->getsetNum();
    short x, y;
    Point p1, p2;
    bool joint = true;
    for(int i=1; i<roots.size(); i++) {
       Shape* connect = findNearest(roots[i]->_obj[0], mainSet, x, y, true);
+      DeterminePoints(p1, p2, x, y, roots[i]->_obj[0], connect);
+      vector<Obstacle*>& obstacles = _obstacles.at(layer);
+      sort(obstacles.begin(), obstacles.end(), compareByX_O);
+      //joint = shortestPath(p1, p2, layer);
+      
       if(!L_connect(roots[i]->_obj[0], connect, p1, p2, x, y)) {
 #ifdef _DEBUG_ON
          cout << "set " << i << " can't be joined by L_connect." << endl;
 #endif
-         if (!routing(p1, p2, roots[0]->_obj[0]->layer()))
+         if (!routing(p1, p2, layer))
          {
 #ifdef _DEBUG_ON
             cout << "set " << i << " can't be joined by routing either." << endl;
@@ -151,9 +157,6 @@ Shape* CircuitMgr::findNearest(Shape* target, const short mainSet, short& x, sho
    vector<Shape*>& shapes = _shapes.at(target->layer());
    int distance = INT_MAX, temp;
    Shape* result;
-   // int bound = (target->getLL().y()<target->getUR().disY(_UR))?
-   //             target->getUR().disY(_UR): target->getLL().y();
-   // I still can't decide which is faster
    // scan through the whole thing
    for(int i=0; i<shapes.size(); i++) {
       if(checkset)
@@ -164,34 +167,6 @@ Shape* CircuitMgr::findNearest(Shape* target, const short mainSet, short& x, sho
          result = shapes[i];
       }
    }
-
-   // sort but scan through part of it
-   /*
-   sort(shapes.begin(), shapes.end(), compareByX);
-   if(target->getLL().x() < target->getUR().disX(_UR)) {    // scan from the left
-      for(int i=0; i<shapes.size(); i++) {
-         if(shapes[i]->getsetNum() != mainSet)  continue;
-         temp = target->getLL().disXY(shapes[i]->getLL());
-         if(temp<distance) {
-            distance = temp;
-            result = shapes[i];
-         }
-         // stop scanning if too far
-         if(temp>1.4*bound && shapes[i]->getLL()>target->getLL()) break;
-      }
-   }
-   else {   // scan from the right
-      for(int i=shapes.size()-1; i>=0; i--) {
-         if(shapes[i]->getsetNum() != mainSet)  continue;
-         temp = target->getLL().disXY(shapes[i]->getLL());
-         if(temp<distance) {
-            distance = temp;
-            result = shapes[i];
-         }
-         if(temp>1.4*bound && shapes[i]->getLL()<target->getLL()) break;
-      }
-   }
-   */
 
    x = result->getLL().x()<target->getLL().x()? -1: 1;
    y = result->getLL().y()<target->getLL().y()? -1: 1;
@@ -220,10 +195,8 @@ void CircuitMgr::DeterminePoints(Point& p1, Point& p2, short& x, short& y, Shape
 
 bool CircuitMgr::L_connect(Shape* root, Shape* connect, Point& p1, Point& p2, short& x, short& y)
 {
-   Point p3, p4;
    int layer = root->layer();
-   DeterminePoints(p1,p2,x,y,root,connect);
-   
+   Point p3, p4;
    p3 = Point(p1.x(), p2.y());   // V -> H
    p4 = Point(p2.x(), p1.y());   // H -> V
 

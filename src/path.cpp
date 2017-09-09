@@ -6,6 +6,8 @@
 #include <vector>
 #include <queue>
 #include <climits>
+#include <algorithm>
+#include <cmath>
 #include "Circuit.h"
 #include "Graph.h"
 
@@ -282,18 +284,20 @@ void CircuitMgr::init4op(const ) {
 // Finding shortest path using Hadlock's algorithm
 // this function still need spacing and boundary checking
 // and a way to find a smaller map to use
-/*
+
 bool CircuitMgr::shortestPath(const Point s, const Point t, const int layer) {
 
    #ifdef _DEBUG_ON
-   cout << "Finding shortest path between " << s.str() << "and " << t.str() << endl;
+   // cout << "Finding shortest path between " << s.str() << "and " << t.str() << endl;
    #endif
+
+   init4short(s, t, layer);
 
    int current = -1, dis2t, level;
    bool reach = false;
    Point p;
-   setLevel(s,layer,0);
-   setDir(s, layer, 's');
+   setLevel(s, 0);
+   setDir(s, 's');
    (_Q[0]).push(s);
 
    // update all the needed level
@@ -304,81 +308,157 @@ bool CircuitMgr::shortestPath(const Point s, const Point t, const int layer) {
          p = _Q[current].front();
          _Q[current].pop();
          dis2t = p.disXY(t);
-         level = getLevel(p, layer);
+         level = getLevel(p);
          p.move(false, -1);
-         reach = check4short(p, t, layer, 'r', dis2t, level);
+         reach = check4short(p, t, 'r', dis2t, level);
          p.move(false, 2);
-         reach = check4short(p, t, layer, 'l', dis2t, level);
+         reach = check4short(p, t, 'l', dis2t, level);
          p.move(false, -1);
          p.move(true, -1);
-         reach = check4short(p, t, layer, 'u', dis2t, level);
+         reach = check4short(p, t, 'u', dis2t, level);
          p.move(true, 2);
-         reach = check4short(p, t, layer, 'd', dis2t, level);
+         reach = check4short(p, t, 'd', dis2t, level);
       }
    }
 
    // collect the path
    Point start = p = t;
-   char lastDir = getDir(t, layer);
+   char lastDir = getDir(t);
    while(lastDir != 's') {
-      if(!p.move(lastDir)) {
+      if(!p.move(lastDir, _mapLL, _mapUR, 0)) {
          cout << "Connection Error!" << endl;
+         return false;
          break;
       }
-      if(getDir(p, layer) != lastDir) {
+      if(getDir(p) != lastDir) {
          addLine(start.x(), start.y(), p.x(), p.y(), layer);
-         lastDir = getDir(p, layer);
+         lastDir = getDir(p);
       }
    }
-   return true; //?
+   return true;
 }
 
-void CircuitMgr::init4short(int layer) {
-   // the map of each level is no built until needed
-   if(!_levelMap[layer])   _levelMap[layer] = new int*[_LL.disX(_UR)];
-   if(!_dirMap[layer])     _dirMap[layer] = new char*[_LL.disX(_UR)];
-   // initiate all the level cell to -1, all the dir to 0
-   for(int i=0; i<_LL.disX(_UR); i++) {
-      _levelMap[layer][i] = new int[_LL.disY(_UR)];
-      _dirMap[layer][i] = new char[_LL.disY(_UR)];
+// assume the obstacles has been sorted by X
+void CircuitMgr::init4short(const Point s, const Point t, int layer)
+{
+   // define the boundary of the map
+   Point p1, p2;
+   int length = max(s.disX(t), s.disY(t)), x1, x2, y1, y2;
+
+   if(s.x() < t.x()) {
+      p1 = s;  p2 = t;
    }
-   for(int i=0; i<_LL.disX(_UR); i++)
-      for(int j=0; j<_LL.disY(_UR); j++) {
-         _levelMap[layer][i][j] = -1;
-         _dirMap[layer][i][j] = 0;
+   else  {
+      p2 = s;  p1 = t;
+   }
+   if((p1.disX(_LL)-_spacing) < 0.5*length)  {
+      x1 = _spacing;    x2 = x1 + length;
+   }
+   else if((p2.disX(_UR)-_spacing) < 0.5*length) {
+      x2 = _UR.x()-_spacing;  x1 = x2-length;
+   }
+   else {
+      x1 = p1.x()-0.5*length;    x2 = p2.x()+0.5*length;
+   }
+   if(s.y() < t.y()) {
+      p1 = s;  p2 = t;
+   }
+   else  {
+      p2 = s;  p1 = t;
+   }
+   if((p1.disY(_LL)-_spacing) < 0.5*length)  {
+      y1 = _spacing;    y2 = y1 + length;
+   }
+   else if((p2.disY(_UR)-_spacing) < 0.5*length) {
+      y2 = _UR.y()-_spacing;  y1 = y2-length;
+   }
+   else {
+      y1 = p1.y()-0.5*length;    y2 = p2.y()+0.5*length;
+   }
+   _mapLL = Point(x1, y1);
+   _mapUR = Point(x2, y2);
+   length = _mapLL.disX(_mapUR)+1;
+
+   // initiate all the level cell to -1, all the dir to 'e'(empty)
+   _levelMap = new int*[length];
+   _dirMap = new char*[length];
+   for(int i=0; i<length; i++) {
+      _levelMap[i] = new int[length];
+      _dirMap[i] = new char[length];
+   }
+   for(int i=0; i<length; i++)
+      for(int j=0; j<length; j++) {
+         _levelMap[i][j] = -1;
+         _dirMap[i][j] = 'e';
       }
 
    // initiate obstables as INT_MAX 
+   // assume the obstacels has been sorted by X
    Obstacle* it;
    for(unsigned n=0; n<_obstacles[layer].size(); n++) {
-      it = _obstacles[layer][0];
-      for(int i=it->getLL().x(); i<=it->getUR().x(); i++)
-         for(int j=it->getLL().y(); j<=it->getUR().y(); j++)
-            _levelMap[layer][i][j] = INT_MAX;
+      it = _obstacles[layer][n];
+      if(it->getLL().x()-_spacing > _mapUR.x()) break;
+      if(it->getUR().x()+_spacing < _mapLL.x() 
+            || it->getLL().y()-_spacing > _mapUR.y() 
+            || it->getUR().y()+_spacing < _mapLL.y())
+         continue;
+      for(int i=it->getLL().x()-_spacing; i<=it->getUR().x()+_spacing; i++)
+         for(int j=it->getLL().y()-_spacing; j<=it->getUR().y()+_spacing; j++)
+            if(x1<=i && i<=x2 && y1<=j && j<=y2)
+               _levelMap[i-x1][j-y1] = INT_MAX;
    }
    
    // initialise the queue vector
    _Q.clear();
    _Q.push_back(queue<Point>());
-}
-
-bool CircuitMgr::check4short(const Point& p, const Point& t, const int& layer, const char& dir,
-      const int& dis2t, const int& level) {
-   if(p.x()<0 || p.x()>(_LL.disX(_UR))) return false; 
-   if(p.y()<0 || p.y()>(_LL.disY(_UR))) return false; 
-   if(getLevel(p, layer) >= 0)   return false;
-
-   if(getDir(p,layer) == 0)  setDir(p,layer,dir);
-   if(p.disXY(t) == 0) return true;
-   int level2;
-   if(p.disXY(t) > dis2t) level2 = level+1;
-   else  level2 = level;
-   setLevel(p, layer, level2);
-   _Q[level2].push(p);
-   return false;
 
    #ifdef _DEBUG_ON
-   cout << "Maps initialized." << endl;
+   // cout << "Map initialized." << endl;
    #endif
 }
-*/
+
+bool CircuitMgr::check4short(const Point& p, const Point& t, const char& dir,
+      const int& dis2t, const int& level)
+{
+   if(p.x()<_spacing || p.x()>_LL.disX(_UR)-_spacing) return false; 
+   if(p.y()<_spacing || p.y()>_LL.disY(_UR)-_spacing) return false; 
+   if(getLevel(p) >= 0)   return false;
+
+   if(getDir(p) == 'e')  setDir(p, dir);
+   if(p.disXY(t) == 0) return true;
+   int level2;
+   if(p.disXY(t) > dis2t)  level2 = level+1;
+   else level2 = level;
+   setLevel(p, level2);
+   _Q[level2].push(p);
+   return false;
+}
+
+int int_max = INT_MAX;
+char char0 = 0;
+
+int& CircuitMgr::getLevel(const Point& p)
+{
+   if(_mapLL.x()<=p.x() && p.x()<=_mapUR.x() && _mapLL.y()<=p.y() && p.y()<=_mapUR.y())
+      return _levelMap[p.x()-_mapLL.x()][p.y()-_mapLL.y()];
+   else  return int_max;
+}
+
+char& CircuitMgr::getDir(const Point& p)
+{
+   if(_mapLL.x()<=p.x() && p.x()<=_mapUR.x() && _mapLL.y()<=p.y() && p.y()<=_mapUR.y())
+      return _dirMap[p.x()-_mapLL.x()][p.y()-_mapLL.y()];
+   else  return char0;
+}
+
+// make sure it's not out of the map!!
+void CircuitMgr::setLevel(const Point& p, int level)
+{
+   _levelMap[p.x()-_mapLL.x()][p.y()-_mapLL.y()] = level;
+}
+
+// make sure it's not out of the map!!
+void CircuitMgr::setDir(const Point& p, char dir)
+{
+   _dirMap[p.x()-_mapLL.x()][p.y()-_mapLL.y()] = dir;
+}
